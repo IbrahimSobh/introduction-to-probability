@@ -1,0 +1,2407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Introduction to Probability</title>
+<script>
+/* Apply the saved (or OS) theme before first paint to avoid a flash. */
+(function () {
+  var t = null;
+  try { t = localStorage.getItem("ds-theme"); } catch (e) {}
+  if (t !== "light" && t !== "dark") t = window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  document.documentElement.dataset.theme = t;
+})();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f4f4f1;
+  --surface: #fcfcfb;
+  --surface-2: #efeee9;
+  --border: #dcdbd4;
+  --text: #0b0b0b;
+  --text-2: #52514e;
+  --muted: #6b6a65;
+  --accent: #2a78d6;   /* default node / primary */
+  --accent-strong: #2b6bc9; /* primary button background (white text >= 4.5:1) */
+  --hot: #eb6834;      /* currently active / being compared */
+  --ok: #1baf7a;       /* found / success */
+  --bad: #e34948;      /* removed / error */
+  --violet: #6250d6;   /* secondary highlight (visited, pointer) */
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100; --s5: #e87ba4;
+  --code-bg: #1e1f22; --code-text: #e6e4dc; --code-hl: rgba(235,104,52,.28);
+  --shadow: 0 1px 2px rgba(0,0,0,.05), 0 4px 16px rgba(0,0,0,.05);
+  --mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #121211;
+  --surface: #1a1a19;
+  --surface-2: #242422;
+  --border: #353532;
+  --text: #f0efec;
+  --text-2: #c3c2b7;
+  --muted: #8e8d86;
+  --accent: #3987e5;
+  --accent-strong: #2f6fcc;
+  --hot: #d95926;
+  --ok: #199e70;
+  --bad: #e66767;
+  --violet: #9085e9;
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181;
+  --code-bg: #0e0e0d; --code-hl: rgba(217,89,38,.32);
+  --shadow: 0 1px 2px rgba(0,0,0,.4);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.6 var(--sans); }
+a { color: var(--accent); }
+code { font-family: var(--mono); font-size: .9em; background: var(--surface-2); padding: 1px 5px; border-radius: 4px; }
+h1, h2, h3 { line-height: 1.25; }
+h2 { font-size: 1.75rem; margin: 0 0 .25rem; }
+h3 { font-size: 1.15rem; margin: 1.6rem 0 .5rem; }
+
+/* ---------- layout ---------- */
+header.top {
+  position: sticky; top: 0; z-index: 50; height: 56px;
+  display: flex; align-items: center; gap: 16px; padding: 0 20px;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter: blur(8px); border-bottom: 1px solid var(--border);
+}
+header.top .brand { font-weight: 700; font-size: 1.05rem; margin-right: auto; }
+header.top label { font-size: .85rem; color: var(--text-2); display: flex; align-items: center; gap: 8px; }
+.layout { display: grid; grid-template-columns: 230px minmax(0, 1fr); }
+nav.side {
+  position: sticky; top: 56px; height: calc(100vh - 56px); overflow-y: auto;
+  padding: 20px 12px; border-right: 1px solid var(--border);
+}
+nav.side a {
+  display: block; padding: 6px 10px; border-radius: 6px; color: var(--text-2);
+  text-decoration: none; font-size: .92rem;
+}
+nav.side a:hover { background: var(--surface-2); color: var(--text); }
+nav.side a.current { background: var(--surface-2); color: var(--text); font-weight: 600; box-shadow: inset 3px 0 0 var(--accent); }
+main { padding: 32px clamp(16px, 4vw, 56px) 80px; max-width: 1180px; }
+@media (max-width: 860px) {
+  .layout { grid-template-columns: minmax(0, 1fr); }
+  html { scroll-padding-top: 112px; }
+  nav.side {
+    position: sticky; top: 56px; z-index: 40; height: auto; overflow-x: auto; overflow-y: hidden;
+    display: flex; gap: 6px; padding: 8px 12px; border-right: 0; border-bottom: 1px solid var(--border);
+    background: color-mix(in srgb, var(--surface) 92%, transparent); backdrop-filter: blur(8px);
+    white-space: nowrap; scrollbar-width: thin;
+  }
+  nav.side a { flex: none; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--border); font-size: .85rem; background: var(--surface); }
+  nav.side a.current { box-shadow: none; border-color: var(--accent); background: var(--surface-2); }
+}
+
+.section { padding: 40px 0 24px; border-bottom: 1px solid var(--border); }
+.section:last-child { border-bottom: 0; }
+.lead { color: var(--text-2); font-size: 1.08rem; margin-top: .25rem; max-width: 760px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; box-shadow: var(--shadow); min-width: 0; }
+.grid2 { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 16px; margin: 20px 0; align-items: start; }
+@media (max-width: 1050px) { .grid2 { grid-template-columns: 1fr; } }
+.callout { border-left: 4px solid var(--accent); background: var(--surface); padding: 10px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; }
+.callout.tip { border-color: var(--ok); }
+.callout.warn { border-color: var(--hot); }
+
+/* ---------- controls ---------- */
+.controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }
+.controls .sep { width: 1px; height: 24px; background: var(--border); margin: 0 4px; }
+button {
+  font: 600 .88rem var(--sans); padding: 7px 13px; border-radius: 8px; cursor: pointer;
+  border: 1px solid var(--accent-strong); background: var(--accent-strong); color: #fff;
+  transition: filter .15s, transform .05s;
+}
+button:hover { filter: brightness(1.08); }
+button:active { transform: translateY(1px); }
+button.secondary { background: transparent; color: var(--text); border-color: var(--border); }
+button.secondary:hover { background: var(--surface-2); }
+button:disabled { opacity: .45; cursor: not-allowed; filter: none; }
+input[type="text"], input[type="number"], select {
+  font: .9rem var(--mono); padding: 7px 9px; border-radius: 8px; width: 84px;
+  border: 1px solid var(--border); background: var(--surface); color: var(--text);
+}
+input:focus-visible, button:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ---------- visual area ---------- */
+.viz {
+  position: relative; min-height: 260px; border-radius: 10px; overflow: auto;
+  background: var(--surface-2); padding: 16px;
+  background-image: radial-gradient(var(--border) 1px, transparent 1px); background-size: 18px 18px;
+}
+.viz svg { display: block; max-width: 100%; }
+.viz .caption { position: absolute; top: 8px; left: 12px; font-size: .75rem; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+.node {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 46px; height: 46px; padding: 0 8px; border-radius: 9px;
+  border: 2px solid var(--accent); background: var(--surface); color: var(--text);
+  font: 600 15px var(--mono); transition: all .3s ease; position: relative;
+}
+.node.active  { border-color: var(--hot); background: color-mix(in srgb, var(--hot) 16%, var(--surface)); transform: translateY(-4px); }
+.node.found   { border-color: var(--ok);  background: color-mix(in srgb, var(--ok) 20%, var(--surface)); }
+.node.visited { border-color: var(--violet); background: color-mix(in srgb, var(--violet) 14%, var(--surface)); }
+.node.removed { border-color: var(--bad); opacity: 0; transform: scale(.6); }
+.node.dim     { opacity: .4; }
+.node.new     { animation: pop .4s ease; }
+.node .tag { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font: 600 11px var(--sans); color: var(--text-2); white-space: nowrap; }
+.node .sub { position: absolute; bottom: -19px; left: 50%; transform: translateX(-50%); font: 11px var(--mono); color: var(--muted); white-space: nowrap; }
+@keyframes pop { 0% { transform: scale(.4); opacity: 0; } 70% { transform: scale(1.08); } 100% { transform: scale(1); opacity: 1; } }
+/* SVG node equivalents (trees, graphs) */
+.svg-node circle { fill: var(--surface); stroke: var(--accent); stroke-width: 2; transition: all .3s; }
+.svg-node text { fill: var(--text); font: 600 14px var(--mono); text-anchor: middle; dominant-baseline: central; }
+.svg-node.active circle  { stroke: var(--hot); fill: color-mix(in srgb, var(--hot) 22%, var(--surface)); }
+.svg-node.found circle   { stroke: var(--ok); fill: color-mix(in srgb, var(--ok) 24%, var(--surface)); }
+.svg-node.visited circle { stroke: var(--violet); fill: color-mix(in srgb, var(--violet) 18%, var(--surface)); }
+.svg-edge { stroke: var(--muted); stroke-width: 2; fill: none; transition: all .3s; }
+.svg-edge.active { stroke: var(--hot); stroke-width: 3; }
+.svg-edge.found  { stroke: var(--ok); stroke-width: 3; }
+
+.status { margin-top: 10px; min-height: 1.6em; font-size: .92rem; color: var(--text-2); }
+.log { margin-top: 10px; max-height: 150px; overflow-y: auto; font: 12.5px/1.5 var(--mono); border-top: 1px dashed var(--border); padding-top: 8px; }
+.log div { padding: 1px 0; color: var(--text-2); }
+.log div.ok::before  { content: "✓ "; color: var(--ok); }
+.log div.err::before { content: "✗ "; color: var(--bad); }
+.log div.info::before { content: "→ "; color: var(--accent); }
+.log div:first-child { color: var(--text); }
+
+/* ---------- code panel ---------- */
+.code {
+  background: var(--code-bg); color: var(--code-text); border-radius: 10px;
+  font: 12.5px/1.6 var(--mono); padding: 10px 0; max-height: 470px; overflow: auto; position: relative;
+}
+.code .title { color: #8e8d86; font-size: 11px; padding: 0 14px 6px; text-transform: uppercase; letter-spacing: .08em; }
+.code .ln { display: flex; white-space: pre; padding: 0 14px 0 0; transition: background .2s; }
+.code .ln .no { width: 36px; flex: none; text-align: right; padding-right: 12px; color: #5f5e59; user-select: none; }
+.code .ln.hl { background: var(--code-hl); box-shadow: inset 3px 0 0 var(--hot); }
+.t-k { color: #c792ea; } .t-sf { color: #f78c6c; } .t-s { color: #c3e88d; } .t-c { color: #7f7e78; font-style: italic; } .t-n { color: #f9c859; } .t-d { color: #82aaff; }
+
+/* ---------- tables ---------- */
+table.cx { border-collapse: collapse; width: 100%; font-size: .92rem; margin: 10px 0; }
+table.cx th, table.cx td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); }
+table.cx th { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--text-2); }
+table.cx tbody tr:hover { background: var(--surface-2); }
+.big { font-family: var(--mono); font-weight: 600; white-space: nowrap; }
+.big:is(.o1, .olog, .on, .onlog, .on2)::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; background: var(--muted); }
+.big.o1::before { background: var(--s1); } .big.olog::before { background: var(--s3); } .big.on::before { background: var(--s4); }
+.big.onlog::before { background: var(--s5); } .big.on2::before { background: var(--s2); }
+
+/* ---------- quiz ---------- */
+.quiz { margin: 16px 0; }
+.quiz .q { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; }
+.quiz .q p { margin: 0 0 10px; font-weight: 600; }
+.quiz .opts { display: flex; flex-wrap: wrap; gap: 8px; }
+.quiz .opts button { background: var(--surface-2); color: var(--text); border-color: var(--border); font-weight: 500; }
+.quiz .opts button.right { background: color-mix(in srgb, var(--ok) 22%, var(--surface)); border-color: var(--ok); }
+.quiz .opts button.wrong { background: color-mix(in srgb, var(--bad) 18%, var(--surface)); border-color: var(--bad); }
+.quiz .why { margin-top: 10px; font-size: .92rem; color: var(--text-2); display: none; }
+.quiz .why.show { display: block; }
+.quiz .score { font-size: .9rem; color: var(--text-2); }
+
+/* ---------- intro bits ---------- */
+.hero { padding: 24px 0 8px; }
+.hero h1 { font-size: clamp(2rem, 4vw, 2.8rem); margin: 0 0 8px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--text); text-decoration: none; font-size: .9rem; }
+.chip:hover { border-color: var(--accent); }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: .85rem; color: var(--text-2); margin: 4px 0 8px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 14px; height: 3px; border-radius: 2px; display: inline-block; }
+.chart-wrap { position: relative; }
+.tooltip { position: absolute; pointer-events: none; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: .82rem; box-shadow: var(--shadow); white-space: nowrap; opacity: 0; transition: opacity .1s; z-index: 5; }
+.tooltip .row { display: flex; align-items: center; gap: 6px; }
+.tooltip .row i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.tooltip .row b { margin-left: auto; padding-left: 14px; font-family: var(--mono); }
+.order { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 12px 0; counter-reset: step; }
+.order a { counter-increment: step; display: block; padding: 10px 12px; border-radius: 10px; background: var(--surface); border: 1px solid var(--border); text-decoration: none; color: var(--text); font-size: .92rem; }
+.order a::before { content: counter(step); display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--surface-2); color: var(--text-2); font-size: .75rem; font-weight: 700; margin-right: 8px; }
+.order a:hover { border-color: var(--accent); }
+.order a small { display: block; color: var(--muted); margin-top: 4px; font-size: .8rem; }
+.scenario { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+.scenario .card p { margin: 0 0 10px; }
+.scenario .answer { display: none; font-size: .92rem; color: var(--text-2); }
+.scenario .answer.show { display: block; }
+.scenario select { width: 100%; font-family: var(--sans); }
+ol.ex li { margin-bottom: 6px; }
+footer { color: var(--muted); font-size: .85rem; padding: 32px 0; }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+/* ---------- Python course: memory frames, console, tokens ---------- */
+.node.bad { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 18%, var(--surface)); }
+.tr-frames { display: flex; flex-wrap: wrap; gap: 14px; padding-top: 22px; align-items: flex-start; }
+.tr-frame { border: 1px dashed var(--border); border-radius: 10px; padding: 10px 12px 4px; background: var(--surface); min-width: 160px; max-width: 100%; }
+.tr-frame.local { border: 2px solid var(--violet); }
+.tr-frame h4 { margin: 0 0 24px; font: 600 12px var(--sans); color: var(--text-2); }
+.tr-frame.local h4 { color: var(--violet); }
+.tr-vars { display: flex; flex-wrap: wrap; gap: 44px 12px; padding-bottom: 22px; }
+.tr-vars .empty { color: var(--muted); font: 12px var(--mono); }
+.tr-vars .node, .py-row .node { max-width: 100%; overflow: visible; white-space: pre; }
+.tr-outlabel { margin-top: 6px; font: 600 11px var(--sans); text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.console { background: var(--code-bg); color: var(--code-text); border-radius: 8px; font: 13px/1.55 var(--mono); padding: 10px 12px; min-height: 64px; max-height: 240px; overflow: auto; margin-top: 6px; white-space: pre-wrap; word-break: break-word; }
+.console .in { color: #82aaff; }
+.console .err { color: #ff8a80; }
+.console .dim { color: #7f7e78; }
+.console .new { animation: fadein .35s ease; }
+@keyframes fadein { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+.tok-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 34px 0 12px; min-height: 96px; }
+.tok-op { font: 700 18px var(--mono); color: var(--text-2); padding: 0 2px; transition: color .3s; }
+.tok-op.active { color: var(--hot); }
+.py-boxes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding-top: 22px; }
+@media (max-width: 560px) { .py-boxes { grid-template-columns: minmax(0, 1fr); } }
+.py-box { border: 1px dashed var(--border); border-radius: 10px; padding: 10px 12px 6px; background: var(--surface); min-width: 0; }
+.py-box h4 { margin: 0 0 24px; font: 600 12px var(--sans); color: var(--text-2); }
+.py-box h4 code { font-size: 12px; }
+.py-row { display: flex; flex-wrap: wrap; gap: 30px 10px; min-height: 46px; align-items: center; padding-bottom: 22px; }
+.py-row.tight { gap: 10px; padding-bottom: 8px; }
+.py-row .empty { color: var(--muted); font: 12px var(--mono); }
+.py-ask { display: flex; gap: 8px; margin-top: 8px; align-items: center; }
+.py-ask input { flex: 1; width: auto; min-width: 0; }
+input.wide { width: 170px; }
+input.num { width: 64px; }
+label.inl { font-size: .85rem; color: var(--text-2); display: inline-flex; align-items: center; gap: 6px; }
+.tb-line { display: block; width: 100%; text-align: left; background: transparent; color: var(--code-text); border: 0; border-radius: 4px;
+  font: 13px/1.55 var(--mono); padding: 2px 8px; white-space: pre-wrap; cursor: pointer; }
+.tb-line:hover { background: rgba(255,255,255,.06); filter: none; }
+.tb-line.on { background: var(--code-hl); box-shadow: inset 3px 0 0 var(--hot); }
+.tb-line:active { transform: none; }
+@media (max-width: 560px) { .viz { min-height: 0 !important; } }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand">🎲 Intro to Probability</div>
+  <label>Animation speed
+    <input type="range" id="speed" min="0.25" max="3" step="0.25" value="1" style="width:110px">
+    <span id="speedVal" style="font-family:var(--mono);width:36px">1×</span>
+  </label>
+  <button class="secondary" id="themeBtn" title="Toggle light / dark">◐ Theme</button>
+</header>
+
+<div class="layout">
+<nav class="side" id="nav" aria-label="Sections"></nav>
+<main>
+
+<script>
+/* ======================================================================
+   DS — shared helpers used by every visualizer below.
+   ====================================================================== */
+const DS = (() => {
+  const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+  function el(tag, props = {}, ...children) {
+    const e = document.createElement(tag);
+    for (const [k, v] of Object.entries(props || {})) {
+      if (v == null || v === false) continue;
+      if (k === "class") e.className = v;
+      else if (k === "style" && typeof v === "object") Object.assign(e.style, v);
+      else if (k === "dataset") Object.assign(e.dataset, v);
+      else if (k === "html") e.innerHTML = v;
+      else if (k.startsWith("on") && typeof v === "function") e.addEventListener(k.slice(2), v);
+      else e.setAttribute(k, v === true ? "" : v);
+    }
+    for (const c of children.flat()) if (c != null && c !== false) e.append(c instanceof Node ? c : document.createTextNode(c));
+    return e;
+  }
+
+  const SVGNS = "http://www.w3.org/2000/svg";
+  function svg(tag, attrs = {}, ...children) {
+    const e = document.createElementNS(SVGNS, tag);
+    for (const [k, v] of Object.entries(attrs)) if (v != null) e.setAttribute(k, v);
+    for (const c of children.flat()) if (c != null) e.append(c instanceof Node ? c : document.createTextNode(c));
+    return e;
+  }
+
+  const reducedMotion = () => !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+
+  let speed = 1;
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  // Pause between animation steps; scaled by the global speed slider.
+  const wait = (mult = 1) => sleep(650 * mult / speed);
+
+  // Run an async animation, disabling the section's buttons until it finishes.
+  async function run(root, fn) {
+    if (root.dataset.busy) return;
+    root.dataset.busy = "1";
+    // Only touch buttons that are currently enabled, so ones disabled for other
+    // reasons stay disabled afterwards.
+    const btns = [...root.querySelectorAll("button:not(.always)")].filter(b => !b.disabled);
+    const focused = document.activeElement;
+    btns.forEach(b => (b.disabled = true));
+    try { await fn(); }
+    catch (e) { console.error(e); }
+    finally {
+      delete root.dataset.busy;
+      btns.forEach(b => (b.disabled = false));
+      // Disabling a focused button drops focus to <body>; give it back.
+      const lost = !document.activeElement || document.activeElement === document.body;
+      if (focused && btns.includes(focused) && lost && focused.isConnected && !focused.disabled) focused.focus({ preventScroll: true });
+    }
+  }
+
+  function hlPy(line) {
+    const re = /(#.*$)|(f?"[^"]*"|f?'[^']*')|\b(def|class|if|elif|else|while|for|return|in|not|and|or|is|None|True|False|raise|yield|from|import|as|try|except|finally|global|with|del|break|continue|lambda|self|pass)\b|\b(\d+)\b/g;
+    let out = "", last = 0;
+    line.replace(re, (m, c, s, k, n, off) => {
+      out += esc(line.slice(last, off));
+      const cls = c ? "c" : s ? "s" : k ? (k === "self" ? "sf" : "k") : "n";
+      out += `<span class="t-${cls}">${esc(m)}</span>`;
+      last = off + m.length;
+      return m;
+    });
+    out += esc(line.slice(last));
+    return out.replace(/(<span class="t-k">(?:def|class)<\/span>\s+)(\w+)/, '$1<span class="t-d">$2</span>');
+  }
+
+  // Render Python source into a code panel. Returns { hl(...targets), clear() }.
+  // A target is a 1-based line number or a substring; a substring highlights the
+  // first line that contains it. To disambiguate, a target may also be an object
+  // { find: "substring", after: "def method" }: the first line containing `find`
+  // at or after the first line containing `after`.
+  function code(container, src, title) {
+    const lines = src.replace(/^\n+|\s+$/g, "").split("\n");
+    container.innerHTML = "";
+    if (title) container.append(el("div", { class: "title" }, title));
+    const rows = lines.map((t, i) => {
+      const r = el("div", { class: "ln" }, el("span", { class: "no" }, String(i + 1)), el("span", { html: hlPy(t) || " " }));
+      container.append(r);
+      return r;
+    });
+    function clear() { rows.forEach(r => r.classList.remove("hl")); }
+    function hl(...targets) {
+      clear();
+      let first = null;
+      for (const t of targets.flat()) {
+        if (t == null) continue;
+        let idx;
+        if (typeof t === "number") idx = t - 1;
+        else if (typeof t === "object") {
+          const start = t.after != null ? lines.findIndex(l => l.includes(t.after)) : 0;
+          idx = start < 0 || t.find == null ? -1 : lines.findIndex((l, i) => i >= start && l.includes(t.find));
+        }
+        else idx = lines.findIndex(l => l.includes(t));
+        if (rows[idx]) { rows[idx].classList.add("hl"); first = first ?? rows[idx]; }
+      }
+      if (first) {
+        const top = first.offsetTop - container.clientHeight / 3;
+        container.scrollTo({ top: Math.max(0, top), behavior: reducedMotion() ? "auto" : "smooth" });
+      }
+    }
+    return { hl, clear, lines };
+  }
+
+  // Prepend a line to an operation log. kind: "ok" | "err" | "info" | "".
+  function log(logEl, msg, kind = "") {
+    logEl.prepend(el("div", { class: kind, html: msg }));
+    while (logEl.children.length > 40) logEl.lastChild.remove();
+  }
+
+  // onChange (optional) is called with {correct, answered, total} after each answer.
+  function quiz(container, questions, onChange) {
+    container.classList.add("quiz");
+    let correct = 0, answered = 0;
+    const score = el("div", { class: "score" });
+    const update = () => {
+      score.textContent = `Score: ${correct} / ${answered} answered (${questions.length} total)`;
+      if (onChange) onChange({ correct, answered, total: questions.length });
+    };
+    questions.forEach(({ q, options, answer, why }) => {
+      const whyEl = el("div", { class: "why", "aria-live": "polite" });
+      const opts = el("div", { class: "opts" });
+      let done = false;
+      options.forEach((o, i) => {
+        const b = el("button", {
+          class: "always",
+          onclick: () => {
+            if (done) return;
+            done = true; answered++;
+            const ok = i === answer;
+            const rightBtn = opts.children[answer];
+            if (ok) correct++;
+            else { b.classList.add("wrong"); b.prepend("✗ "); }
+            rightBtn.classList.add("right"); rightBtn.prepend("✓ ");
+            whyEl.innerHTML = (ok ? "<b>Correct!</b> " : `<b>Not quite.</b> The correct answer is <b>${esc(options[answer])}</b>. `) + (why || "");
+            whyEl.classList.add("show");
+            update();
+          }
+        }, o);
+        opts.append(b);
+      });
+      container.append(el("div", { class: "q" }, el("p", { html: q }), opts, whyEl));
+    });
+    container.append(score);
+    update();
+  }
+
+  const randInt = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  // Parse "5, 3 8" -> [5, 3, 8] (numbers when possible, otherwise strings).
+  const parseVals = str => String(str).split(/[\s,]+/).filter(Boolean).map(s => (isNaN(+s) ? s : +s));
+
+  return {
+    el, svg, esc, sleep, wait, run, code, log, quiz, randInt, parseVals, reducedMotion,
+    get speed() { return speed; },
+    set speed(v) { speed = v; },
+  };
+})();
+
+document.getElementById("speed").addEventListener("input", e => {
+  DS.speed = +e.target.value;
+  document.getElementById("speedVal").textContent = DS.speed + "×";
+});
+document.getElementById("themeBtn").addEventListener("click", () => {
+  const root = document.documentElement;
+  const dark = root.dataset.theme === "dark" ||
+    (!root.dataset.theme && matchMedia("(prefers-color-scheme: dark)").matches);
+  const next = dark ? "light" : "dark";
+  root.dataset.theme = next;
+  try { localStorage.setItem("ds-theme", next); } catch (e) {}
+  document.dispatchEvent(new Event("themechange"));
+});
+// Theme was already applied by the inline script in <head> (saved choice, else OS preference).
+</script>
+
+
+<style>
+/* ---------- Demo building blocks: plots, meters, chips, flows, chat, part banners ---------- */
+.plot { width: 100%; height: auto; display: block; }
+.plot .axis { stroke: var(--muted); stroke-width: 1.5; }
+.plot .grid { stroke: var(--border); stroke-width: 1; }
+.plot .lbl { fill: var(--text-2); font: 12px var(--sans); }
+.plot .lbl.m { font-family: var(--mono); }
+.plot .pt { stroke: var(--surface); stroke-width: 1.5; transition: fill .4s, r .3s; }
+.plot .pt.a { fill: var(--s1); } .plot .pt.b { fill: var(--s2); } .plot .pt.c { fill: var(--s3); }
+.plot .pt.u { fill: var(--muted); }
+.plot .pt.test { fill: var(--surface); stroke: var(--s2); stroke-width: 2.5; }
+.plot .pt.bad { fill: var(--bad); }
+.plot .fit { fill: none; stroke: var(--hot); stroke-width: 3; }
+.plot .fit2 { fill: none; stroke: var(--violet); stroke-width: 2.5; stroke-dasharray: 6 5; }
+.plot .cent { stroke: var(--text); stroke-width: 2.5; }
+.plot .cell { fill: var(--surface); stroke: var(--border); stroke-width: 1.5; }
+.plot .cell.goal { fill: color-mix(in srgb, var(--ok) 25%, var(--surface)); stroke: var(--ok); }
+.plot .cell.pit { fill: color-mix(in srgb, var(--bad) 22%, var(--surface)); stroke: var(--bad); }
+.plot .robot { font-size: 26px; transition: transform .35s ease; }
+.plot .pol { fill: var(--accent); font: 700 18px var(--sans); }
+.plot .nn-edge { transition: stroke-width .3s, stroke .3s; }
+.plot .nn-node { stroke-width: 2.5; transition: fill .3s; }
+.plot .nn-val { fill: var(--text); font: 600 12px var(--mono); }
+.meter { display: flex; align-items: center; gap: 8px; font-size: .85rem; color: var(--text-2); margin: 4px 0; }
+.meter .bar { flex: 1; height: 10px; background: var(--surface-2); border-radius: 6px; overflow: hidden; border: 1px solid var(--border); }
+.meter .bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .35s ease; }
+.meter .bar i.hot { background: var(--hot); } .meter .bar i.ok { background: var(--ok); } .meter .bar i.violet { background: var(--violet); }
+.meter b { font-family: var(--mono); min-width: 72px; text-align: right; color: var(--text); }
+.toks { display: flex; flex-wrap: wrap; gap: 4px; padding-top: 26px; min-height: 60px; }
+.tk { font: 14px/1.2 var(--mono); padding: 5px 6px; border-radius: 5px; white-space: pre; border: 1px solid transparent; }
+.tk:nth-child(5n+1) { background: color-mix(in srgb, var(--s1) 22%, var(--surface)); }
+.tk:nth-child(5n+2) { background: color-mix(in srgb, var(--s3) 24%, var(--surface)); }
+.tk:nth-child(5n+3) { background: color-mix(in srgb, var(--s4) 26%, var(--surface)); }
+.tk:nth-child(5n+4) { background: color-mix(in srgb, var(--s5) 24%, var(--surface)); }
+.tk:nth-child(5n+5) { background: color-mix(in srgb, var(--violet) 20%, var(--surface)); }
+.tk.new { animation: pop .35s ease; }
+.tk.att { border-color: var(--hot); }
+.cand { display: grid; grid-template-columns: 110px minmax(0, 1fr) 54px; gap: 6px 10px; align-items: center; font-size: .88rem; margin-top: 8px; }
+.cand .w { font-family: var(--mono); text-align: right; }
+.cand .b { height: 14px; background: var(--surface-2); border-radius: 4px; overflow: hidden; border: 1px solid var(--border); }
+.cand .b i { display: block; height: 100%; background: var(--accent); transition: width .35s; }
+.cand .b i.pick { background: var(--ok); }
+.cand .p { font-family: var(--mono); color: var(--text-2); }
+.gen { font: 15px/1.6 var(--mono); padding: 30px 0 4px; min-height: 64px; }
+.gen .new { color: var(--ok); font-weight: 700; }
+.toggles { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 0 0 12px; }
+.toggles label { display: inline-flex; align-items: center; gap: 6px; font-size: .9rem; cursor: pointer; }
+.toggles input { accent-color: var(--accent); width: 16px; height: 16px; }
+.answerbox { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin-top: 26px; font-size: .92rem; white-space: pre-wrap; }
+.answerbox .who { display: block; font: 600 11px var(--sans); text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: 4px; }
+.answerbox.mono { font-family: var(--mono); font-size: .85rem; }
+.flow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding-top: 28px; }
+.flow .node { min-width: 0; height: auto; min-height: 46px; padding: 6px 10px; font: 600 13px var(--sans); text-align: center; flex-direction: column; }
+.flow .arr { color: var(--muted); font: 700 18px var(--sans); }
+.chat { display: grid; gap: 6px; margin-top: 8px; max-height: 300px; overflow: auto; }
+.chat .m { border-radius: 8px; padding: 7px 10px; font-size: .88rem; border: 1px solid var(--border); background: var(--surface); white-space: pre-wrap; }
+.chat .m b { display: block; font: 600 11px var(--sans); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 2px; }
+.chat .m.think b { color: var(--violet); } .chat .m.act b { color: var(--hot); } .chat .m.obs b { color: var(--accent); } .chat .m.ans b { color: var(--ok); } .chat .m.user b { color: var(--text-2); }
+.chat .m.act { font-family: var(--mono); font-size: .82rem; }
+.chat .m.warn { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 10%, var(--surface)); }
+.chat .m.new { animation: fadein .35s ease; }
+.part { margin: 36px 0 0; padding: 18px 20px; border-radius: 12px; background: var(--surface); border: 1px solid var(--border); box-shadow: inset 4px 0 0 var(--accent); }
+.part h2 { margin: 0; font-size: 1.35rem; }
+.part p { margin: 4px 0 0; color: var(--text-2); }
+.loop-svg .ph rect { fill: var(--surface); stroke: var(--border); stroke-width: 2; transition: all .3s; }
+.loop-svg .ph text { fill: var(--text); font: 700 15px var(--sans); text-anchor: middle; dominant-baseline: central; }
+.loop-svg .ph.on rect { stroke: var(--hot); fill: color-mix(in srgb, var(--hot) 16%, var(--surface)); }
+.loop-svg .ph.done rect { stroke: var(--ok); fill: color-mix(in srgb, var(--ok) 18%, var(--surface)); }
+.loop-svg .ln { stroke: var(--muted); stroke-width: 2; fill: none; }
+.mini-table { width: 100%; border-collapse: collapse; font-size: .85rem; margin-top: 8px; }
+.mini-table td, .mini-table th { padding: 4px 6px; border-bottom: 1px solid var(--border); text-align: left; }
+.mini-table th { color: var(--text-2); font-weight: 600; font-size: .78rem; }
+</style>
+<script>
+/* ======================================================================
+   KIT — small demo helpers: seeded random numbers, SVG plots, softmax, cosine.
+   ====================================================================== */
+const KIT = (() => {
+  // Seeded random generator (mulberry32), so demos look the same every time.
+  function rng(seed) {
+    return () => {
+      seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+      let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  // Normal-ish noise from a uniform generator.
+  const gauss = r => (r() + r() + r() + r() - 2) / 2;
+
+  // A 2-D plot frame with axes: returns { svg, X, Y, g } where X/Y map data → pixels.
+  function plot(container, { w = 560, h = 300, x0, x1, y0, y1, xl = "", yl = "", xt = [], yt = [], pad = [44, 18, 34, 54] }) {
+    const [pt, pr, pb, pl] = pad;
+    const X = x => pl + (x - x0) / (x1 - x0) * (w - pl - pr);
+    const Y = y => h - pb - (y - y0) / (y1 - y0) * (h - pt - pb);
+    const s = DS.svg("svg", { viewBox: `0 0 ${w} ${h}`, class: "plot", role: "img" });
+    for (const t of yt) s.append(DS.svg("line", { class: "grid", x1: pl, x2: w - pr, y1: Y(t), y2: Y(t) }), DS.svg("text", { class: "lbl m", x: pl - 6, y: Y(t) + 4, "text-anchor": "end" }, String(t)));
+    for (const t of xt) s.append(DS.svg("text", { class: "lbl m", x: X(t), y: h - pb + 16, "text-anchor": "middle" }, String(t)));
+    s.append(DS.svg("line", { class: "axis", x1: pl, x2: w - pr, y1: h - pb, y2: h - pb }), DS.svg("line", { class: "axis", x1: pl, x2: pl, y1: pt - 6, y2: h - pb }));
+    if (xl) s.append(DS.svg("text", { class: "lbl", x: w - pr, y: h - 4, "text-anchor": "end" }, xl));
+    if (yl) s.append(DS.svg("text", { class: "lbl", x: pl, y: pt - 14, "text-anchor": "start" }, yl));
+    const g = DS.svg("g");
+    s.append(g);
+    container.append(s);
+    return { svg: s, X, Y, g, w, h };
+  }
+  const softmax = (logits, T) => {
+    if (T <= 0.001) { const m = Math.max(...logits); const i = logits.indexOf(m); return logits.map((_, j) => (j === i ? 1 : 0)); }
+    const m = Math.max(...logits);
+    const e = logits.map(l => Math.exp((l - m) / T));
+    const s = e.reduce((a, b) => a + b, 0);
+    return e.map(v => v / s);
+  };
+  const cosine = (a, b) => {
+    let d = 0, na = 0, nb = 0;
+    for (let i = 0; i < a.length; i++) { d += a[i] * b[i]; na += a[i] * a[i]; nb += b[i] * b[i]; }
+    return na && nb ? d / Math.sqrt(na * nb) : 0;
+  };
+  return { rng, gauss, plot, softmax, cosine };
+})();
+</script>
+
+<section class="section hero" id="intro" data-title="Welcome">
+  <div class="kicker">Free self-paced course · Certificate on completion</div>
+  <h1>Introduction to Probability</h1>
+  <p class="lead">Learn how to think clearly about chance: what probability means, how to count possibilities, how new information changes the odds, and how to describe uncertain quantities like waiting times or exam scores. Each lesson pairs the <b>theory</b> (the main idea in plain words, with everyday examples) with <b>practice</b>: simulations and demos you drive yourself, short code sketches that light up step by step, and quizzes. Then pass the final quiz to earn your certificate.</p>
+  <style>
+    #intro .kicker { font-size: .8rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin: 0 0 6px; }
+    #intro .pillars { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 18px 0 0; }
+    #intro .pillar { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+    #intro .pillar .p-ico { font-size: 1.4rem; line-height: 1; }
+    #intro .pillar h3 { margin: 8px 0 4px; font-size: 1rem; }
+    #intro .pillar p { margin: 0; color: var(--text-2); font-size: .9rem; line-height: 1.45; }
+    #intro .path { list-style: none; counter-reset: step; margin: 10px 0 0; padding: 0; display: grid; gap: 8px; }
+    #intro .path li { counter-increment: step; display: grid; grid-template-columns: 26px minmax(0, 1fr); column-gap: 12px; align-items: start; }
+    #intro .path li::before { content: counter(step); flex: none; width: 26px; height: 26px; border-radius: 50%; display: inline-grid; place-items: center;
+      font-weight: 700; font-size: .85rem; color: var(--accent); border: 2px solid var(--accent); grid-row: span 2; }
+    #intro .path li b, #intro .path li span { grid-column: 2; }
+    #intro .path li span { color: var(--text-2); font-size: .95rem; }
+    #intro .facts { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 14px 0 0; padding: 0; list-style: none; font-size: .9rem; color: var(--text-2); }
+    #intro .facts b { color: var(--text); }
+    @media (max-width: 700px) { #intro .pillars { grid-template-columns: minmax(0, 1fr); } }
+    #intro .ckey { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin: 16px 0 0; }
+    #intro .ckey h3 { margin: 0 0 2px; font-size: 1rem; }
+    #intro .ckey > p { margin: 0 0 12px; color: var(--text-2); font-size: .92rem; }
+    #intro .ckey ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 18px; }
+    #intro .ckey li { display: flex; align-items: center; gap: 12px; }
+    #intro .ckey .node { flex: none; min-width: 40px; height: 40px; font-size: 14px; transform: none; }
+    #intro .ckey b { display: block; }
+    @media (max-width: 560px) { #intro .ckey ul { grid-template-columns: minmax(0, 1fr); } }
+    #intro .ckey small { color: var(--text-2); font-size: .85rem; line-height: 1.35; display: block; }
+    #intro .map { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 4fr); gap: 12px; }
+    #intro .map h4 { margin: 0 0 6px; font-size: .9rem; color: var(--text-2); }
+    @media (max-width: 700px) { #intro .map { grid-template-columns: minmax(0, 1fr); } }
+    #intro .learn { list-style: none; margin: 8px 0 18px; padding: 0; display: grid; gap: 8px; }
+    #intro .learn li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px; align-items: start; }
+    #intro .learn li span { font-size: 1.15rem; line-height: 1.5; }
+  </style>
+  <h3>What you'll learn</h3>
+  <ul class="learn">
+    <li><span aria-hidden="true">🎲</span><div>What probability means, and how to count outcomes and apply the basic rules.</div></li>
+    <li><span aria-hidden="true">🔍</span><div>How new information changes chances: conditional probability, independence and Bayes' theorem.</div></li>
+    <li><span aria-hidden="true">📊</span><div>How random variables, expected values and common distributions describe real-world uncertainty.</div></li>
+  </ul>
+  <div class="pillars">
+    <div class="pillar"><div class="p-ico" aria-hidden="true">📘</div><h3>Theory</h3><p>The main ideas of probability in plain words, with everyday cases: coins, dice, cards, buses, medical tests and spam filters.</p></div>
+    <div class="pillar"><div class="p-ico" aria-hidden="true">🛠️</div><h3>Practice</h3><p>Interactive demos: flip 1,000 coins, light up a Venn diagram, grow a counting tree, test 1,000 people for a disease, and explore distributions. A quiz in every lesson.</p></div>
+    <div class="pillar"><div class="p-ico" aria-hidden="true">🎓</div><h3>Certificate</h3><p>Score 80% or more on the final quiz to get a certificate with your name, ready to print, save as PDF or download as an image.</p></div>
+  </div>
+  <ul class="facts" aria-label="Course facts">
+    <li><b>9</b> lessons in 3 parts</li>
+    <li><b>27</b> lesson quiz questions</li>
+    <li><b>10</b>-question final quiz</li>
+    <li>Only school arithmetic needed: no calculus, no coding</li>
+    <li>Self-paced · works offline</li>
+  </ul>
+
+  <h3>How the course works</h3>
+  <ol class="path">
+    <li><b>Part A: Chance and counting</b><span>what probability means, the language of events, counting possibilities, and the basic rules.</span></li>
+    <li><b>Part B: Updating with information</b><span>how knowing something changes the chances: conditional probability, independence and Bayes' theorem.</span></li>
+    <li><b>Part C: Random variables</b><span>turning outcomes into numbers: averages, spread, common distributions, and how two quantities move together.</span></li>
+    <li><b>In each lesson</b><span>read the idea, try the interactive demo, follow the code beside it, then take the lesson quiz.</span></li>
+    <li><b>Take the final quiz</b><span>10 questions on the main concepts. Score 8 of 10 or more (80%) to earn your certificate.</span></li>
+  </ol>
+  <div class="callout tip"><b>Tip:</b> every formula appears with a worked example in real numbers. The code panels are short, readable Python sketches of the same calculation; you don't need to run them or know Python to follow along. Use the <b>Animation speed</b> slider at the top to slow down any demo, and retake any quiz as often as you like.</div>
+
+  <div class="ckey" role="group" aria-labelledby="ckeyTitle">
+    <h3 id="ckeyTitle">Colour key for the demos</h3>
+    <p>When a demo runs, boxes change colour to show what's happening at that moment:</p>
+    <ul>
+      <li><span class="node" aria-hidden="true">A</span><span><b>Normal</b><small>An item that isn't involved in the current step.</small></span></li>
+      <li><span class="node active" aria-hidden="true">A</span><span><b>Working on it</b><small>The step, item or tool being used right now.</small></span></li>
+      <li><span class="node visited" aria-hidden="true">A</span><span><b>Retrieved / remembered</b><small>Something looked up, chosen or kept for later.</small></span></li>
+      <li><span class="node found" aria-hidden="true">A</span><span><b>Result</b><small>The answer, prediction or finished step.</small></span></li>
+    </ul>
+  </div>
+
+  <h3>Course map</h3>
+  <h4 style="margin:10px 0 6px;color:var(--text-2)">Part A · Chance and counting</h4>
+  <div class="order" style="margin:0">
+    <a href="#why">Why probability?<small>chance, outcomes, events</small></a>
+    <a href="#sets">Sets and sample spaces<small>union, intersection, Venn</small></a>
+    <a href="#counting">Counting<small>permutations and combinations</small></a>
+    <a href="#rules">Basic probability rules<small>addition and complement</small></a>
+  </div>
+  <h4 style="margin:14px 0 6px;color:var(--text-2)">Part B · Updating with information</h4>
+  <div class="order" style="margin:0;counter-reset:step 4">
+    <a href="#conditional">Conditional probability<small>P(A|B), independence</small></a>
+    <a href="#bayes">Bayes' theorem<small>total probability, base rates</small></a>
+  </div>
+  <h4 style="margin:14px 0 6px;color:var(--text-2)">Part C · Random variables</h4>
+  <div class="order" style="margin:0;counter-reset:step 6">
+    <a href="#rv">Random variables<small>PMF, expected value, spread</small></a>
+    <a href="#dist">Common distributions<small>Binomial, Poisson, Normal…</small></a>
+    <a href="#twovar">More than one variable<small>correlation, not causation</small></a>
+  </div>
+</section>
+
+
+
+<div class="part" id="partA"><h2>Part A · Chance and counting</h2><p>What probability means, the language of events, counting possibilities, and the basic rules.</p></div>
+
+<!-- ===================================================================== 1 -->
+<section class="section" id="why" data-title="1. Why probability?">
+  <h2>1. Why probability? <small style="color:var(--muted);font-weight:500">(measuring uncertainty)</small></h2>
+  <p class="lead"><b>Probability</b> is a number between 0 and 1 that says how likely something is: 0 means it can't happen, 1 means it's certain, and ½ means it's as likely as not. We often write it as a percentage, from 0% to 100%.</p>
+  <p>Life is full of uncertainty: will it rain, will the bus be late, will the coin land heads? We can't know the answer in advance, but we can measure how likely each answer is. A forecast of "70% chance of rain" doesn't promise rain; it says that rain is more likely than not, so an umbrella is a good idea.</p>
+
+  <h3>The words we use</h3>
+  <table class="cx">
+    <thead><tr><th>Term</th><th>Meaning</th><th>Example (rolling a die)</th></tr></thead>
+    <tbody>
+      <tr><td><b>Random experiment</b></td><td>anything with an uncertain result that we can repeat</td><td>rolling a die</td></tr>
+      <tr><td><b>Outcome</b></td><td>one possible result</td><td>rolling a 4</td></tr>
+      <tr><td><b>Event</b></td><td>a group of outcomes we care about</td><td>"an even number": 2, 4 or 6</td></tr>
+    </tbody>
+  </table>
+
+  <h3>See it settle: the law of large numbers</h3>
+  <p>Flip a fair coin a few times and the share of heads jumps around. Flip it many times and the share settles close to 50%. Try it:</p>
+  <div class="w-lln">
+  <div class="grid2">
+    <div class="card">
+      <div class="controls">
+        <button class="secondary always ln-mode" data-m="coin" aria-pressed="true">🪙 Coin</button>
+        <button class="secondary always ln-mode" data-m="die" aria-pressed="false">🎲 Die</button>
+        <span class="sep"></span>
+        <button class="ln-go" data-n="1">Flip 1</button>
+        <button class="ln-go" data-n="10">Flip 10</button>
+        <button class="ln-go" data-n="1000">Flip 1,000</button>
+        <button class="secondary ln-reset">Reset</button>
+      </div>
+      <div class="viz" style="min-height:300px"><span class="caption ln-cap">Coin flips</span>
+        <div class="ln-bars" style="padding-top:22px"></div>
+        <div class="ln-line"></div>
+      </div>
+      <div class="status"></div>
+      <div class="log"></div>
+    </div>
+    <div class="code"></div>
+  </div>
+  </div>
+  <div class="callout tip"><b>Law of large numbers:</b> with only a few trials, the share of an outcome can be far from its probability. With many trials, it gets close and stays close. That's why "3 heads in a row" says almost nothing about a coin, while 1,000 flips say a lot.</div>
+
+  <h3>Three ways to find a probability</h3>
+  <table class="cx">
+    <thead><tr><th>Approach</th><th>How it works</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr><td><b>Classical</b></td><td>count the outcomes, when they are all equally likely</td><td>a fair coin: 1 of 2 outcomes is heads, so P(heads) = ½</td></tr>
+      <tr><td><b>Frequency</b></td><td>use the share of times it happened in many repeated trials</td><td>the bus was late on 6 of the last 50 days, so P(late) ≈ 6/50 = 12%</td></tr>
+      <tr><td><b>Subjective</b></td><td>a reasoned degree of belief, when we can't count or repeat</td><td>"I'm 80% sure this project will finish on time"</td></tr>
+    </tbody>
+  </table>
+  <p>A weather forecast mixes these ideas: forecasters look at how often it rained on past days with similar conditions (frequency), using computer models and expert judgement.</p>
+
+  <h3>Where it shows up</h3>
+  <ul>
+    <li>Weather forecasts, insurance prices and medical risk estimates.</li>
+    <li>Games of chance, sports predictions and quality control in factories.</li>
+    <li>Data science and AI, where models output probabilities, like "90% likely to be spam".</li>
+  </ul>
+  <div class="quizbox"></div>
+</section>
+<script>
+(() => {
+  const root = document.querySelector("#why .w-lln");
+  const $ = s => root.querySelector(s);
+  const SRC = {
+    coin: `import random
+flips = []
+for i in range(1000):
+    flips.append(random.choice(["H", "T"]))  # one random flip
+share = flips.count("H") / len(flips)         # share of heads
+print(share)                                  # close to 0.5`,
+    die: `import random
+rolls = []
+for i in range(1000):
+    rolls.append(random.randint(1, 6))  # one random roll
+share = rolls.count(6) / len(rolls)     # share of sixes
+print(share)                            # close to 1/6 = 0.167`,
+  };
+  let mode = "coin", cp, R, results, history;
+  const say = h => ($(".status").innerHTML = h);
+  const faces = () => (mode === "coin" ? ["H", "T"] : ["1", "2", "3", "4", "5", "6"]);
+  const target = () => (mode === "coin" ? 0.5 : 1 / 6);
+  const watch = () => (mode === "coin" ? "H" : "6");
+  function reset() {
+    R = KIT.rng(mode === "coin" ? 1 : 70); results = []; history = [];
+    cp = DS.code($(".code"), SRC[mode], mode === "coin" ? "coin_flips.py" : "die_rolls.py");
+    $(".ln-cap").textContent = mode === "coin" ? "Coin flips · share of heads" : "Die rolls · share of sixes";
+    $(".log").innerHTML = "";
+    draw();
+    say(mode === "coin" ? "Press <b>Flip 1</b> a few times, then <b>Flip 1,000</b>, and watch the share of heads." : "Roll a few times, then 1,000 times, and watch the share of sixes.");
+  }
+  function draw(last) {
+    const f = faces(), n = results.length;
+    const counts = f.map(x => results.filter(r => r === x).length);
+    const bars = $(".ln-bars"); bars.innerHTML = "";
+    const W = 520, H = 150, bw = Math.min(70, (W - 40) / f.length - 12);
+    const s = DS.svg("svg", { viewBox: `0 0 ${W} ${H}`, class: "plot", role: "img", "aria-label": "Counts of each result" });
+    f.forEach((x, i) => {
+      const share = n ? counts[i] / n : 0;
+      const cx = 30 + (i + 0.5) * (W - 40) / f.length;
+      const h = share * 100 / (mode === "coin" ? 1 : 0.5);
+      s.append(DS.svg("rect", { x: cx - bw / 2, y: 122 - h, width: bw, height: Math.max(h, 1), rx: 4,
+        fill: x === watch() ? "var(--hot)" : "var(--s1)", opacity: last === x ? 1 : 0.85 }));
+      s.append(DS.svg("text", { class: "lbl", x: cx, y: 140, "text-anchor": "middle", style: "font-weight:700" }, mode === "coin" ? (x === "H" ? "Heads" : "Tails") : x));
+      s.append(DS.svg("text", { class: "lbl m", x: cx, y: 116 - h, "text-anchor": "middle" }, n ? `${counts[i]} · ${(share * 100).toFixed(n >= 100 ? 1 : 0)}%` : "0"));
+    });
+    bars.append(s);
+    const line = $(".ln-line"); line.innerHTML = "";
+    const xMax = Math.max(10, n);
+    const P = KIT.plot(line, { w: 520, h: 170, x0: 0, x1: xMax, y0: 0, y1: mode === "coin" ? 1 : 0.5, xl: "number of " + (mode === "coin" ? "flips" : "rolls"),
+      yl: "share of " + (mode === "coin" ? "heads" : "sixes"), xt: [0, Math.round(xMax / 2), xMax], yt: mode === "coin" ? [0, 0.5, 1] : [0, 1 / 6, 0.5].map(v => +v.toFixed(2)), pad: [30, 18, 34, 54] });
+    P.g.append(DS.svg("line", { x1: P.X(0), x2: P.X(xMax), y1: P.Y(target()), y2: P.Y(target()), stroke: "var(--ok)", "stroke-width": 2, "stroke-dasharray": "6 5" }));
+    if (history.length > 1) {
+      const step = Math.max(1, Math.floor(history.length / 400));
+      let d = "";
+      history.forEach((v, i) => { if (i % step === 0 || i === history.length - 1) d += (d ? "L" : "M") + P.X(i + 1).toFixed(1) + "," + P.Y(v).toFixed(1); });
+      P.g.append(DS.svg("path", { class: "fit", d }));
+    }
+  }
+  function flip() {
+    const f = faces(), x = f[Math.floor(R() * f.length)];
+    results.push(x);
+    history.push(results.filter(r => r === watch()).length / results.length);
+    return x;
+  }
+  async function go(n) {
+    cp.hl(4, 5);
+    if (n === 1) {
+      const x = flip(); draw(x);
+      DS.log($(".log"), `${mode === "coin" ? "flip" : "roll"} ${results.length}: ${mode === "coin" ? (x === "H" ? "heads" : "tails") : x}`, x === watch() ? "ok" : "");
+    } else {
+      const chunk = n === 10 ? 1 : 25;
+      for (let i = 0; i < n; i += chunk) {
+        for (let j = 0; j < chunk; j++) flip();
+        draw(); await DS.wait(n === 10 ? 0.25 : 0.06);
+      }
+      DS.log($(".log"), `${n} more ${mode === "coin" ? "flips" : "rolls"} (total ${results.length})`, "info");
+    }
+    cp.hl(6, 7);
+    const share = history[history.length - 1], N = results.length;
+    const name = mode === "coin" ? "heads" : "sixes", t = mode === "coin" ? "50%" : "16.7% (1 in 6)";
+    const unit = mode === "coin" ? "flips" : "rolls";
+    say(N < 30 ? `After <b>${N}</b> ${unit}, the share of ${name} is <b>${(share * 100).toFixed(0)}%</b>. With so few, it can be far from ${t}.`
+      : `After <b>${N.toLocaleString()}</b> ${unit}, the share of ${name} is <b>${(share * 100).toFixed(1)}%</b>, close to ${t}. The more trials, the closer it settles: the law of large numbers.`);
+  }
+  root.querySelectorAll(".ln-mode").forEach(b => (b.onclick = () => {
+    if (root.dataset.busy) return;
+    mode = b.dataset.m; root.querySelectorAll(".ln-mode").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+    root.querySelectorAll(".ln-go").forEach(x => (x.textContent = (mode === "coin" ? "Flip " : "Roll ") + (+x.dataset.n).toLocaleString()));
+    reset();
+  }));
+  root.querySelectorAll(".ln-go").forEach(b => (b.onclick = () => DS.run(root, () => go(+b.dataset.n))));
+  $(".ln-reset").onclick = () => { if (!root.dataset.busy) reset(); };
+  reset();
+  document.head.append(DS.el("style", {}, "#why [aria-pressed=\"true\"] { background: var(--surface-2); border-color: var(--accent); box-shadow: inset 0 -2px 0 var(--accent); }"));
+
+  DS.quiz(document.querySelector("#why .quizbox"), [
+    { q: "An event has probability 0. What does that mean?", options: ["It is certain to happen", "It can't happen", "It happens half the time", "We don't know anything about it"], answer: 1,
+      why: "Probability runs from 0 (impossible) to 1 (certain)." },
+    { q: "When rolling a die, what is the event \"an even number\"?", options: ["The single outcome 2", "The group of outcomes 2, 4 and 6", "Rolling the die twice", "The number of possible outcomes"], answer: 1,
+      why: "An event is a group of outcomes we care about; \"even\" groups 2, 4 and 6." },
+    { q: "The bus was late on 30 of the last 200 mornings, so P(late) ≈ 15%. Which approach is this?", options: ["Classical", "Subjective", "Frequency", "Complement"], answer: 2,
+      why: "Using the share of times something happened in many past trials is the frequency approach." },
+  ]);
+})();
+</script>
+
+<!-- ===================================================================== 2 -->
+<section class="section" id="sets" data-title="2. Sets and sample spaces">
+  <h2>2. Sets and sample spaces <small style="color:var(--muted);font-weight:500">(the language of events)</small></h2>
+  <p class="lead">The <b>sample space</b>, written <b>Ω</b> (the Greek letter omega), is the set of all possible outcomes of an experiment. An event is a part of it, a <b>subset</b>. Thinking of events as sets lets us combine them with three simple operations: "or", "and" and "not".</p>
+  <p>Think of the sample space as a room with everyone in it. An event is a circle drawn on the floor: some people stand inside, the rest outside. Combining events is just asking who stands inside one circle, inside both, or outside.</p>
+
+  <h3>Union, intersection and complement</h3>
+  <table class="cx">
+    <thead><tr><th>Operation</th><th>Symbol</th><th>In words</th><th>Die example (A = even, B = greater than 3)</th></tr></thead>
+    <tbody>
+      <tr><td><b>Union</b></td><td>A ∪ B</td><td>A <b>or</b> B (or both)</td><td>{2, 4, 5, 6}</td></tr>
+      <tr><td><b>Intersection</b></td><td>A ∩ B</td><td>A <b>and</b> B</td><td>{4, 6}</td></tr>
+      <tr><td><b>Complement</b></td><td>Aᶜ</td><td><b>not</b> A</td><td>{1, 3, 5}</td></tr>
+    </tbody>
+  </table>
+  <p>A <b>Venn diagram</b> draws Ω as a box and each event as a circle, so these operations become regions you can see. Pick an example and an operation:</p>
+
+  <div class="w-venn">
+  <div class="grid2">
+    <div class="card">
+      <div class="controls">
+        <button class="secondary always vn-ex" data-x="die" aria-pressed="true">🎲 Die roll</button>
+        <button class="secondary always vn-ex" data-x="students" aria-pressed="false">🎓 Students</button>
+        <button class="secondary always vn-ex" data-x="excl" aria-pressed="false">🎲 Even vs odd</button>
+      </div>
+      <div class="controls">
+        <button class="vn-op" data-o="A">A</button>
+        <button class="vn-op" data-o="B">B</button>
+        <button class="vn-op" data-o="union">A ∪ B</button>
+        <button class="vn-op" data-o="inter">A ∩ B</button>
+        <button class="vn-op" data-o="comp">Aᶜ</button>
+      </div>
+      <div class="viz" style="min-height:300px"><span class="caption vn-cap"></span><div class="vn-plot" style="padding-top:18px"></div></div>
+      <div class="status"></div>
+    </div>
+    <div class="code"></div>
+  </div>
+  </div>
+
+  <h3>Mutually exclusive events</h3>
+  <p>Two events are <b>mutually exclusive</b> (or disjoint) when they can't happen together: their intersection is empty, A ∩ B = ∅. "Even" and "odd" on one die roll are mutually exclusive; "even" and "greater than 3" are not, because a 4 or a 6 is both. In the diagram, mutually exclusive events are circles that don't overlap (try <b>Even vs odd</b> above).</p>
+  <div class="callout tip">Every probability question starts the same way: what is Ω, and which part of it is my event? Writing the sets down first prevents most mistakes.</div>
+
+  <h3>Where it shows up</h3>
+  <ul>
+    <li>Surveys: customers who bought product A, product B, both or neither.</li>
+    <li>Search and databases: "cats AND dogs" (intersection), "cats OR dogs" (union), "NOT cats" (complement).</li>
+    <li>Every probability rule in the next lessons is written with these three operations.</li>
+  </ul>
+  <div class="quizbox"></div>
+</section>
+<script>
+(() => {
+  const root = document.querySelector("#sets .w-venn");
+  const $ = s => root.querySelector(s);
+  // Each example: circle centres, labels, items (die outcomes or student counts) placed in regions, and the answers.
+  const EX = {
+    die: {
+      cap: "One die roll · Ω = {1, 2, 3, 4, 5, 6}", A: [205, 150], B: [315, 150], r: 92, la: "A = even", lb: "B = greater than 3",
+      items: [["2", 160, 150], ["4", 260, 125], ["6", 260, 178], ["5", 362, 150], ["1", 50, 70], ["3", 470, 250]],
+      ops: { A: ["{2, 4, 6}", "3 of 6 outcomes"], B: ["{4, 5, 6}", "3 of 6 outcomes"], union: ["{2, 4, 5, 6}", "4 of 6 outcomes: even <b>or</b> greater than 3"],
+             inter: ["{4, 6}", "2 of 6 outcomes: even <b>and</b> greater than 3"], comp: ["{1, 3, 5}", "3 of 6 outcomes: <b>not</b> even"] },
+      code: `omega = {1, 2, 3, 4, 5, 6}   # sample space
+A = {2, 4, 6}                # even
+B = {4, 5, 6}                # greater than 3
+A | B                        # union: {2, 4, 5, 6}
+A & B                        # intersection: {4, 6}
+omega - A                    # complement: {1, 3, 5}`, lines: { A: 2, B: 3, union: 4, inter: 5, comp: 6 },
+    },
+    students: {
+      cap: "A class of 30 students · numbers show how many in each region", A: [205, 150], B: [315, 150], r: 92, la: "M = takes math", lb: "P = takes physics",
+      items: [["11", 155, 150], ["7", 260, 150], ["5", 365, 150], ["7", 50, 70]], counts: true,
+      ops: { A: ["M", "18 of 30 students take math (11 + 7)"], B: ["P", "12 of 30 take physics (7 + 5)"], union: ["M ∪ P", "23 of 30 take math <b>or</b> physics (11 + 7 + 5)"],
+             inter: ["M ∩ P", "7 of 30 take <b>both</b>"], comp: ["Mᶜ", "12 of 30 do <b>not</b> take math (5 + 7)"] },
+      code: `students = 30              # the whole class: Ω
+M, P, both = 18, 12, 7     # math, physics, both
+union = M + P - both       # M ∪ P: 23 take at least one
+inter = both               # M ∩ P: 7 take both
+not_M = students - M       # Mᶜ: 12 don't take math`, lines: { A: 2, B: 2, union: 3, inter: 4, comp: 5 },
+    },
+    excl: {
+      cap: "One die roll · A and B can't happen together", A: [160, 150], B: [362, 150], r: 88, la: "A = even", lb: "B = odd",
+      items: [["2", 130, 115], ["4", 185, 150], ["6", 130, 188], ["1", 335, 115], ["3", 390, 150], ["5", 335, 188]],
+      ops: { A: ["{2, 4, 6}", "3 of 6 outcomes"], B: ["{1, 3, 5}", "3 of 6 outcomes"], union: ["{1, 2, 3, 4, 5, 6}", "all 6 outcomes: every roll is even or odd"],
+             inter: ["∅ (empty)", "no outcome is both even and odd, so A and B are <b>mutually exclusive</b>"], comp: ["{1, 3, 5}", "not even = odd, so here Aᶜ is exactly B"] },
+      code: `omega = {1, 2, 3, 4, 5, 6}
+A = {2, 4, 6}                # even
+B = {1, 3, 5}                # odd
+A | B                        # union: all six outcomes
+A & B                        # intersection: set(), empty
+omega - A                    # complement: {1, 3, 5}`, lines: { A: 2, B: 3, union: 4, inter: 5, comp: 6 },
+    },
+  };
+  let ex = "die", op = null, cp;
+  const say = h => ($(".status").innerHTML = h);
+  function inRegion(x, y, e) {
+    const inA = Math.hypot(x - e.A[0], y - e.A[1]) < e.r, inB = Math.hypot(x - e.B[0], y - e.B[1]) < e.r;
+    return { inA, inB };
+  }
+  const selected = (o, inA, inB) => o === "A" ? inA : o === "B" ? inB : o === "union" ? inA || inB : o === "inter" ? inA && inB : o === "comp" ? !inA : false;
+  function draw() {
+    const e = EX[ex], box = $(".vn-plot"); box.innerHTML = "";
+    $(".vn-cap").textContent = e.cap;
+    const s = DS.svg("svg", { viewBox: "0 0 520 290", class: "plot", role: "img", "aria-label": "Venn diagram of events A and B" });
+    const uid = "vn" + ex;
+    const circ = (c, extra = {}) => DS.svg("circle", { cx: c[0], cy: c[1], r: e.r, ...extra });
+    s.append(DS.svg("defs", {},
+      DS.svg("clipPath", { id: uid + "cA" }, circ(e.A)),
+      DS.svg("mask", { id: uid + "nA" }, DS.svg("rect", { x: 0, y: 0, width: 520, height: 290, fill: "#fff" }), circ(e.A, { fill: "#000" })),
+      DS.svg("mask", { id: uid + "nB" }, DS.svg("rect", { x: 0, y: 0, width: 520, height: 290, fill: "#fff" }), circ(e.B, { fill: "#000" })),
+      DS.svg("mask", { id: uid + "out" }, DS.svg("rect", { x: 0, y: 0, width: 520, height: 290, fill: "#fff" }), circ(e.A, { fill: "#000" }), circ(e.B, { fill: "#000" }))));
+    const hi = "color-mix(in srgb, var(--hot) 45%, var(--surface))";
+    const region = (el, on) => { el.setAttribute("fill", on ? hi : "transparent"); el.style.transition = "fill .35s"; return el; };
+    // the four regions: outside both, A only, both, B only
+    s.append(region(DS.svg("rect", { x: 12, y: 18, width: 496, height: 262, rx: 10, mask: `url(#${uid}out)` }), selected(op, false, false)));
+    s.append(region(circ(e.A, { mask: `url(#${uid}nB)` }), selected(op, true, false)));
+    s.append(region(circ(e.B, { "clip-path": `url(#${uid}cA)` }), selected(op, true, true)));
+    s.append(region(circ(e.B, { mask: `url(#${uid}nA)` }), selected(op, false, true)));
+    s.append(DS.svg("rect", { x: 12, y: 18, width: 496, height: 262, rx: 10, fill: "none", stroke: "var(--muted)", "stroke-width": 1.5 }));
+    s.append(DS.svg("text", { class: "lbl", x: 22, y: 36, style: "font-weight:700" }, "Ω"));
+    s.append(circ(e.A, { fill: "none", stroke: "var(--s1)", "stroke-width": 3 }), circ(e.B, { fill: "none", stroke: "var(--s3)", "stroke-width": 3 }));
+    s.append(DS.svg("text", { class: "lbl", x: e.A[0] - 40, y: e.A[1] - e.r - 8, "text-anchor": "middle", style: "font-weight:700;fill:var(--s1)" }, e.la));
+    s.append(DS.svg("text", { class: "lbl", x: e.B[0] + 40, y: e.B[1] - e.r - 8, "text-anchor": "middle", style: "font-weight:700;fill:var(--s3)" }, e.lb));
+    e.items.forEach(([t, x, y]) => {
+      const { inA, inB } = inRegion(x, y, e), on = op && selected(op, inA, inB);
+      s.append(DS.svg("text", { x, y: y + 7, "text-anchor": "middle", style: `font:700 ${e.counts ? 22 : 20}px var(--mono);fill:var(--text);opacity:${!op || on ? 1 : 0.35}` }, t));
+    });
+    box.append(s);
+  }
+  function setEx(x) {
+    ex = x; op = null;
+    root.querySelectorAll(".vn-ex").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.x === x)));
+    const e = EX[x];
+    root.querySelectorAll(".vn-op").forEach(b => (b.textContent = { A: e.counts ? "M" : "A", B: e.counts ? "P" : "B", union: e.counts ? "M ∪ P" : "A ∪ B", inter: e.counts ? "M ∩ P" : "A ∩ B", comp: e.counts ? "Mᶜ" : "Aᶜ" }[b.dataset.o]));
+    cp = DS.code($(".code"), e.code, x === "students" ? "students.py" : "die_sets.py");
+    cp.hl(1); draw();
+    say(x === "excl" ? "Here the circles don't overlap. Press <b>A ∩ B</b> to see why." : "Pick an operation to light up its region.");
+  }
+  async function show(o) {
+    op = o; const e = EX[ex];
+    draw(); cp.hl(e.lines[o]);
+    const [set, words] = e.ops[o];
+    say(`<b>${set}</b>: ${words}.`);
+    await DS.wait(0.3);
+  }
+  root.querySelectorAll(".vn-ex").forEach(b => (b.onclick = () => { if (!root.dataset.busy) setEx(b.dataset.x); }));
+  root.querySelectorAll(".vn-op").forEach(b => (b.onclick = () => DS.run(root, () => show(b.dataset.o))));
+  setEx("die");
+  document.head.append(DS.el("style", {}, "#sets [aria-pressed=\"true\"] { background: var(--surface-2); border-color: var(--accent); box-shadow: inset 0 -2px 0 var(--accent); }"));
+
+  DS.quiz(document.querySelector("#sets .quizbox"), [
+    { q: "What is the sample space Ω?", options: ["The most likely outcome", "The set of all possible outcomes", "An event that can't happen", "The probability of an event"], answer: 1,
+      why: "Ω contains every possible outcome of the experiment; events are parts of it." },
+    { q: "For a die roll, A = {2, 4, 6} and B = {4, 5, 6}. What is A ∩ B?", options: ["{2, 4, 5, 6}", "{1, 3, 5}", "{4, 6}", "{5}"], answer: 2,
+      why: "The intersection (\"and\") keeps the outcomes in both sets: 4 and 6." },
+    { q: "Two events are mutually exclusive when…", options: ["they always happen together", "they can't happen at the same time", "one of them is certain", "they have the same probability"], answer: 1,
+      why: "Mutually exclusive events have no outcomes in common: their intersection is empty." },
+  ]);
+})();
+</script>
+
+<!-- ===================================================================== 3 -->
+<section class="section" id="counting" data-title="3. Counting">
+  <h2>3. Counting <small style="color:var(--muted);font-weight:500">(how many possibilities?)</small></h2>
+  <p class="lead">Many probabilities are "favourable outcomes ÷ all outcomes", so we need to count outcomes, often too many to list. Three tools do it: the <b>multiplication rule</b>, <b>permutations</b> (arrangements where order matters) and <b>combinations</b> (selections where it doesn't).</p>
+  <p>Think of ordering a meal: 3 starters, 4 mains and 2 desserts. You don't need to write out every menu; each starter can go with each main and each dessert, so there are 3 × 4 × 2 = 24 menus.</p>
+
+  <h3>The multiplication rule</h3>
+  <p>If a choice happens in steps, with <i>a</i> options in the first step, <i>b</i> in the second and <i>c</i> in the third, the total is <b>a × b × c</b>. A 4-digit PIN has 10 choices for each digit, so there are 10 × 10 × 10 × 10 = 10,000 PINs.</p>
+
+  <div class="w-count">
+  <div class="grid2">
+    <div class="card">
+      <div class="controls">
+        <button class="secondary always ct-mode" data-m="outfit" aria-pressed="true">👕 Outfits</button>
+        <button class="secondary always ct-mode" data-m="team" aria-pressed="false">👥 Team of 3</button>
+        <span class="sep"></span>
+        <button class="ct-run">▶ Run</button>
+        <button class="ct-step">Step</button>
+        <button class="secondary ct-reset">Reset</button>
+      </div>
+      <div class="viz" style="min-height:300px"><span class="caption ct-cap"></span><div class="ct-plot" style="padding-top:22px"></div></div>
+      <div class="status"></div>
+    </div>
+    <div class="code"></div>
+  </div>
+  </div>
+
+  <h3>Permutations and combinations</h3>
+  <p>The <b>factorial</b> n! ("n factorial") is n × (n − 1) × … × 1: the number of ways to put n things in order. For example 3! = 3 × 2 × 1 = 6.</p>
+  <table class="cx">
+    <thead><tr><th></th><th>Permutations</th><th>Combinations</th></tr></thead>
+    <tbody>
+      <tr><td><b>Order matters?</b></td><td>yes: ABC and CBA are different</td><td>no: ABC and CBA are the same group</td></tr>
+      <tr><td><b>Question</b></td><td>"In how many ways can we arrange or rank?"</td><td>"In how many ways can we choose a group?"</td></tr>
+      <tr><td><b>Choose 3 of 5</b></td><td>5 × 4 × 3 = <b>60</b></td><td>60 ÷ 3! = <b>10</b></td></tr>
+      <tr><td><b>Examples</b></td><td>gold, silver and bronze medals; a running order</td><td>a team, a lottery ticket, pizza toppings</td></tr>
+    </tbody>
+  </table>
+  <div class="callout tip">Ask yourself: "If I swap two of my choices, is it a different result?" If yes, order matters (permutation). If no, it's a combination: count the arrangements, then divide by the number of ways to order the chosen items.</div>
+
+  <h3>Where it shows up</h3>
+  <ul>
+    <li>Passwords and PINs: more characters and more choices per character mean far more possibilities.</li>
+    <li>Lotteries: choosing 6 numbers from 49 gives about 14 million combinations, which is why winning is so rare.</li>
+    <li>Card games: the chance of a hand is the number of ways to get it divided by the number of possible hands.</li>
+  </ul>
+  <div class="quizbox"></div>
+</section>
+<script>
+(() => {
+  const root = document.querySelector("#counting .w-count");
+  const $ = s => root.querySelector(s);
+  const cp = DS.code($(".code"), `from math import factorial, perm, comb
+outfits = 3 * 2 * 2    # multiplication rule: 12 outfits
+pins = 10 ** 4         # 4 digits, 10 choices each: 10,000
+factorial(3)           # 3! = 3 x 2 x 1 = 6 ways to order 3 people
+perm(5, 3)             # order matters: 5 x 4 x 3 = 60
+comb(5, 3)             # order doesn't: 60 / 3! = 10 teams`, "counting.py");
+  const say = h => ($(".status").innerHTML = h);
+  let mode = "outfit", step = 0;
+  const SHIRTS = [["red", "var(--bad)"], ["blue", "var(--s1)"], ["green", "var(--ok)"]];
+  const TROUSERS = ["jeans", "black"], SHOES = ["boots", "sneakers"];
+  const PEOPLE = ["A", "B", "C", "D", "E"];
+  const TEAM_COL = ["var(--s1)", "var(--s2)", "var(--s3)", "var(--s4)", "var(--s5)", "var(--violet)", "var(--bad)", "var(--accent)", "var(--ok)", "var(--hot)"];
+  const perms = []; PEOPLE.forEach(a => PEOPLE.forEach(b => PEOPLE.forEach(c => { if (a !== b && b !== c && a !== c) perms.push(a + b + c); })));
+  const teams = [...new Set(perms.map(p => [...p].sort().join("")))];
+  const STEPS = { outfit: 3, team: 4 };
+
+  function drawTree(level) {
+    const box = $(".ct-plot"); box.innerHTML = "";
+    const s = DS.svg("svg", { viewBox: "0 0 520 290", class: "plot", role: "img", "aria-label": "Tree of outfit choices" });
+    const X = [24, 150, 290, 430], leafY = i => 18 + i * 22.5;
+    const nodes = [[[X[0], 145, "start"]]];
+    nodes.push(SHIRTS.map((sh, i) => [X[1], (leafY(i * 4) + leafY(i * 4 + 3)) / 2, sh[0] + " shirt", sh[1]]));
+    nodes.push([]); SHIRTS.forEach((sh, i) => TROUSERS.forEach((t, j) => nodes[2].push([X[2], (leafY(i * 4 + j * 2) + leafY(i * 4 + j * 2 + 1)) / 2, t, sh[1]])));
+    nodes.push([]); SHIRTS.forEach((sh, i) => TROUSERS.forEach((t, j) => SHOES.forEach((h, k) => nodes[3].push([X[3], leafY(i * 4 + j * 2 + k), h, sh[1]]))));
+    for (let L = 1; L <= level; L++) {
+      nodes[L].forEach((n, i) => {
+        const parent = nodes[L - 1][L === 1 ? 0 : Math.floor(i / 2)];
+        s.append(DS.svg("line", { x1: parent[0] + (L === 1 ? 36 : L === 2 ? 80 : 48), y1: parent[1], x2: n[0] - 4, y2: n[1], stroke: n[3], "stroke-width": 1.6, opacity: 0.7 }));
+      });
+    }
+    for (let L = 0; L <= level; L++) nodes[L].forEach(n => {
+      s.append(DS.svg("circle", { cx: n[0], cy: n[1], r: L === 0 ? 0 : 5, fill: n[3] || "var(--muted)" }));
+      s.append(DS.svg("text", { class: "lbl", x: n[0] + (L === 0 ? 0 : 9), y: n[1] + 4, style: L === 3 ? "font-size:11px" : "font-weight:600" }, n[2]));
+    });
+    if (level === 3) s.append(DS.svg("text", { class: "lbl", x: 500, y: 284, "text-anchor": "end", style: "font-weight:700;fill:var(--ok)" }, "12 outfits"));
+    box.append(s);
+  }
+  function drawTeam(st) {
+    const box = $(".ct-plot"); box.innerHTML = "";
+    const chip = (t, col, big) => DS.el("span", { class: "tk new", style: { font: `${big ? 700 : 600} ${big ? 16 : 13}px var(--mono)`, padding: big ? "8px 12px" : "4px 6px", background: col ? `color-mix(in srgb, ${col} 26%, var(--surface))` : "var(--surface-2)", border: col ? `1px solid ${col}` : "1px solid var(--border)" } }, t);
+    const row = DS.el("div", { style: { display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "12px" } }, PEOPLE.map(p => chip("👤 " + p, null, true)));
+    box.append(row);
+    if (st >= 2) {
+      const list = st >= 3 ? perms.slice().sort((x, y) => teams.indexOf([...x].sort().join("")) - teams.indexOf([...y].sort().join(""))) : perms;
+      const grid = DS.el("div", { style: { display: "flex", gap: "4px", flexWrap: "wrap" } });
+      if (st === 4) teams.forEach((t, i) => grid.append(chip(t.split("").join(" + "), TEAM_COL[i], true)));
+      else if (st === 3) teams.forEach((t, i) => grid.append(DS.el("span", { style: { display: "inline-flex", gap: "3px", marginRight: "10px", marginBottom: "4px" } },
+        list.filter(p => [...p].sort().join("") === t).map(p => chip(p, TEAM_COL[i])))));
+      else list.forEach(p => grid.append(chip(p, null)));
+      box.append(grid);
+    }
+  }
+  function reset() {
+    step = 0;
+    $(".ct-cap").textContent = mode === "outfit" ? "3 shirts × 2 trousers × 2 shoes" : "Choose 3 people from 5";
+    if (mode === "outfit") { drawTree(0); cp.clear(); say("Press <b>Step</b> to choose a shirt, then trousers, then shoes, or <b>Run</b> to watch the whole tree grow."); }
+    else { drawTeam(1); cp.clear(); say("Five people, A to E. How many ways can we pick 3 of them? Press <b>Step</b>."); }
+  }
+  async function next() {
+    if (step >= STEPS[mode]) reset();
+    step++;
+    if (mode === "outfit") {
+      drawTree(step); cp.hl(2);
+      say(step === 1 ? "Step 1: <b>3</b> shirts, so 3 branches." : step === 2 ? "Step 2: each shirt goes with <b>2</b> trousers: 3 × 2 = <b>6</b> branches."
+        : "Step 3: each of those goes with <b>2</b> pairs of shoes: 3 × 2 × 2 = <b>12</b> outfits. That's the multiplication rule.");
+    } else {
+      if (step === 1) { drawTeam(1); say("Five people, A to E. How many ways can we pick 3 of them?"); }
+      if (step === 2) { drawTeam(2); cp.hl(5); say("If <b>order matters</b> (first, second, third pick): 5 × 4 × 3 = <b>60</b> ordered lists. These are permutations."); }
+      if (step === 3) { drawTeam(3); cp.hl(4); say("But for a team, ABC, ACB, BAC… are the <b>same 3 people</b>. Each team appears 3! = <b>6</b> times (same colour)."); }
+      if (step === 4) { drawTeam(4); cp.hl(6); say("So the number of teams is 60 ÷ 6 = <b>10</b>. These are combinations: order doesn't matter."); }
+    }
+    await DS.wait(0.4);
+  }
+  async function runAll() { reset(); await DS.wait(0.5); for (let i = 0; i < STEPS[mode]; i++) { await next(); await DS.wait(1.4); } }
+  root.querySelectorAll(".ct-mode").forEach(b => (b.onclick = () => {
+    if (root.dataset.busy) return;
+    mode = b.dataset.m; root.querySelectorAll(".ct-mode").forEach(x => x.setAttribute("aria-pressed", String(x === b))); reset();
+  }));
+  $(".ct-run").onclick = () => DS.run(root, runAll);
+  $(".ct-step").onclick = () => DS.run(root, next);
+  $(".ct-reset").onclick = () => { if (!root.dataset.busy) reset(); };
+  reset();
+  document.head.append(DS.el("style", {}, "#counting [aria-pressed=\"true\"] { background: var(--surface-2); border-color: var(--accent); box-shadow: inset 0 -2px 0 var(--accent); }"));
+
+  DS.quiz(document.querySelector("#counting .quizbox"), [
+    { q: "A café offers 4 sandwiches and 3 drinks. How many sandwich-and-drink meals are there?", options: ["7", "12", "4", "64"], answer: 1,
+      why: "Multiplication rule: 4 choices × 3 choices = 12 meals." },
+    { q: "Which situation is a combination (order doesn't matter)?", options: ["Ranking the top 3 runners", "Choosing 3 pizza toppings", "Setting a 3-digit lock code", "Arranging 3 books on a shelf"], answer: 1,
+      why: "Swapping toppings gives the same pizza, so order doesn't matter: a combination." },
+    { q: "What is 4! (4 factorial)?", options: ["4", "10", "16", "24"], answer: 3,
+      why: "4! = 4 × 3 × 2 × 1 = 24, the number of ways to put 4 things in order." },
+  ]);
+})();
+</script>
+
+<!-- ===================================================================== 4 -->
+<section class="section" id="rules" data-title="4. Basic probability rules">
+  <h2>4. Basic probability rules <small style="color:var(--muted);font-weight:500">(combining chances)</small></h2>
+  <p class="lead">A few simple rules let us work out the probability of "A or B" and "not A" from probabilities we already know. When all outcomes are <b>equally likely</b>, a probability is just counting: favourable outcomes ÷ all outcomes.</p>
+  <p>Think of a raffle with 100 tickets where you hold 5: your chance is 5/100 = 5%. The rules below are common sense written down, so you can use them even when the numbers get bigger.</p>
+
+  <h3>The three basic rules (axioms) in plain words</h3>
+  <ol class="ex">
+    <li><b>Between 0 and 1:</b> every probability is at least 0 and at most 1.</li>
+    <li><b>Something happens:</b> the whole sample space has probability 1, P(Ω) = 1.</li>
+    <li><b>Separate events add up:</b> if A and B are mutually exclusive (can't happen together), P(A ∪ B) = P(A) + P(B).</li>
+  </ol>
+  <p>Everything else follows from these three. The two rules you'll use most:</p>
+  <table class="cx">
+    <thead><tr><th>Rule</th><th>Formula</th><th>Example with a deck of 52 cards</th></tr></thead>
+    <tbody>
+      <tr><td><b>Equally likely outcomes</b></td><td>P(A) = favourable ÷ total</td><td>P(heart) = 13/52 = 1/4</td></tr>
+      <tr><td><b>Addition rule</b></td><td>P(A ∪ B) = P(A) + P(B) − P(A ∩ B)</td><td>P(heart or face card) = 13/52 + 12/52 − 3/52 = 22/52</td></tr>
+      <tr><td><b>Complement rule</b></td><td>P(Aᶜ) = 1 − P(A)</td><td>P(not a heart) = 1 − 13/52 = 39/52</td></tr>
+    </tbody>
+  </table>
+  <p>Why subtract P(A ∩ B)? The cards that are both hearts and face cards (J♥, Q♥, K♥) were counted once in "hearts" and once in "face cards". Subtracting them once counts each card exactly once. See it on the deck:</p>
+
+  <div class="w-cards">
+  <div class="grid2">
+    <div class="card">
+      <div class="controls">
+        <button class="cd-ev" data-e="heart">♥ Heart</button>
+        <button class="cd-ev" data-e="face">Face card (J, Q, K)</button>
+        <button class="cd-ev" data-e="or">Heart or face card</button>
+        <button class="cd-ev" data-e="not">Not a heart</button>
+      </div>
+      <div class="viz" style="min-height:190px"><span class="caption">A standard deck · 52 equally likely cards</span><div class="cd-deck" style="padding-top:26px"></div></div>
+      <div class="status"></div>
+    </div>
+    <div class="code"></div>
+  </div>
+  </div>
+
+  <h3>The complement trick: "at least one six"</h3>
+  <p>What's the chance of rolling at least one six in several rolls? Counting all the ways to get one, two, three… sixes is hard. The complement is easy: "at least one six" is the opposite of "no six at all". Each roll has a 5/6 chance of not being a six, and rolls don't affect each other (they are <i>independent</i>, more in lesson 5), so P(no six in n rolls) = (5/6)ⁿ.</p>
+  <div class="card w-six" style="margin:12px 0">
+    <div class="controls">
+      <label class="inl">number of rolls <input type="range" class="sx-n" min="1" max="20" value="4" style="width:180px;vertical-align:middle" aria-label="Number of rolls"> <b class="sx-v" style="font-family:var(--mono)">4</b></label>
+    </div>
+    <div class="meter"><span style="width:150px">P(at least one six)</span><div class="bar"><i class="ok sx-bar"></i></div><b class="sx-p">—</b></div>
+    <div class="meter"><span style="width:150px">P(no six)</span><div class="bar"><i class="hot sx-bar2"></i></div><b class="sx-q">—</b></div>
+    <div class="status sx-status"></div>
+  </div>
+  <div class="callout tip">When a question says "at least one", try the complement first: 1 − P(none).</div>
+
+  <h3>Where it shows up</h3>
+  <ul>
+    <li>Card and board games: the chance of drawing the card you need.</li>
+    <li>Reliability: the chance that at least one of several backup systems works is 1 − P(all of them fail).</li>
+    <li>Risk: the chance of at least one accident, failure or win over many tries.</li>
+  </ul>
+  <div class="quizbox"></div>
+</section>
+<script>
+(() => {
+  const root = document.querySelector("#rules .w-cards");
+  const $ = s => root.querySelector(s);
+  const cp = DS.code($(".code"), `ranks = "A 2 3 4 5 6 7 8 9 10 J Q K".split()
+deck = [(r, s) for s in "♠♥♦♣" for r in ranks]  # 52 cards
+hearts = [c for c in deck if c[1] == "♥"]        # 13
+faces = [c for c in deck if c[0] in "JQK"]       # 12
+both = [c for c in hearts if c in faces]         # 3: J♥ Q♥ K♥
+p_or = (len(hearts) + len(faces) - len(both)) / 52   # 22/52
+p_not = 1 - len(hearts) / 52                     # 39/52`, "cards.py");
+  const say = h => ($(".status").innerHTML = h);
+  const RANKS = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"], SUITS = ["♠", "♥", "♦", "♣"];
+  const deck = SUITS.flatMap(s => RANKS.map(r => ({ r, s, el: null })));
+  const isHeart = c => c.s === "♥", isFace = c => "JQK".includes(c.r) && c.r !== "";
+  function drawDeck() {
+    const box = $(".cd-deck"); box.innerHTML = "";
+    const grid = DS.el("div", { style: { display: "grid", gridTemplateColumns: "repeat(13, minmax(0, 1fr))", gap: "4px" } });
+    deck.forEach(c => {
+      c.el = DS.el("span", { style: { font: "700 13px var(--mono)", textAlign: "center", padding: "6px 0", borderRadius: "5px", border: "1px solid var(--border)",
+        background: "var(--surface)", color: "♥♦".includes(c.s) ? "var(--bad)" : "var(--text)", transition: "all .3s" } }, c.r + c.s);
+      grid.append(c.el);
+    });
+    box.append(grid);
+  }
+  const paint = (c, col, strong) => { c.el.style.background = col ? `color-mix(in srgb, ${col} ${strong ? 45 : 28}%, var(--surface))` : "var(--surface)"; c.el.style.borderColor = col || "var(--border)"; c.el.style.opacity = col ? 1 : 0.45; };
+  async function show(e) {
+    deck.forEach(c => paint(c, null));
+    if (e === "heart") { cp.hl(3); deck.filter(isHeart).forEach(c => paint(c, "var(--s1)")); say("<b>13</b> hearts out of 52 cards: P(heart) = 13/52 = <b>1/4</b>."); }
+    if (e === "face") { cp.hl(4); deck.filter(isFace).forEach(c => paint(c, "var(--s3)")); say("<b>12</b> face cards (J, Q, K in four suits): P(face) = 12/52 ≈ <b>0.23</b>."); }
+    if (e === "or") {
+      cp.hl(3, 4); deck.filter(isHeart).forEach(c => paint(c, "var(--s1)")); await DS.wait(0.7);
+      deck.filter(isFace).forEach(c => paint(c, "var(--s3)")); await DS.wait(0.7);
+      cp.hl(5, 6); deck.filter(c => isHeart(c) && isFace(c)).forEach(c => { paint(c, "var(--hot)", true); });
+      say("Hearts (13) + face cards (12) counts J♥, Q♥, K♥ <b>twice</b> (orange). Subtract them once: 13 + 12 − 3 = <b>22</b>, so P = 22/52 ≈ <b>0.42</b>.");
+    }
+    if (e === "not") { cp.hl(7); deck.filter(c => !isHeart(c)).forEach(c => paint(c, "var(--s4)")); say("Not a heart: 1 − 13/52 = <b>39/52 = 3/4</b>. It's often easier to count what you <i>don't</i> want."); }
+  }
+  root.querySelectorAll(".cd-ev").forEach(b => (b.onclick = () => DS.run(root, () => show(b.dataset.e))));
+  drawDeck(); say("Pick an event to light up its cards. Every card is equally likely, so P = cards lit ÷ 52.");
+
+  // at least one six
+  const six = document.querySelector("#rules .w-six"), s$ = s => six.querySelector(s);
+  function upd() {
+    const n = +s$(".sx-n").value, q = Math.pow(5 / 6, n), p = 1 - q;
+    s$(".sx-v").textContent = n;
+    s$(".sx-bar").style.width = (p * 100).toFixed(1) + "%"; s$(".sx-p").textContent = p.toFixed(3);
+    s$(".sx-bar2").style.width = (q * 100).toFixed(1) + "%"; s$(".sx-q").textContent = q.toFixed(3);
+    s$(".sx-status").innerHTML = `With <b>${n}</b> roll${n > 1 ? "s" : ""}: 1 − (5/6)<sup>${n}</sup> = <b>${p.toFixed(3)}</b>` +
+      (n === 4 ? ": just over half. With 4 rolls, a six is slightly more likely than not." : n < 4 ? ": less likely than not." : p > 0.95 ? ": almost certain, but never quite 1." : ".");
+  }
+  s$(".sx-n").addEventListener("input", upd); upd();
+
+  DS.quiz(document.querySelector("#rules .quizbox"), [
+    { q: "A bag has 3 red and 7 blue marbles. You pick one at random. What is P(red)?", options: ["3/7", "3/10", "7/10", "1/3"], answer: 1,
+      why: "Equally likely outcomes: 3 favourable out of 10 marbles." },
+    { q: "If P(rain) = 0.3, what is P(no rain)?", options: ["0.3", "0.7", "1.3", "0"], answer: 1,
+      why: "Complement rule: P(not A) = 1 − P(A) = 1 − 0.3 = 0.7." },
+    { q: "Why does the addition rule subtract P(A ∩ B)?", options: ["To make the answer smaller than 1/2", "Because outcomes in both A and B were counted twice", "Because A and B are always independent", "Because B is the complement of A"], answer: 1,
+      why: "Outcomes in both events appear in P(A) and in P(B); subtracting once counts them exactly once." },
+  ]);
+})();
+</script>
+
+<div class="part" id="partB"><h2>Part B · Updating with information</h2><p>How knowing one thing changes the chances of another, and how to reason backwards from evidence.</p></div>
+
+<!-- ===================================================================== 5 -->
+<section class="section" id="conditional" data-title="5. Conditional probability">
+  <h2>5. Conditional probability and independence <small style="color:var(--muted);font-weight:500">(when you know something)</small></h2>
+  <p class="lead"><b>Conditional probability</b> P(A | B), read "the probability of A given B", is the chance of A once we know that B happened. We <b>zoom into B</b>: only the outcomes in B count now, and we ask what share of them is also in A.</p>
+  <p>The chance that a random person is wearing a coat might be 30%. But if you know it's snowing outside, the chance is much higher. The extra information doesn't change the people; it changes which group you're looking at.</p>
+
+  <h3>Zoom in: spam and the word "free"</h3>
+  <p>Here are 100 emails. Orange ones are spam, blue ones are not, and a ★ marks emails that contain the word "free". Zoom in and count:</p>
+  <div class="w-cond">
+  <div class="grid2">
+    <div class="card">
+      <div class="controls">
+        <button class="cn-v" data-v="all">All 100 emails</button>
+        <button class="cn-v" data-v="free">Given it contains "free"</button>
+        <button class="cn-v" data-v="spam">Given it's spam</button>
+        <button class="cn-v" data-v="ind">Independent?</button>
+      </div>
+      <div class="viz" style="min-height:300px"><span class="caption">100 emails · orange = spam · ★ = contains "free"</span><div class="cn-grid" style="padding-top:26px"></div></div>
+      <div class="status"></div>
+    </div>
+    <div class="code"></div>
+  </div>
+  </div>
+  <p>Notice that P(spam | free) = 77% and P(free | spam) = 80% are <b>different questions</b> with different answers. Swapping A and B in P(A | B) changes the meaning, a common mistake (lesson 6 shows how to go from one to the other).</p>
+
+  <h3>The formula and the multiplication rule</h3>
+  <table class="cx">
+    <thead><tr><th>Rule</th><th>Formula</th><th>With the emails</th></tr></thead>
+    <tbody>
+      <tr><td><b>Conditional probability</b></td><td>P(A | B) = P(A ∩ B) ÷ P(B)</td><td>P(spam | free) = 0.24 ÷ 0.31 ≈ 0.77</td></tr>
+      <tr><td><b>Multiplication rule</b> (also called the <b>product rule</b>, lesson 9)</td><td>P(A ∩ B) = P(B) × P(A | B)</td><td>P(spam and free) = 0.30 × 0.80 = 0.24</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Independent events</h3>
+  <p>Two events are <b>independent</b> when knowing one doesn't change the chance of the other: P(A | B) = P(A). Then the multiplication rule becomes simply <b>P(A ∩ B) = P(A) × P(B)</b>.</p>
+  <table class="cx">
+    <thead><tr><th>Independent</th><th>Not independent (dependent)</th></tr></thead>
+    <tbody>
+      <tr><td>two separate coin flips</td><td>"spam" and "contains free"</td></tr>
+      <tr><td>rolling a die and drawing a card</td><td>"cloudy" and "rain"</td></tr>
+      <tr><td>drawing a card, putting it back, then drawing again</td><td>drawing two cards without putting the first back</td></tr>
+    </tbody>
+  </table>
+  <p>For example, the chance of two heads in two flips is ½ × ½ = ¼, because the second flip doesn't care about the first.</p>
+
+  <h3>The gambler's fallacy</h3>
+  <p>After five heads in a row, many people feel tails is "due". It isn't: a coin has no memory, so each flip is still 50/50. This mistake is called the <b>gambler's fallacy</b>. Check it with a big simulation:</p>
+  <div class="card w-gf" style="margin:12px 0">
+    <div class="controls"><button class="gf-go">▶ Flip 100,000 coins</button><span class="gf-note" style="color:var(--text-2);font-size:.9rem">and look at the flip right after every 5 heads in a row</span></div>
+    <div class="meter"><span style="width:170px">next flip was heads</span><div class="bar"><i class="gf-h"></i></div><b class="gf-hv">—</b></div>
+    <div class="meter"><span style="width:170px">next flip was tails</span><div class="bar"><i class="hot gf-t"></i></div><b class="gf-tv">—</b></div>
+    <div class="status gf-status"></div>
+  </div>
+
+  <h3>Where it shows up</h3>
+  <ul>
+    <li>Spam filters and recommendations: the chance of X given the words or clicks we've seen.</li>
+    <li>Medicine: the chance of a disease given a symptom or a test result (next lesson).</li>
+    <li>Insurance: the chance of a claim given age, location or history.</li>
+  </ul>
+  <div class="quizbox"></div>
+</section>
+<script>
+(() => {
+  const root = document.querySelector("#conditional .w-cond");
+  const $ = s => root.querySelector(s);
+  const cp = DS.code($(".code"), `emails = 100
+spam, free, spam_and_free = 30, 31, 24
+p_spam = spam / emails                    # 0.30
+p_spam_given_free = spam_and_free / free  # zoom into "free": 24/31 = 0.77
+p_free_given_spam = spam_and_free / spam  # zoom into spam: 24/30 = 0.80
+p_both = p_spam * p_free_given_spam       # multiplication rule: 0.24`, "spam.py");
+  const say = h => ($(".status").innerHTML = h);
+  // 30 spam (24 with "free"), 70 not spam (7 with "free"), placed in a fixed random order
+  const R = KIT.rng(5);
+  const mails = [];
+  for (let i = 0; i < 100; i++) mails.push({ spam: i < 30, free: i < 24 || (i >= 30 && i < 37) });
+  for (let i = mails.length - 1; i > 0; i--) { const j = Math.floor(R() * (i + 1)); [mails[i], mails[j]] = [mails[j], mails[i]]; }
+  const grid = DS.el("div", { style: { display: "grid", gridTemplateColumns: "repeat(10, minmax(0, 1fr))", gap: "4px", maxWidth: "340px", margin: "0 auto" } });
+  mails.forEach(m => {
+    m.el = DS.el("span", { style: { aspectRatio: "1", borderRadius: "4px", display: "grid", placeItems: "center", font: "700 13px var(--sans)", color: "#fff",
+      background: m.spam ? "var(--hot)" : "var(--s1)", transition: "opacity .35s, transform .35s" } }, m.free ? "★" : "");
+    grid.append(m.el);
+  });
+  $(".cn-grid").append(grid);
+  const focus = f => mails.forEach(m => { const on = f(m); m.el.style.opacity = on ? 1 : 0.12; m.el.style.transform = on ? "scale(1)" : "scale(.8)"; });
+  async function show(v) {
+    if (v === "all") { focus(() => true); cp.hl(3); say("Of all <b>100</b> emails, <b>30</b> are spam: P(spam) = 30/100 = <b>0.30</b>."); }
+    if (v === "free") {
+      focus(m => m.free); cp.hl(4); await DS.wait(0.5);
+      say("Zoom into the <b>31</b> emails with \"free\" (the rest fade). <b>24</b> of them are spam: P(spam | free) = 24/31 ≈ <b>0.77</b>.");
+    }
+    if (v === "spam") {
+      focus(m => m.spam); cp.hl(5); await DS.wait(0.5);
+      say("Zoom into the <b>30</b> spam emails. <b>24</b> of them contain \"free\": P(free | spam) = 24/30 = <b>0.80</b>. A different question from the one before.");
+    }
+    if (v === "ind") {
+      focus(m => m.free); cp.hl(3, 4); await DS.wait(0.5);
+      say("Before: P(spam) = 0.30. After seeing \"free\": P(spam | free) ≈ 0.77. Knowing one changed the chance of the other, so they are <b>not independent</b>.");
+    }
+  }
+  root.querySelectorAll(".cn-v").forEach(b => (b.onclick = () => DS.run(root, () => show(b.dataset.v))));
+  say("Press a button to zoom in on part of the emails.");
+
+  // gambler's fallacy
+  const gf = document.querySelector("#conditional .w-gf"), g$ = s => gf.querySelector(s);
+  async function sim() {
+    const r = KIT.rng(15); let run = 0, after = 0, heads = 0, done = 0;
+    const N = 100000;
+    for (let i = 0; i < N; i++) {
+      const h = r() < 0.5;
+      if (run >= 5) { after++; if (h) heads++; }
+      run = h ? run + 1 : 0;
+      if (i % 5000 === 4999) {
+        const ph = after ? heads / after : 0;
+        g$(".gf-h").style.width = (ph * 100).toFixed(1) + "%"; g$(".gf-hv").textContent = after ? (ph * 100).toFixed(1) + "%" : "—";
+        g$(".gf-t").style.width = ((1 - ph) * 100).toFixed(1) + "%"; g$(".gf-tv").textContent = after ? ((1 - ph) * 100).toFixed(1) + "%" : "—";
+        g$(".gf-status").innerHTML = `${(i + 1).toLocaleString()} flips · runs of 5 heads found: <b>${after.toLocaleString()}</b>`;
+        await DS.wait(0.08);
+      }
+    }
+    const ph = heads / after;
+    g$(".gf-status").innerHTML = `Out of <b>${after.toLocaleString()}</b> times that 5 heads came in a row, the next flip was heads <b>${(ph * 100).toFixed(1)}%</b> of the time: still about 50%. Past flips don't change the next one.`;
+  }
+  g$(".gf-go").onclick = () => DS.run(gf, sim);
+  g$(".gf-status").textContent = "Press the button to run the simulation.";
+
+  DS.quiz(document.querySelector("#conditional .quizbox"), [
+    { q: "What does P(A | B) mean?", options: ["The chance of A and B together", "The chance of A, given that B happened", "The chance of B, given that A happened", "The chance of A or B"], answer: 1,
+      why: "The bar means \"given\": we zoom into B and ask how likely A is there." },
+    { q: "Events A and B are independent. P(A) = 0.5 and P(B) = 0.2. What is P(A and B)?", options: ["0.7", "0.1", "0.3", "0.25"], answer: 1,
+      why: "For independent events, P(A ∩ B) = P(A) × P(B) = 0.5 × 0.2 = 0.1." },
+    { q: "A fair coin lands heads 5 times in a row. What is the chance the next flip is heads?", options: ["Less than 50%, tails is due", "More than 50%, heads is on a streak", "Exactly 50%", "It can't be known"], answer: 2,
+      why: "Flips are independent: the coin has no memory, so it's still 50%. Thinking otherwise is the gambler's fallacy." },
+  ]);
+})();
+</script>
+
+<!-- ===================================================================== 6 -->
+<section class="section" id="bayes" data-title="6. Bayes' theorem">
+  <h2>6. Total probability and Bayes' theorem <small style="color:var(--muted);font-weight:500">(reasoning backwards from evidence)</small></h2>
+  <p class="lead">Often we know how likely the evidence is if something is true, but we want the reverse: how likely it is to be true, given the evidence. <b>Bayes' theorem</b> turns P(evidence | cause) into P(cause | evidence). Its partner, the <b>law of total probability</b>, adds up all the ways the evidence can happen.</p>
+  <p>Think of a smoke alarm. It almost always beeps when there's a fire, but it also beeps for burnt toast. When it beeps, how likely is a real fire? It depends on how often each cause happens, and burnt toast is far more common than fires.</p>
+
+  <h3>The law of total probability</h3>
+  <p>If something can happen in several separate ways, its total probability is the sum over those ways: <b>P(B) = P(B | A₁)·P(A₁) + P(B | A₂)·P(A₂) + …</b>, where A₁, A₂, … are mutually exclusive and cover every case. (It combines the product rule from lesson 5 with the sum rule, which lesson 9 names.)</p>
+  <table class="cx">
+    <thead><tr><th>Factory example</th><th>Share of items</th><th>Defect rate</th><th>Defective items (share of all)</th></tr></thead>
+    <tbody>
+      <tr><td><b>Machine 1</b></td><td>60%</td><td>2%</td><td>0.60 × 0.02 = 0.012</td></tr>
+      <tr><td><b>Machine 2</b></td><td>40%</td><td>5%</td><td>0.40 × 0.05 = 0.020</td></tr>
+      <tr><td><b>Total</b></td><td>100%</td><td></td><td><b>P(defect) = 0.032</b> (3.2%)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Bayes' theorem</h3>
+  <p><b>P(A | B) = P(B | A) × P(A) ÷ P(B)</b>. In words: how well A explains the evidence B, times how common A was to begin with, divided by how common the evidence is overall. For the factory: a defective item is picked at random; which machine made it? P(machine 2 | defect) = 0.020 ÷ 0.032 ≈ <b>62%</b>. Machine 2 makes fewer items but more of the defective ones.</p>
+  <p>The easiest way to use Bayes is with counts of people instead of percentages. Try a medical test on 1,000 people:</p>
+
+  <div class="w-bayes">
+  <div class="grid2">
+    <div class="card">
+      <div class="controls">
+        <label class="inl">how common <input type="range" class="by-prev" min="0.5" max="20" step="0.5" value="1" style="width:90px;vertical-align:middle" aria-label="How common the disease is"> <b class="by-prev-v" style="font-family:var(--mono)">1%</b></label>
+        <label class="inl">test finds <input type="range" class="by-sens" min="50" max="99" step="1" value="90" style="width:90px;vertical-align:middle" aria-label="Share of sick people the test finds"> <b class="by-sens-v" style="font-family:var(--mono)">90%</b></label>
+        <label class="inl">false alarms <input type="range" class="by-fp" min="1" max="20" step="1" value="9" style="width:90px;vertical-align:middle" aria-label="False alarm rate among healthy people"> <b class="by-fp-v" style="font-family:var(--mono)">9%</b></label>
+      </div>
+      <div class="controls">
+        <button class="by-run">▶ Run</button>
+        <button class="by-step">Step</button>
+        <button class="secondary by-reset">Reset</button>
+      </div>
+      <div class="viz" style="min-height:250px"><span class="caption">1,000 people · ● sick · ■ tested positive</span><div class="by-grid" style="padding-top:26px"></div></div>
+      <div class="status"></div>
+    </div>
+    <div class="code"></div>
+  </div>
+  </div>
+  <div class="callout warn"><b>Base rates matter:</b> when a condition is rare, most positive results are false alarms, even with a good test, simply because there are so many more healthy people to make mistakes on. Raise "how common" to 10% and the same positive test now means about a 53% chance. Always ask how common the thing was to begin with: the <b>base rate</b>.</div>
+
+  <h3>Where it shows up</h3>
+  <ul>
+    <li>Medical screening: why a positive result is usually followed by a second, more accurate test.</li>
+    <li>Spam filters: the chance an email is spam, given the words it contains (a classic use of Bayes).</li>
+    <li>Quality control and fraud detection: which machine, account or process is the likely cause of a problem.</li>
+  </ul>
+  <div class="quizbox"></div>
+</section>
+<script>
+(() => {
+  const root = document.querySelector("#bayes .w-bayes");
+  const $ = s => root.querySelector(s);
+  const cp = DS.code($(".code"), `people = 1000
+sick = people * 0.01                  # how common: 10 people
+true_pos = sick * 0.90                # the test finds 90%: 9
+false_pos = (people - sick) * 0.09    # false alarms on healthy: 89
+positives = true_pos + false_pos      # total probability: 98
+p_sick_given_pos = true_pos / positives   # Bayes: 9 / 98 = 9%`, "medical_test.py");
+  const say = h => ($(".status").innerHTML = h);
+  // fixed random order of the 1,000 people, so the picture doesn't jump when sliders move
+  const R = KIT.rng(31); const order = [...Array(1000).keys()];
+  for (let i = order.length - 1; i > 0; i--) { const j = Math.floor(R() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
+  const cells = [];
+  const grid = DS.el("div", { style: { display: "grid", gridTemplateColumns: "repeat(40, minmax(0, 1fr))", gap: "2px" } });
+  for (let i = 0; i < 1000; i++) { const c = DS.el("span", { style: { aspectRatio: "1", borderRadius: "2px", background: "var(--surface-2)", border: "1px solid var(--border)", transition: "all .3s" } }); cells.push(c); grid.append(c); }
+  $(".by-grid").append(grid);
+  let step = 0, N = {};
+  function numbers() {
+    const prev = +$(".by-prev").value / 100, sens = +$(".by-sens").value / 100, fp = +$(".by-fp").value / 100;
+    const sick = Math.round(1000 * prev), tp = Math.round(sick * sens), fpos = Math.round((1000 - sick) * fp);
+    $(".by-prev-v").textContent = (prev * 100) + "%"; $(".by-sens-v").textContent = Math.round(sens * 100) + "%"; $(".by-fp-v").textContent = Math.round(fp * 100) + "%";
+    // the first `sick` people in the fixed order are sick; the first `tp` of them test positive; the first `fpos` healthy ones too
+    const sickIdx = order.slice(0, sick), healthyIdx = order.slice(sick);
+    N = { prev, sens, fp, sick, tp, fpos, pos: tp + fpos, sickSet: new Set(sickIdx), tpSet: new Set(sickIdx.slice(0, tp)), fpSet: new Set(healthyIdx.slice(0, fpos)) };
+  }
+  function paint() {
+    cells.forEach((c, i) => {
+      const sick = N.sickSet.has(i), tp = N.tpSet.has(i), fpos = N.fpSet.has(i);
+      let bg = "var(--surface-2)", bd = "var(--border)", op = 1, rad = "2px";
+      if (step >= 1 && sick) { bg = "var(--violet)"; bd = "var(--violet)"; rad = "50%"; }
+      if (step >= 2 && tp) { bd = "var(--hot)"; }
+      if (step >= 3 && fpos) { bg = "color-mix(in srgb, var(--hot) 55%, var(--surface))"; bd = "var(--hot)"; }
+      if (step >= 4 && !(tp || fpos)) op = 0.15;
+      c.style.background = bg; c.style.borderColor = bd; c.style.opacity = op; c.style.borderRadius = rad; c.style.borderWidth = step >= 2 && (tp || (step >= 3 && fpos)) ? "2px" : "1px";
+    });
+  }
+  const pct = x => (x * 100).toFixed(x < 0.1 ? 1 : 0) + "%";
+  function msg() {
+    const s = N;
+    if (step === 0) return "1,000 people take the test. Press <b>Step</b> to follow them, or <b>Run</b>.";
+    if (step === 1) return `<b>${s.sick}</b> of them are sick (${pct(s.prev)}, the base rate), shown as circles.`;
+    if (step === 2) return `The test finds ${pct(s.sens)} of the sick: <b>${s.tp}</b> true positives (orange border).`;
+    if (step === 3) return `But ${pct(s.fp)} of the <b>${1000 - s.sick}</b> healthy people also test positive: <b>${s.fpos}</b> false alarms (orange squares).`;
+    const p = s.pos ? s.tp / s.pos : 0;
+    return `Zoom into everyone who tested positive: <b>${s.pos}</b> people, of whom only <b>${s.tp}</b> are sick. P(sick | positive) = ${s.tp} ÷ ${s.pos} ≈ <b>${pct(p)}</b>.`;
+  }
+  const LINES = [null, 2, 3, 4, [5, 6]];
+  async function next() { if (step >= 4) step = 0; step++; paint(); cp.hl(...[].concat(LINES[step])); say(msg()); await DS.wait(0.3); }
+  async function runAll() { step = 0; paint(); cp.clear(); say(msg()); await DS.wait(0.6); for (let i = 0; i < 4; i++) { await next(); await DS.wait(1.5); } }
+  function reset() { step = 0; numbers(); paint(); cp.clear(); say(msg()); }
+  root.querySelectorAll("input[type=range]").forEach(r => r.addEventListener("input", () => { numbers(); paint(); say(msg()); }));
+  $(".by-run").onclick = () => DS.run(root, runAll);
+  $(".by-step").onclick = () => DS.run(root, next);
+  $(".by-reset").onclick = () => { if (!root.dataset.busy) reset(); };
+  reset();
+
+  DS.quiz(document.querySelector("#bayes .quizbox"), [
+    { q: "What does Bayes' theorem help you find?", options: ["P(evidence | cause) from P(cause | evidence)", "P(cause | evidence) from P(evidence | cause)", "The number of possible outcomes", "The average of a random variable"], answer: 1,
+      why: "Bayes reverses the condition: from how likely the evidence is given the cause, to how likely the cause is given the evidence." },
+    { q: "A disease is rare and a good test comes back positive. Why can the chance of being sick still be low?", options: ["Because tests are never useful", "Because there are many healthy people, so even a few false alarms outnumber the true positives", "Because the test finds no sick people", "Because positive results are random"], answer: 1,
+      why: "With a low base rate, false positives among the many healthy people can outnumber true positives among the few sick." },
+    { q: "Machine 1 makes 60% of items (2% defective), machine 2 makes 40% (5% defective). What is P(defect)?", options: ["7%", "3.2%", "3.5%", "2%"], answer: 1,
+      why: "Law of total probability: 0.60 × 0.02 + 0.40 × 0.05 = 0.012 + 0.020 = 0.032." },
+  ]);
+})();
+</script>
+
+<div class="part" id="partC"><h2>Part C · Random variables</h2><p>Turning outcomes into numbers: averages, spread, ready-made distributions, and two quantities together.</p></div>
+
+<!-- ===================================================================== 7 -->
+<section class="section" id="rv" data-title="7. Random variables">
+  <h2>7. Random variables <small style="color:var(--muted);font-weight:500">(outcomes as numbers)</small></h2>
+  <p class="lead">A <b>random variable</b> is a number that depends on the outcome of a random experiment, like your winnings in a game or the number of customers in an hour. We usually call it X. Its <b>distribution</b> says which values X can take and how likely each one is.</p>
+  <p>A shop owner can't know how many customers will come in the next hour, but after many hours she knows the pattern: usually 8 to 12, rarely more than 20, and about 10 on average. A random variable and its distribution describe exactly that kind of pattern.</p>
+
+  <h3>Discrete and continuous</h3>
+  <table class="cx">
+    <thead><tr><th></th><th>Discrete</th><th>Continuous</th></tr></thead>
+    <tbody>
+      <tr><td><b>Values</b></td><td>separate values you can list: 0, 1, 2, …</td><td>any value in a range, like 3.27</td></tr>
+      <tr><td><b>Examples</b></td><td>heads in 10 flips, customers per hour, game winnings</td><td>waiting time, height, temperature</td></tr>
+      <tr><td><b>Described by</b></td><td><b>PMF</b> (probability mass function): P(X = x), the chance of each possible value x</td><td><b>PDF</b> (probability density function): a curve; probabilities are <b>areas</b> under it</td></tr>
+      <tr><td><b>Both have</b></td><td colspan="2"><b>CDF</b> (cumulative distribution function): P(X ≤ x), the chance of getting x or less. It rises from 0 to 1.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>A simple dice game</h3>
+  <p>Roll a die. On a 6 you win $3; on a 4 or 5 you win $1; on 1, 2 or 3 you lose $1. Your winnings X is a discrete random variable with three values. Is the game worth playing?</p>
+  <div class="w-game">
+  <div class="grid2">
+    <div class="card">
+      <div class="controls">
+        <button class="secondary always gm-view" data-v="pmf" aria-pressed="true">PMF</button>
+        <button class="secondary always gm-view" data-v="cdf" aria-pressed="false">CDF</button>
+        <span class="sep"></span>
+        <button class="gm-play" data-n="1">Play 1</button>
+        <button class="gm-play" data-n="100">Play 100</button>
+        <button class="gm-play" data-n="1000">Play 1,000</button>
+        <button class="secondary gm-reset">Reset</button>
+      </div>
+      <div class="viz" style="min-height:330px"><span class="caption gm-cap"></span>
+        <div class="gm-bars" style="padding-top:20px"></div>
+        <div class="gm-line"></div>
+      </div>
+      <div class="status"></div>
+    </div>
+    <div class="code"></div>
+  </div>
+  </div>
+
+  <h3>Expected value, variance and standard deviation</h3>
+  <table class="cx">
+    <thead><tr><th>Measure</th><th>What it tells you</th><th>How to compute (discrete; Σ means "add up over all values")</th><th>Dice game</th></tr></thead>
+    <tbody>
+      <tr><td><b>Expected value</b> E[X]</td><td>the long-run average: the "centre" of the distribution</td><td>Σ value × probability</td><td>3·⅙ + 1·²⁄₆ − 1·³⁄₆ = <b>$0.33</b> per game</td></tr>
+      <tr><td><b>Variance</b> Var(X)</td><td>how spread out the values are around E[X]</td><td>Σ (value − E[X])² × probability</td><td>≈ 2.22</td></tr>
+      <tr><td><b>Standard deviation</b> σ</td><td>the typical distance from the average, in the same units as X</td><td>√Var(X)</td><td>≈ <b>$1.49</b></td></tr>
+    </tbody>
+  </table>
+  <p>So you win about 33 cents per game on average, but any single game varies by about $1.49 around that. The expected value is not a value you'll see in one game (you never win exactly $0.33); it's what the average settles to over many games, just like the law of large numbers in lesson 1. In the same way, "on average 10 customers per hour" is the expected value of the hourly count.</p>
+
+  <h3>Continuous variables: probability is area</h3>
+  <p>For a continuous variable, like how long you wait for a call, the chance of any exact value (exactly 3.000… minutes) is 0. Instead we ask about ranges, and the probability is the <b>area under the PDF curve</b> over that range. The total area under the curve is 1.</p>
+  <div class="card" style="margin:12px 0"><div class="rv-pdf"></div><div class="status" style="margin-top:4px">Waiting time for the next call, averaging 5 minutes. The shaded area is P(wait between 2 and 5 minutes) ≈ <b>0.30</b>.</div></div>
+
+  <h3>Where it shows up</h3>
+  <ul>
+    <li>Games and insurance: expected value tells whether a bet or a policy pays off in the long run.</li>
+    <li>Business planning: expected sales or customers per hour, and their spread, to plan stock and staff.</li>
+    <li>Risk: standard deviation measures how uncertain an outcome is, such as the return on an investment.</li>
+  </ul>
+  <div class="quizbox"></div>
+</section>
+<script>
+(() => {
+  const root = document.querySelector("#rv .w-game");
+  const $ = s => root.querySelector(s);
+  const cp = DS.code($(".code"), `values = [-1, 1, 3]                 # lose $1, win $1, win $3
+probs = [3/6, 2/6, 1/6]              # PMF: chance of each value
+mean = sum(v * p for v, p in zip(values, probs))              # E[X] = 0.33
+var = sum((v - mean) ** 2 * p for v, p in zip(values, probs))  # 2.22
+sd = var ** 0.5                                               # 1.49
+games = [play() for i in range(1000)]
+print(sum(games) / len(games))       # average: close to 0.33`, "dice_game.py");
+  const say = h => ($(".status").innerHTML = h);
+  const VALS = [-1, 1, 3], PROBS = [3 / 6, 2 / 6, 1 / 6], EX = 1 / 3;
+  let view = "pmf", R, games, avg;
+  const value = roll => (roll === 6 ? 3 : roll >= 4 ? 1 : -1);
+  function drawBars() {
+    const box = $(".gm-bars"); box.innerHTML = "";
+    $(".gm-cap").textContent = view === "pmf" ? "PMF: chance of each value · running average of your winnings" : "CDF: chance of that value or less · running average of your winnings";
+    const s = DS.svg("svg", { viewBox: "0 0 520 130", class: "plot", role: "img", "aria-label": view.toUpperCase() + " of the winnings" });
+    let cum = 0;
+    VALS.forEach((v, i) => {
+      cum += PROBS[i];
+      const p = view === "pmf" ? PROBS[i] : cum;
+      const x = 90 + i * 150, h = p * 90;
+      s.append(DS.svg("rect", { x: x - 32, y: 104 - h, width: 64, height: h, rx: 4, fill: view === "pmf" ? "var(--s1)" : "var(--violet)" }));
+      s.append(DS.svg("text", { class: "lbl m", x, y: 98 - h, "text-anchor": "middle" }, view === "pmf" ? ["3/6", "2/6", "1/6"][i] : ["3/6", "5/6", "6/6"][i]));
+      s.append(DS.svg("text", { class: "lbl", x, y: 122, "text-anchor": "middle", style: "font-weight:700" }, (v < 0 ? "−$1" : "+$" + v)));
+    });
+    box.append(s);
+  }
+  function drawLine() {
+    const box = $(".gm-line"); box.innerHTML = "";
+    const n = games.length, xMax = Math.max(10, n);
+    const P = KIT.plot(box, { w: 520, h: 170, x0: 0, x1: xMax, y0: -1, y1: 3, xl: "games played", yl: "average winnings ($)", xt: [0, Math.round(xMax / 2), xMax], yt: [-1, 0, 1, 2, 3], pad: [30, 18, 34, 54] });
+    P.g.append(DS.svg("line", { x1: P.X(0), x2: P.X(xMax), y1: P.Y(EX), y2: P.Y(EX), stroke: "var(--ok)", "stroke-width": 2, "stroke-dasharray": "6 5" }));
+    P.g.append(DS.svg("text", { class: "lbl", x: P.X(xMax) - 4, y: P.Y(EX) - 6, "text-anchor": "end", style: "fill:var(--ok);font-weight:700" }, "E[X] = $0.33"));
+    if (avg.length > 1) {
+      const step = Math.max(1, Math.floor(avg.length / 400)); let d = "";
+      avg.forEach((v, i) => { if (i % step === 0 || i === avg.length - 1) d += (d ? "L" : "M") + P.X(i + 1).toFixed(1) + "," + P.Y(Math.max(-1, Math.min(3, v))).toFixed(1); });
+      P.g.append(DS.svg("path", { class: "fit", d }));
+    }
+  }
+  function reset() { R = KIT.rng(8); games = []; avg = []; drawBars(); drawLine(); cp.hl(1, 2); say("The PMF shows each value's chance. Press <b>Play</b> to see the average winnings settle."); }
+  async function play(n) {
+    cp.hl(6, 7);
+    const chunk = n === 1 ? 1 : n === 100 ? 5 : 25;
+    let last;
+    for (let i = 0; i < n; i += chunk) {
+      for (let j = 0; j < chunk; j++) { const roll = 1 + Math.floor(R() * 6); last = [roll, value(roll)]; games.push(last[1]); avg.push(games.reduce((a, b) => a + b, 0) / games.length); }
+      drawLine(); if (n > 1) await DS.wait(0.06);
+    }
+    const a = avg[avg.length - 1];
+    say(n === 1 ? `Rolled a <b>${last[0]}</b>: ${last[1] > 0 ? "won $" + last[1] : "lost $1"}. Average after ${games.length} game${games.length > 1 ? "s" : ""}: <b>$${a.toFixed(2)}</b>.`
+      : `After <b>${games.length.toLocaleString()}</b> games the average is <b>$${a.toFixed(2)}</b> per game, close to E[X] = $0.33. Single games swing by about σ = $1.49.`);
+  }
+  root.querySelectorAll(".gm-view").forEach(b => (b.onclick = () => {
+    view = b.dataset.v; root.querySelectorAll(".gm-view").forEach(x => x.setAttribute("aria-pressed", String(x === b))); drawBars();
+    cp.hl(2);
+    say(view === "pmf" ? "PMF: the chance of each value. The bars add up to 1." : "CDF: the chance of that value <b>or less</b>. It climbs to 1 at the largest value ($3).");
+  }));
+  root.querySelectorAll(".gm-play").forEach(b => (b.onclick = () => DS.run(root, () => play(+b.dataset.n))));
+  $(".gm-reset").onclick = () => { if (!root.dataset.busy) reset(); };
+  reset();
+  document.head.append(DS.el("style", {}, "#rv [aria-pressed=\"true\"] { background: var(--surface-2); border-color: var(--accent); box-shadow: inset 0 -2px 0 var(--accent); }"));
+
+  // static PDF figure: exponential waiting time, mean 5 minutes, shaded between 2 and 5
+  const lam = 0.2, f = x => lam * Math.exp(-lam * x);
+  const P = KIT.plot(document.querySelector("#rv .rv-pdf"), { w: 520, h: 200, x0: 0, x1: 20, y0: 0, y1: 0.22, xl: "minutes", yl: "density", xt: [0, 2, 5, 10, 15, 20], yt: [0, 0.1, 0.2], pad: [30, 18, 34, 54] });
+  let area = `M${P.X(2)},${P.Y(0)}`; for (let x = 2; x <= 5.001; x += 0.1) area += `L${P.X(x).toFixed(1)},${P.Y(f(x)).toFixed(1)}`; area += `L${P.X(5)},${P.Y(0)}Z`;
+  P.g.append(DS.svg("path", { d: area, fill: "color-mix(in srgb, var(--hot) 40%, transparent)" }));
+  let curve = ""; for (let x = 0; x <= 20.001; x += 0.2) curve += (curve ? "L" : "M") + P.X(x).toFixed(1) + "," + P.Y(f(x)).toFixed(1);
+  P.g.append(DS.svg("path", { class: "fit", d: curve }));
+  P.g.append(DS.svg("text", { class: "lbl", x: P.X(3.5), y: P.Y(0.06), "text-anchor": "middle", style: "font-weight:700" }, "≈ 0.30"));
+
+  DS.quiz(document.querySelector("#rv .quizbox"), [
+    { q: "Which of these is a continuous random variable?", options: ["The number of heads in 10 flips", "The number of emails received today", "The time you wait for a bus", "The score on a die"], answer: 2,
+      why: "Waiting time can take any value in a range (like 3.27 minutes), so it's continuous; counts are discrete." },
+    { q: "What does the expected value E[X] describe?", options: ["The most likely single value", "The long-run average over many repetitions", "The largest possible value", "How spread out the values are"], answer: 1,
+      why: "E[X] is the average you'd get over many repetitions; spread is measured by variance and standard deviation." },
+    { q: "For a continuous random variable, how do we find P(2 ≤ X ≤ 5)?", options: ["Read the height of the PDF at 5", "The area under the PDF between 2 and 5", "Add the PMF values at 2, 3, 4 and 5", "It is always 0"], answer: 1,
+      why: "For continuous variables, probabilities are areas under the density curve." },
+  ]);
+})();
+</script>
+
+<!-- ===================================================================== 8 -->
+<section class="section" id="dist" data-title="8. Common distributions">
+  <h2>8. Common distributions <small style="color:var(--muted);font-weight:500">(ready-made models)</small></h2>
+  <p class="lead">Many real situations follow a handful of well-known patterns, called <b>distributions</b>. Each one has a recognisable shape and one or two numbers, its <b>parameters</b>, that set the details. Once you recognise the situation, you get its probabilities, average and spread for free.</p>
+  <p>Think of clothing sizes: you don't design a new shirt for every person; you pick the right ready-made pattern and adjust the size. Distributions are ready-made patterns for chance: pick the one that matches the situation, then set its parameter.</p>
+
+  <h3>Explore them</h3>
+  <p>Pick a situation. The matching distribution appears; move the slider to change its parameter and watch the shape, average and spread change.</p>
+  <div class="w-dist">
+  <div class="grid2">
+    <div class="card">
+      <div class="controls ds-scen"></div>
+      <div class="controls"><label class="inl ds-lab"><span class="ds-pname"></span> <input type="range" class="ds-p" style="width:170px;vertical-align:middle"> <b class="ds-pv" style="font-family:var(--mono)"></b></label></div>
+      <div class="viz" style="min-height:260px"><span class="caption ds-cap"></span><div class="ds-plot" style="padding-top:22px"></div></div>
+      <div class="status"></div>
+    </div>
+    <div class="code"></div>
+  </div>
+  </div>
+
+  <h3>The seven distributions at a glance</h3>
+  <table class="cx">
+    <thead><tr><th>Distribution</th><th>Type</th><th>Counts or measures…</th><th>Parameter(s)</th><th>Average</th></tr></thead>
+    <tbody>
+      <tr><td><b>Bernoulli</b></td><td>discrete</td><td>one yes/no trial (1 = yes, 0 = no)</td><td>p = chance of yes</td><td>p</td></tr>
+      <tr><td><b>Binomial</b></td><td>discrete</td><td>number of yeses in n independent trials</td><td>n, p</td><td>n × p</td></tr>
+      <tr><td><b>Geometric</b></td><td>discrete</td><td>number of trials until the first yes</td><td>p</td><td>1 ÷ p</td></tr>
+      <tr><td><b>Poisson</b></td><td>discrete</td><td>number of events in a fixed time or space</td><td>λ ("lambda") = average count</td><td>λ</td></tr>
+      <tr><td><b>Uniform</b></td><td>continuous</td><td>a value where every point in a range is equally likely</td><td>range a to b</td><td>(a + b) ÷ 2</td></tr>
+      <tr><td><b>Exponential</b></td><td>continuous</td><td>waiting time until the next event</td><td>average wait</td><td>the average wait</td></tr>
+      <tr><td><b>Normal</b></td><td>continuous</td><td>values that cluster around an average in a bell shape</td><td>μ (mean), σ (standard deviation)</td><td>μ</td></tr>
+    </tbody>
+  </table>
+
+  <h3>How to choose</h3>
+  <table class="cx">
+    <thead><tr><th>Ask yourself…</th><th>Use</th></tr></thead>
+    <tbody>
+      <tr><td>Is it one yes/no event?</td><td>Bernoulli</td></tr>
+      <tr><td>How many yeses in a fixed number of tries?</td><td>Binomial</td></tr>
+      <tr><td>How many tries until the first yes?</td><td>Geometric</td></tr>
+      <tr><td>How many events in an hour, a day, a page?</td><td>Poisson</td></tr>
+      <tr><td>How long until the next event?</td><td>Exponential</td></tr>
+      <tr><td>Any value in a range, all equally likely?</td><td>Uniform</td></tr>
+      <tr><td>A measurement that clusters around an average (heights, scores, errors)?</td><td>Normal</td></tr>
+    </tbody>
+  </table>
+  <div class="callout tip"><b>The 68-95-99.7 rule:</b> for a Normal distribution, about 68% of values fall within 1 standard deviation of the mean, 95% within 2, and 99.7% within 3. With exam scores averaging 70 and σ = 10, about 95% of students score between 50 and 90. The Normal shows up so often because adding up many small, independent effects tends to produce a bell shape.</div>
+
+  <h3>Where it shows up</h3>
+  <ul>
+    <li>Call centres and shops plan staff with Poisson counts and Exponential waiting times.</li>
+    <li>Quality control uses the Binomial (defects in a batch) and the Normal (measurement errors).</li>
+    <li>Grading, heights, blood pressure and many measurements are summarised with a mean and a standard deviation.</li>
+  </ul>
+  <div class="quizbox"></div>
+</section>
+<script>
+(() => {
+  const root = document.querySelector("#dist .w-dist");
+  const $ = s => root.querySelector(s);
+  const say = h => ($(".status").innerHTML = h);
+  const fact = k => { let f = 1; for (let i = 2; i <= k; i++) f *= i; return f; };
+  const comb = (n, k) => fact(n) / (fact(k) * fact(n - k));
+  const D = {
+    bern: { btn: "Spam or not?", name: "Bernoulli", type: "d", pname: "p (chance of spam)", min: 0.05, max: 0.95, step: 0.05, val: 0.3, fmt: v => v.toFixed(2),
+      xs: () => [0, 1], pmf: (k, p) => (k ? p : 1 - p), mean: p => p, sd: p => Math.sqrt(p * (1 - p)), xl: "1 = spam, 0 = not spam",
+      story: p => `One email: spam (1) with chance <b>${p.toFixed(2)}</b>, not spam (0) otherwise.`,
+      code: p => `p = ${p.toFixed(2)}                     # chance of "yes" (spam)
+pmf = {1: p, 0: 1 - p}         # two outcomes: 1 = yes, 0 = no
+mean = p                       # ${p.toFixed(2)}
+sd = (p * (1 - p)) ** 0.5      # ${Math.sqrt(p * (1 - p)).toFixed(2)}` },
+    binom: { btn: "Heads in 10 tosses", name: "Binomial", type: "d", pname: "p (chance of heads)", min: 0.1, max: 0.9, step: 0.05, val: 0.5, fmt: v => v.toFixed(2),
+      xs: () => [...Array(11).keys()], pmf: (k, p) => comb(10, k) * p ** k * (1 - p) ** (10 - k), mean: p => 10 * p, sd: p => Math.sqrt(10 * p * (1 - p)), xl: "number of heads",
+      story: p => `Toss 10 coins with P(heads) = ${p.toFixed(2)} and count the heads.`,
+      code: p => `from math import comb
+n, p = 10, ${p.toFixed(2)}                # 10 tosses, P(heads)
+def pmf(k): return comb(n, k) * p**k * (1 - p)**(n - k)
+mean = n * p                   # ${(10 * p).toFixed(1)}
+sd = (n * p * (1 - p)) ** 0.5  # ${Math.sqrt(10 * p * (1 - p)).toFixed(2)}` },
+    geom: { btn: "Rolls until a six", name: "Geometric", type: "d", pname: "p (chance per roll)", min: 0.1, max: 0.6, step: 0.01, val: 1 / 6, fmt: v => v.toFixed(2),
+      xs: () => [...Array(15).keys()].map(k => k + 1), pmf: (k, p) => (1 - p) ** (k - 1) * p, mean: p => 1 / p, sd: p => Math.sqrt(1 - p) / p, xl: "roll on which the first six appears",
+      story: p => `Roll until the first six (chance ${p.toFixed(2)} per roll). Shown up to roll 15.`,
+      code: p => `p = ${p.toFixed(2)}                     # chance of a six on each roll
+def pmf(k): return (1 - p)**(k - 1) * p   # first six on roll k
+mean = 1 / p                   # ${(1 / p).toFixed(1)} rolls on average
+sd = (1 - p) ** 0.5 / p        # ${(Math.sqrt(1 - p) / p).toFixed(2)}` },
+    pois: { btn: "Calls per hour", name: "Poisson", type: "d", pname: "λ (average calls per hour)", min: 0.5, max: 12, step: 0.5, val: 4, fmt: v => v.toFixed(1),
+      xs: () => [...Array(21).keys()], pmf: (k, l) => Math.exp(-l) * l ** k / fact(k), mean: l => l, sd: l => Math.sqrt(l), xl: "calls in one hour",
+      story: l => `A help desk gets ${l.toFixed(1)} calls per hour on average. How many in the next hour?`,
+      code: l => `from math import exp, factorial
+lam = ${l.toFixed(1)}                     # average calls per hour
+def pmf(k): return exp(-lam) * lam**k / factorial(k)
+mean = lam                     # ${l.toFixed(1)}
+sd = lam ** 0.5                # ${Math.sqrt(l).toFixed(2)}` },
+    unif: { btn: "Bus within 10 min", name: "Uniform", type: "c", pname: "b (latest arrival, minutes)", min: 4, max: 20, step: 1, val: 10, fmt: v => v.toFixed(0),
+      x0: 0, x1: 22, pdf: (x, b) => (x >= 0 && x <= b ? 1 / b : 0), mean: b => b / 2, sd: b => b / Math.sqrt(12), xl: "minutes until the bus",
+      story: b => `The bus comes at a random moment in the next ${b} minutes, every moment equally likely.`,
+      code: b => `a, b = 0, ${b}                   # any moment between 0 and ${b} minutes
+def pdf(x): return 1 / (b - a) if a <= x <= b else 0
+mean = (a + b) / 2             # ${(b / 2).toFixed(1)}
+sd = (b - a) / 12 ** 0.5       # ${(b / Math.sqrt(12)).toFixed(2)}` },
+    expo: { btn: "Wait for next call", name: "Exponential", type: "c", pname: "average wait (minutes)", min: 1, max: 10, step: 0.5, val: 5, fmt: v => v.toFixed(1),
+      x0: 0, x1: 25, pdf: (x, m) => (x < 0 ? 0 : Math.exp(-x / m) / m), mean: m => m, sd: m => m, xl: "minutes until the next call",
+      story: m => `Calls arrive at random, ${m.toFixed(1)} minutes apart on average. Short waits are most likely; long ones are rarer.`,
+      code: m => `from math import exp
+mean_wait = ${m.toFixed(1)}              # minutes on average
+rate = 1 / mean_wait
+def pdf(x): return rate * exp(-rate * x)
+sd = mean_wait                 # the spread equals the mean` },
+    norm: { btn: "Exam scores", name: "Normal", type: "c", pname: "σ (spread of scores)", min: 4, max: 16, step: 1, val: 10, fmt: v => v.toFixed(0),
+      x0: 20, x1: 120, pdf: (x, s) => Math.exp(-(((x - 70) / s) ** 2) / 2) / (s * Math.sqrt(2 * Math.PI)), mean: () => 70, sd: s => s, xl: "exam score", bands: true,
+      story: s => `Scores average 70 with standard deviation ${s}: about 68% fall between ${70 - s} and ${70 + s}, and 95% between ${70 - 2 * s} and ${70 + 2 * s}.`,
+      code: s => `from math import exp, pi, sqrt
+mu, sigma = 70, ${s}               # average score and spread
+def pdf(x): return exp(-((x - mu) / sigma)**2 / 2) / (sigma * sqrt(2 * pi))
+within_1sd = 0.68              # 68% between ${70 - s} and ${70 + s}
+within_2sd = 0.95              # 95% between ${70 - 2 * s} and ${70 + 2 * s}` },
+  };
+  let cur = "binom", cp;
+  Object.entries(D).forEach(([k, d]) => $(".ds-scen").append(DS.el("button", { class: "secondary always ds-b", "data-d": k, "aria-pressed": String(k === cur), onclick: () => pick(k) }, d.btn)));
+  function draw() {
+    const d = D[cur], v = +$(".ds-p").value, box = $(".ds-plot"); box.innerHTML = "";
+    $(".ds-pv").textContent = d.fmt(v);
+    $(".ds-cap").textContent = `${d.name} · ${d.type === "d" ? "discrete: bars are probabilities" : "continuous: probability = area"}`;
+    if (d.type === "d") {
+      const xs = d.xs(), ps = xs.map(k => d.pmf(k, v)), yMax = Math.max(0.1, Math.ceil(Math.max(...ps) * 10) / 10);
+      const P = KIT.plot(box, { w: 520, h: 230, x0: xs[0] - 0.7, x1: xs[xs.length - 1] + 0.7, y0: 0, y1: yMax, xl: d.xl, yl: "probability", xt: xs.length > 12 ? xs.filter(k => k % 2 === 0) : xs, yt: [0, +(yMax / 2).toFixed(2), yMax], pad: [30, 18, 34, 54] });
+      const bw = Math.min(40, (P.X(1) - P.X(0)) * 0.7);
+      xs.forEach((k, i) => P.g.append(DS.svg("rect", { x: P.X(k) - bw / 2, y: P.Y(ps[i]), width: bw, height: P.Y(0) - P.Y(ps[i]), rx: 3, fill: "var(--s1)" })));
+    } else {
+      const xs = [...Array(301).keys()].map(i => d.x0 + (d.x1 - d.x0) * i / 300), ys = xs.map(x => d.pdf(x, v));
+      const yMax = Math.max(...ys) * 1.15;
+      const P = KIT.plot(box, { w: 520, h: 230, x0: d.x0, x1: d.x1, y0: 0, y1: yMax, xl: d.xl, yl: "density", xt: d.bands ? [30, 50, 70, 90, 110] : [d.x0, Math.round((d.x0 + d.x1) / 2), d.x1], yt: [0], pad: [30, 18, 34, 54] });
+      if (d.bands) [[3, 0.12], [2, 0.2], [1, 0.32]].forEach(([k, op]) => {
+        let a = `M${P.X(70 - k * v)},${P.Y(0)}`; xs.filter(x => Math.abs(x - 70) <= k * v).forEach(x => (a += `L${P.X(x).toFixed(1)},${P.Y(d.pdf(x, v)).toFixed(1)}`)); a += `L${P.X(70 + k * v)},${P.Y(0)}Z`;
+        P.g.append(DS.svg("path", { d: a, fill: `color-mix(in srgb, var(--s3) ${op * 100}%, transparent)` }));
+        const peak = d.pdf(70, v), lx = [70, 70 + 1.5 * v, 70 + 2.5 * v][k - 1], ly = [peak * 0.4, peak * 0.14, peak * 0.05][k - 1];
+        P.g.append(DS.svg("text", { class: "lbl", x: P.X(lx) + (k === 3 ? 8 : 0), y: P.Y(ly), "text-anchor": k === 3 ? "start" : "middle", style: "font-size:11px;font-weight:700" }, ["68%", "95%", "99.7%"][k - 1]));
+      });
+      let c = ""; xs.forEach((x, i) => (c += (c ? "L" : "M") + P.X(x).toFixed(1) + "," + P.Y(ys[i]).toFixed(1)));
+      P.g.append(DS.svg("path", { class: "fit", d: c }));
+    }
+    cp = DS.code($(".code"), d.code(v), d.name.toLowerCase() + ".py");
+    cp.hl(d.code(v).split("\n").length - 1);
+    say(`${d.story(v)} Average = <b>${d.mean(v).toFixed(2)}</b>, standard deviation = <b>${d.sd(v).toFixed(2)}</b>.`);
+  }
+  function pick(k) {
+    cur = k; const d = D[k], r = $(".ds-p");
+    root.querySelectorAll(".ds-b").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.d === k)));
+    $(".ds-pname").textContent = d.pname; r.min = d.min; r.max = d.max; r.step = d.step; r.value = d.val; r.setAttribute("aria-label", d.pname);
+    draw();
+  }
+  $(".ds-p").addEventListener("input", draw);
+  pick(cur);
+  document.head.append(DS.el("style", {}, "#dist [aria-pressed=\"true\"] { background: var(--surface-2); border-color: var(--accent); box-shadow: inset 0 -2px 0 var(--accent); }"));
+
+  DS.quiz(document.querySelector("#dist .quizbox"), [
+    { q: "A help desk gets 6 calls per hour on average. Which distribution fits the number of calls in the next hour?", options: ["Normal", "Poisson", "Uniform", "Bernoulli"], answer: 1,
+      why: "Poisson models how many events happen in a fixed time when they occur at an average rate." },
+    { q: "You toss a coin 20 times and count the heads. Which distribution is this?", options: ["Binomial", "Exponential", "Geometric", "Uniform"], answer: 0,
+      why: "Binomial counts the successes in a fixed number of independent yes/no trials." },
+    { q: "Exam scores follow a Normal distribution with mean 70 and standard deviation 10. About what share score between 60 and 80?", options: ["50%", "68%", "95%", "99.7%"], answer: 1,
+      why: "60 to 80 is within 1 standard deviation of the mean, which holds about 68% of values." },
+  ]);
+})();
+</script>
+
+<!-- ===================================================================== 9 -->
+<section class="section" id="twovar" data-title="9. More than one variable">
+  <h2>9. More than one variable <small style="color:var(--muted);font-weight:500">(how two quantities move together)</small></h2>
+  <p class="lead">Often we care about two random variables at once: study hours and grades, temperature and ice cream sales. Their <b>joint distribution</b> gives the chance of each pair of values, and <b>covariance</b> and <b>correlation</b> measure whether they tend to rise and fall together.</p>
+  <p>Think of two dancers. If one steps forward whenever the other does, they move together (positive correlation). If one steps back whenever the other steps forward, they move in opposite directions (negative). If they ignore each other, there's no pattern.</p>
+
+  <h3>A joint table</h3>
+  <p>For two discrete variables, a table lists the probability of every combination. Here: weather and ice cream sales on a random summer day.</p>
+  <table class="cx">
+    <thead><tr><th></th><th>Sales high</th><th>Sales low</th><th>Total (weather)</th></tr></thead>
+    <tbody>
+      <tr><td><b>Sunny</b></td><td>0.45</td><td>0.15</td><td>0.60</td></tr>
+      <tr><td><b>Rainy</b></td><td>0.10</td><td>0.30</td><td>0.40</td></tr>
+      <tr><td><b>Total (sales)</b></td><td>0.55</td><td>0.45</td><td>1.00</td></tr>
+    </tbody>
+  </table>
+  <p>The totals at the edges give each variable on its own: P(sunny) = 0.60, P(high sales) = 0.55. Are they <b>independent</b>? If they were, P(sunny and high) would equal 0.60 × 0.55 = 0.33. It's 0.45, so no: sunny days make high sales more likely, just like dependent events in lesson 5. Two random variables are independent when every cell equals the product of its two totals.</p>
+
+  <h3>The sum rule and the product rule</h3>
+  <p>A joint table makes two rules easy to see. We write <b>P(X, Y)</b> for "X and Y together", one cell of the table. From these two rules you can derive the other rules for combining probabilities in this course, including conditional probability, the law of total probability and Bayes' theorem. They are also the starting point of probabilistic machine learning.</p>
+  <table class="cx">
+    <thead><tr><th>Rule</th><th>Formula</th><th>In words</th><th>With the table</th></tr></thead>
+    <tbody>
+      <tr><td><b>Sum rule</b> (marginalization)</td><td>P(X) = Σ<sub>Y</sub> P(X, Y)</td><td>add a row (or column) of the joint table to get one variable on its own</td><td>P(sunny) = 0.45 + 0.15 = <b>0.60</b></td></tr>
+      <tr><td><b>Product rule</b></td><td>P(X, Y) = P(Y | X) × P(X)</td><td>a joint chance = conditional chance × chance of the condition</td><td>P(sunny, high) = 0.75 × 0.60 = <b>0.45</b>, since P(high | sunny) = 0.45 ÷ 0.60 = 0.75</td></tr>
+    </tbody>
+  </table>
+  <p>The totals at the edge of the table are called <b>marginal</b> probabilities, because they sit in the margins; that's where "marginalization" comes from. You've met both rules already: the product rule is the multiplication rule from lesson 5 (extended to many variables, it's called the <i>chain rule</i>), and the law of total probability in lesson 6 is the sum rule combined with the product rule.</p>
+  <div class="callout tip"><b>Bayes' theorem from the two rules:</b> write the product rule both ways, P(X, Y) = P(Y | X) P(X) = P(X | Y) P(Y), and divide: <b>P(X | Y) = P(Y | X) P(X) ÷ P(Y)</b>, where P(Y) comes from the sum rule. With the table: P(sunny | high) = 0.75 × 0.60 ÷ 0.55 ≈ <b>0.82</b>. On a high-sales day, it was probably sunny.</div>
+
+  <h3>Covariance and correlation</h3>
+  <table class="cx">
+    <thead><tr><th>Measure</th><th>What it tells you</th><th>Values</th></tr></thead>
+    <tbody>
+      <tr><td><b>Covariance</b></td><td>the <b>direction</b>: do the two tend to be above their averages at the same time?</td><td>positive = together, negative = opposite, near 0 = no linear pattern; its size depends on the units</td></tr>
+      <tr><td><b>Correlation</b> r</td><td>direction <b>and strength</b>, without units</td><td>from −1 (perfect opposite) through 0 (none) to +1 (perfect together)</td></tr>
+    </tbody>
+  </table>
+  <p>Drag the slider to see what different correlations look like, then try the ice cream example:</p>
+  <div class="w-corr">
+  <div class="grid2">
+    <div class="card">
+      <div class="controls">
+        <button class="secondary always cr-ds" data-d="study" aria-pressed="true">📚 Study hours vs grade</button>
+        <button class="secondary always cr-ds" data-d="ice" aria-pressed="false">🍦 Ice cream vs drownings</button>
+      </div>
+      <div class="controls cr-ctl"></div>
+      <div class="viz" style="min-height:290px"><span class="caption cr-cap"></span><div class="cr-plot" style="padding-top:20px"></div>
+        <div class="meter"><span style="width:110px">correlation r</span><div class="bar" style="position:relative"><i class="cr-bar"></i></div><b class="cr-r">—</b></div>
+      </div>
+      <div class="status"></div>
+    </div>
+    <div class="code"></div>
+  </div>
+  </div>
+  <div class="callout warn"><b>Correlation is not causation.</b> Ice cream sales and drownings rise together, but ice cream doesn't cause drowning: hot weather drives both (more ice cream, more swimming). A hidden third factor like this is called a <b>confounder</b>. Correlation tells you two things move together, not why.</div>
+  <p>One more link: if two random variables are independent, their covariance and correlation are 0, because neither tells you anything about the other.</p>
+
+  <h3>Where it shows up</h3>
+  <ul>
+    <li>Finance: assets with low or negative correlation are combined to reduce risk.</li>
+    <li>Health and social research: spotting links (like exercise and blood pressure), then testing whether one actually causes the other.</li>
+    <li>Data science: checking which measurements move together before building a model.</li>
+  </ul>
+  <div class="quizbox"></div>
+</section>
+<script>
+(() => {
+  const root = document.querySelector("#twovar .w-corr");
+  const $ = s => root.querySelector(s);
+  const say = h => ($(".status").innerHTML = h);
+  const R = KIT.rng(17), N = 40;
+  const z1 = [...Array(N)].map(() => KIT.gauss(R) / 0.29), z2 = [...Array(N)].map(() => KIT.gauss(R) / 0.29);
+  const temp = [...Array(N)].map(() => 14 + R() * 20);              // °C on 40 summer days
+  const iceE = [...Array(N)].map(() => KIT.gauss(R) * 120), drE = [...Array(N)].map(() => KIT.gauss(R) * 12);
+  const mean = a => a.reduce((s, x) => s + x, 0) / a.length;
+  const cov = (a, b) => { const ma = mean(a), mb = mean(b); return a.reduce((s, x, i) => s + (x - ma) * (b[i] - mb), 0) / (a.length - 1); };
+  const corr = (a, b) => cov(a, b) / Math.sqrt(cov(a, a) * cov(b, b));
+  let ds = "study", reveal = false, cp;
+  const CODE = {
+    study: `import statistics as st
+hours = [...]                      # 40 students
+grades = [...]
+c = st.covariance(hours, grades)   # sign: do they rise together?
+r = st.correlation(hours, grades)  # strength: from -1 to +1`,
+    ice: `import statistics as st
+ice_cream = [...]                  # sales on 40 summer days
+drownings = [...]
+r = st.correlation(ice_cream, drownings)   # strongly positive...
+# ...but temperature drives both: a confounder`,
+  };
+  function data() {
+    if (ds === "study") {
+      const r = +$(".cr-s").value;
+      const xs = z1.map(z => Math.min(10, Math.max(0, 5 + 2 * z)));
+      const ys = z1.map((z, i) => Math.min(100, Math.max(20, 65 + 12 * (r * z + Math.sqrt(1 - r * r) * z2[i]))));
+      return { xs, ys, xl: "hours of study per week", yl: "grade", x0: 0, x1: 10, y0: 20, y1: 100, xt: [0, 5, 10], yt: [20, 60, 100] };
+    }
+    const xs = temp.map((t, i) => Math.max(20, 12 * t - 120 + iceE[i])), ys = temp.map((t, i) => Math.max(0, 0.9 * t - 10 + drE[i]));
+    return { xs, ys, xl: "ice cream sold per day", yl: "drownings per month", x0: 0, x1: 320, y0: 0, y1: 30, xt: [0, 150, 300], yt: [0, 15, 30] };
+  }
+  function draw() {
+    const d = data(), box = $(".cr-plot"); box.innerHTML = "";
+    const P = KIT.plot(box, { w: 520, h: 230, x0: d.x0, x1: d.x1, y0: d.y0, y1: d.y1, xl: d.xl, yl: d.yl, xt: d.xt, yt: d.yt, pad: [30, 18, 34, 54] });
+    d.xs.forEach((x, i) => {
+      const warm = ds === "ice" && reveal ? (temp[i] - 14) / 20 : null;
+      const fill = warm == null ? "var(--s1)" : `color-mix(in srgb, var(--hot) ${Math.round(warm * 100)}%, var(--s1))`;
+      P.g.append(DS.svg("circle", { class: "pt", cx: P.X(x), cy: P.Y(d.ys[i]), r: 6, style: `fill:${fill}` }));
+    });
+    const r = corr(d.xs, d.ys), c = cov(d.xs, d.ys);
+    $(".cr-r").textContent = r.toFixed(2);
+    const bar = $(".cr-bar"); bar.style.marginLeft = r >= 0 ? "50%" : (50 + r * 50) + "%"; bar.style.width = Math.abs(r) * 50 + "%";
+    bar.className = "cr-bar " + (r >= 0 ? "ok" : "hot");
+    return { r, c };
+  }
+  function describe(r) {
+    const a = Math.abs(r), dir = r > 0 ? "positive: more hours, higher grades" : "negative: more hours, lower grades";
+    return a < 0.15 ? "no clear pattern: knowing the hours tells you almost nothing about the grade" : (a > 0.7 ? "strong " : a > 0.35 ? "moderate " : "weak ") + dir;
+  }
+  function update() {
+    const { r, c } = draw();
+    if (ds === "study") { cp.hl(4, 5); say(`r = <b>${r.toFixed(2)}</b>, covariance = ${c.toFixed(1)}: ${describe(r)}.`); }
+    else if (!reveal) { cp.hl(4); say(`r = <b>${r.toFixed(2)}</b>: a strong positive correlation. Does ice cream cause drowning? Press <b>Show the hidden cause</b>.`); }
+    else { cp.hl(5); say("Colour shows the day's temperature (blue = cool, orange = hot). Hot days have both more ice cream <b>and</b> more swimming: temperature is the confounder. Correlation, not causation."); }
+  }
+  function setDs(k) {
+    ds = k; reveal = false;
+    root.querySelectorAll(".cr-ds").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.d === k)));
+    cp = DS.code($(".code"), CODE[k], k === "study" ? "correlation.py" : "confounder.py");
+    const ctl = $(".cr-ctl"); ctl.innerHTML = "";
+    if (k === "study") {
+      ctl.append(DS.el("label", { class: "inl" }, "opposite ", DS.el("input", { type: "range", class: "cr-s", min: "-1", max: "1", step: "0.05", value: "0.8", style: { width: "200px", verticalAlign: "middle" }, "aria-label": "Strength of the relationship", oninput: update }), " together"));
+      $(".cr-cap").textContent = "40 students · drag the slider";
+    } else {
+      ctl.append(DS.el("button", { class: "cr-rev", onclick: () => DS.run(root, async () => { reveal = true; update(); await DS.wait(0.3); }) }, "Show the hidden cause"));
+      $(".cr-cap").textContent = "40 summer days";
+    }
+    update();
+  }
+  root.querySelectorAll(".cr-ds").forEach(b => (b.onclick = () => { if (!root.dataset.busy) setDs(b.dataset.d); }));
+  setDs("study");
+  document.head.append(DS.el("style", {}, "#twovar [aria-pressed=\"true\"] { background: var(--surface-2); border-color: var(--accent); box-shadow: inset 0 -2px 0 var(--accent); }"));
+
+  DS.quiz(document.querySelector("#twovar .quizbox"), [
+    { q: "Ice cream sales and drownings are strongly correlated. What's the best explanation?", options: ["Ice cream causes drowning", "Drowning causes ice cream sales", "Hot weather increases both", "It's a calculation mistake"], answer: 2,
+      why: "A confounder (temperature) drives both. Correlation alone doesn't show cause." },
+    { q: "In a joint table, P(sunny, high) = 0.45 and P(sunny, low) = 0.15. What is P(sunny)?", options: ["0.30", "0.60", "0.0675", "0.45"], answer: 1,
+      why: "Sum rule (marginalization): add the row of the joint table, 0.45 + 0.15 = 0.60." },
+    { q: "Two random variables are independent. What is their correlation?", options: ["1", "−1", "0", "It can be anything"], answer: 2,
+      why: "Independent variables give no information about each other, so their covariance and correlation are 0." },
+  ]);
+})();
+</script>
+
+<!-- ===================================================================== glossary -->
+<section class="section" id="glossary" data-title="Glossary & formulas">
+  <h2>Glossary &amp; formulas</h2>
+  <p class="lead">The key terms and formulas from the course on one page. Filter by topic to revise before the final quiz.</p>
+  <style>#glossary [data-col][aria-pressed="true"] { background: var(--surface-2); color: var(--text); border-color: var(--accent); box-shadow: inset 0 -2px 0 var(--accent); }</style>
+  <h3>Glossary</h3>
+  <div class="controls gl-filters" role="group" aria-label="Filter by topic"></div>
+  <div style="overflow-x:auto"><table class="cx" id="glTable"></table></div>
+
+  <h3>Formula sheet</h3>
+  <div style="overflow-x:auto"><table class="cx">
+    <thead><tr><th>Formula</th><th>In words</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr><td><b>P(A) = favourable ÷ total</b></td><td>equally likely outcomes</td><td>P(heart) = 13/52</td></tr>
+      <tr><td><b>a × b × c</b></td><td>multiplication rule for counting choices in steps</td><td>3 × 2 × 2 = 12 outfits</td></tr>
+      <tr><td><b>n! = n × (n − 1) × … × 1</b></td><td>ways to put n things in order</td><td>3! = 6</td></tr>
+      <tr><td><b>Permutations:</b> n × (n − 1) × … (k terms)</td><td>choose k of n when order matters</td><td>choose 3 of 5 in order: 60</td></tr>
+      <tr><td><b>Combinations:</b> permutations ÷ k!</td><td>choose k of n when order doesn't matter</td><td>teams of 3 from 5: 60 ÷ 6 = 10</td></tr>
+      <tr><td><b>P(A ∪ B) = P(A) + P(B) − P(A ∩ B)</b></td><td>addition rule ("or")</td><td>heart or face card: 22/52</td></tr>
+      <tr><td><b>P(Aᶜ) = 1 − P(A)</b></td><td>complement rule ("not")</td><td>at least one six in 4 rolls: 1 − (5/6)⁴ ≈ 0.52</td></tr>
+      <tr><td><b>P(A | B) = P(A ∩ B) ÷ P(B)</b></td><td>conditional probability: zoom into B</td><td>P(spam | free) = 0.24 ÷ 0.31 ≈ 0.77</td></tr>
+      <tr><td><b>P(A ∩ B) = P(A) × P(B)</b></td><td>"and" for independent events</td><td>two heads: ½ × ½ = ¼</td></tr>
+      <tr><td><b>P(X) = Σ<sub>Y</sub> P(X, Y)</b></td><td>sum rule (marginalization)</td><td>P(sunny) = 0.45 + 0.15 = 0.60</td></tr>
+      <tr><td><b>P(X, Y) = P(Y | X) × P(X)</b></td><td>product rule</td><td>P(sunny, high) = 0.75 × 0.60 = 0.45</td></tr>
+      <tr><td><b>P(B) = Σ P(B | Aᵢ) × P(Aᵢ)</b></td><td>law of total probability</td><td>P(defect) = 0.6 × 0.02 + 0.4 × 0.05 = 0.032</td></tr>
+      <tr><td><b>P(A | B) = P(B | A) × P(A) ÷ P(B)</b></td><td>Bayes' theorem</td><td>P(sick | positive) ≈ 9 ÷ 98 ≈ 9%</td></tr>
+      <tr><td><b>E[X] = Σ x × P(X = x)</b></td><td>expected value: the long-run average</td><td>dice game: $0.33</td></tr>
+      <tr><td><b>Var(X) = Σ (x − E[X])² × P(X = x)</b>, <b>σ = √Var(X)</b></td><td>spread around the average</td><td>dice game: σ ≈ $1.49</td></tr>
+      <tr><td><b>Binomial mean n × p</b> · <b>Poisson mean λ</b> · <b>Geometric mean 1 ÷ p</b></td><td>averages of common distributions</td><td>10 tosses: 5 heads on average</td></tr>
+      <tr><td><b>68 · 95 · 99.7</b></td><td>share of a Normal within 1, 2, 3 standard deviations of the mean</td><td>scores 70 ± 10: 68% between 60 and 80</td></tr>
+      <tr><td><b>−1 ≤ r ≤ +1</b></td><td>correlation: direction and strength of a linear relationship</td><td>study hours and grades: r ≈ 0.8</td></tr>
+    </tbody>
+  </table></div>
+</section>
+<script>
+(() => {
+  // [topic (filter button), link to the lesson, term, short plain meaning], in course order.
+  const rows = [
+    ["Basics", "#why", "Probability", "a number from 0 (impossible) to 1 (certain) for how likely something is"],
+    ["Basics", "#why", "Random experiment, outcome, event", "a process with an uncertain result; one possible result; a group of outcomes"],
+    ["Basics", "#why", "Classical / frequency / subjective", "counting equally likely outcomes / long-run share / reasoned belief"],
+    ["Basics", "#why", "Law of large numbers", "with many trials, the share of an outcome settles close to its probability"],
+    ["Sets", "#sets", "Sample space Ω", "the set of all possible outcomes"],
+    ["Sets", "#sets", "Union A ∪ B / intersection A ∩ B", "A or B (or both) / A and B"],
+    ["Sets", "#sets", "Complement Aᶜ", "everything in Ω that is not in A"],
+    ["Sets", "#sets", "Mutually exclusive", "events that can't happen together: A ∩ B is empty"],
+    ["Sets", "#sets", "Venn diagram", "a picture of events as circles inside the sample space"],
+    ["Counting", "#counting", "Multiplication rule", "choices made in steps multiply: a × b × c"],
+    ["Counting", "#counting", "Factorial n!", "n × (n − 1) × … × 1, the ways to order n things"],
+    ["Counting", "#counting", "Permutation / combination", "a selection where order matters / where it doesn't"],
+    ["Rules", "#rules", "Axioms", "probabilities are between 0 and 1, P(Ω) = 1, and separate events add up"],
+    ["Rules", "#rules", "Addition rule", "P(A or B) = P(A) + P(B) − P(A and B)"],
+    ["Rules", "#rules", "Complement rule", "P(not A) = 1 − P(A); handy for \"at least one\""],
+    ["Conditional", "#conditional", "Conditional probability P(A | B)", "the chance of A once we know B happened"],
+    ["Conditional", "#conditional", "Independent events", "knowing one doesn't change the chance of the other"],
+    ["Conditional", "#conditional", "Gambler's fallacy", "wrongly believing past independent results change the next one"],
+    ["Conditional", "#bayes", "Law of total probability", "add up the chance of B over every separate way it can happen"],
+    ["Conditional", "#bayes", "Bayes' theorem", "turns P(evidence | cause) into P(cause | evidence)"],
+    ["Conditional", "#bayes", "Base rate", "how common something is before any evidence"],
+    ["Random variables", "#rv", "Random variable", "a number that depends on a random outcome"],
+    ["Random variables", "#rv", "Discrete / continuous", "separate values you can list / any value in a range"],
+    ["Random variables", "#rv", "PMF / PDF / CDF", "chance of each value / density curve (area = probability) / chance of x or less"],
+    ["Random variables", "#rv", "Expected value E[X]", "the long-run average"],
+    ["Random variables", "#rv", "Variance, standard deviation σ", "how spread out the values are; σ is in the same units as X"],
+    ["Distributions", "#dist", "Bernoulli, Binomial, Geometric", "one yes/no trial; yeses in n trials; trials until the first yes"],
+    ["Distributions", "#dist", "Poisson", "how many events in a fixed time or space"],
+    ["Distributions", "#dist", "Uniform, Exponential", "every value in a range equally likely; waiting time until the next event"],
+    ["Distributions", "#dist", "Normal", "the bell curve, set by its mean μ and standard deviation σ"],
+    ["Two variables", "#twovar", "Joint distribution", "the chance of each pair of values of two variables"],
+    ["Two variables", "#twovar", "Sum rule (marginalization)", "P(X) = Σ over Y of P(X, Y): add a row of the joint table; the totals are marginal probabilities"],
+    ["Two variables", "#twovar", "Product rule", "P(X, Y) = P(Y | X) × P(X); the multiplication rule, and with the sum rule, the source of Bayes' theorem"],
+    ["Two variables", "#twovar", "Covariance / correlation r", "direction / direction and strength (from −1 to +1) of a relationship"],
+    ["Two variables", "#twovar", "Confounder", "a hidden third factor that drives two variables, creating correlation without causation"],
+  ];
+  const topics = ["All", ...new Set(rows.map(r => r[0]))];
+  const filters = document.querySelector("#glossary .gl-filters");
+  const table = document.getElementById("glTable");
+  let only = "All";
+  function render() {
+    table.innerHTML = "";
+    table.append(DS.el("thead", {}, DS.el("tr", {}, DS.el("th", {}, "Topic"), DS.el("th", {}, "Term"), DS.el("th", {}, "Meaning"))));
+    table.append(DS.el("tbody", {}, ...rows.filter(r => only === "All" || r[0] === only).map(([t, href, term, what]) =>
+      DS.el("tr", {}, DS.el("td", {}, DS.el("a", { href }, t)), DS.el("td", {}, DS.el("b", {}, term)), DS.el("td", {}, what)))));
+  }
+  const btns = topics.map(t => {
+    const b = DS.el("button", { class: "secondary always", "data-col": t, "aria-pressed": String(t === "All") }, t === "All" ? "All topics" : t);
+    b.onclick = () => { only = t; btns.forEach(x => x.setAttribute("aria-pressed", String(x === b))); render(); };
+    filters.append(b);
+    return b;
+  });
+  render();
+})();
+</script>
+
+<section class="section" id="finalquiz" data-title="Final quiz & certificate">
+  <h2>Final quiz &amp; certificate</h2>
+  <p class="lead">This is the last step of the course: one list of 10 questions on the main concepts of every lesson. After each answer you'll see the correct option and why it's right. Score 80% or more (8 of 10) to earn a certificate with your name.</p>
+  <style>
+    #finalquiz .fq-progress { font-weight: 600; margin: 4px 0 12px; }
+    #finalquiz .fq-result { margin: 8px 0 0; }
+    #finalquiz .fq-result .controls { margin-top: 10px; }
+    #finalquiz .cert { margin: 18px auto 0; max-width: 760px; text-align: center; background: var(--surface);
+      border: 3px double var(--accent); outline: 1px solid var(--border); outline-offset: 6px;
+      border-radius: 6px; padding: 36px 28px; }
+    #finalquiz .cert .c-kicker { font-size: .8rem; letter-spacing: .2em; text-transform: uppercase; color: var(--text-2); }
+    #finalquiz .cert .c-title { font-size: 1.9rem; font-weight: 700; margin: 6px 0 18px; }
+    #finalquiz .cert .c-name { font-size: 2.1rem; font-weight: 700; color: var(--accent); margin: 10px auto 6px;
+      padding: 0 24px 6px; border-bottom: 1px solid var(--border); display: inline-block; max-width: 100%; overflow-wrap: anywhere; }
+    #finalquiz .cert .c-body { color: var(--text-2); margin: 10px 0; }
+    #finalquiz .cert .c-score { font-size: 1.15rem; font-weight: 600; margin: 14px 0 4px; }
+    #finalquiz .cert .c-levels { font-size: .9rem; color: var(--text-2); }
+    #finalquiz .cert .c-sign, #certPrint .c-sign { display: inline-flex; flex-direction: column; align-items: center; min-width: 200px; }
+    #finalquiz .cert .c-sig, #certPrint .c-sig { font: italic 400 1.9rem/1.1 "Segoe Script", "Brush Script MT", "Lucida Handwriting", "Apple Chancery", cursive;
+      padding: 0 10px 4px; border-bottom: 1px solid var(--border); align-self: stretch; text-align: center; }
+    #finalquiz .cert .c-sig { color: var(--accent); }
+    #finalquiz .cert .c-sigrole, #certPrint .c-sigrole { font-size: .85rem; margin-top: 6px; }
+    #finalquiz .cert .c-foot { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; text-align: left;
+      margin-top: 28px; font-size: .85rem; color: var(--text-2); }
+    #finalquiz .cert, #certPrint .cert { box-sizing: border-box; }
+    #certPrint { display: none; }
+    @media print {
+      html, body { background: white !important; color: black !important; }
+      body > *:not(#certPrint) { display: none !important; }
+      /* Same blue as the on-screen certificate (light-theme --accent); fixed so dark mode prints the same. */
+      #certPrint { display: block; padding: 24px; --cert-blue: #2a78d6; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      #certPrint .cert { text-align: center; max-width: 760px; margin: 0 auto; padding: 48px 32px; background: white; color: black;
+        border: 3px double var(--cert-blue); outline: 1px solid #c9d8ec; outline-offset: 6px; border-radius: 6px; font-family: var(--sans); }
+      #certPrint .c-kicker { font-size: .8rem; letter-spacing: .2em; text-transform: uppercase; color: #333; }
+      #certPrint .c-title { font-size: 1.9rem; font-weight: 700; margin: 6px 0 18px; }
+      #certPrint .c-name { font-size: 2.1rem; font-weight: 700; color: var(--cert-blue); margin: 10px auto 6px; padding: 0 24px 6px; border-bottom: 1px solid #c9d8ec; display: inline-block; }
+      #certPrint .c-body, #certPrint .c-levels, #certPrint .c-foot { color: #333; margin: 10px 0; }
+      #certPrint .c-score { font-size: 1.15rem; font-weight: 600; margin: 14px 0 4px; }
+      #certPrint .c-foot { display: flex; justify-content: space-between; align-items: baseline; margin-top: 28px; font-size: .85rem; text-align: left; }
+      #certPrint .c-sig { color: var(--cert-blue); border-bottom-color: #c9d8ec; }
+    }
+  </style>
+  <div id="finalQuizBox"></div>
+  <div class="card" id="certBox" aria-live="polite"></div>
+</section>
+
+<script>
+(() => {
+  /* ---------- final quiz: one list ---------- */
+  // 10-12 direct questions on the main concepts (no corner cases); one clearly correct answer each.
+  // Spread the correct answer index across positions 0-3.
+  // 10 direct questions on the core ideas, covering all nine lessons; one clearly correct answer each.
+  const finalQs = [
+    { q: "What does a probability of 0.75 mean?", options: ["The event is impossible", "The event happens 75 times", "The event is fairly likely: 3 chances in 4", "The event is certain"], answer: 2,
+      why: "Probability runs from 0 (impossible) to 1 (certain); 0.75 means 3 chances in 4." },
+    { q: "For one die roll, A = \"even\" and B = \"odd\". What is true?", options: ["A and B are mutually exclusive", "A ∩ B = {2, 4, 6}", "A ∪ B is empty", "A is the complement of Ω"], answer: 0,
+      why: "No roll is both even and odd, so A ∩ B is empty: the events are mutually exclusive." },
+    { q: "In how many ways can you choose 2 friends out of 4 to invite (order doesn't matter)?", options: ["8", "12", "6", "16"], answer: 2,
+      why: "Ordered picks: 4 × 3 = 12. Each pair appears 2! = 2 times, so 12 ÷ 2 = 6 combinations." },
+    { q: "P(A) = 0.4 and P(B) = 0.3, and A and B are mutually exclusive. What is P(A or B)?", options: ["0.12", "0.7", "0.1", "1"], answer: 1,
+      why: "Mutually exclusive events can't overlap, so P(A ∪ B) = 0.4 + 0.3 = 0.7." },
+    { q: "Of 40 students, 10 play chess, and 6 of the chess players also play piano. What is P(piano | chess)?", options: ["6/40", "10/40", "6/10", "4/10"], answer: 2,
+      why: "Zoom into the 10 chess players: 6 of them play piano, so P(piano | chess) = 6/10." },
+    { q: "Two events A and B are independent. What does that mean?", options: ["They can't happen together", "Knowing that one happened doesn't change the chance of the other", "They always happen together", "Their probabilities add up to 1"], answer: 1,
+      why: "Independence means P(A | B) = P(A): one event gives no information about the other." },
+    { q: "A test for a rare condition is positive. Why might the chance of having it still be low?", options: ["Because the test is random", "Because false alarms among the many healthy people can outnumber the true positives", "Because Bayes' theorem doesn't apply to tests", "Because the condition is common"], answer: 1,
+      why: "With a low base rate, even a good test produces more false positives than true positives." },
+    { q: "In a game you win $10 with probability 0.2 and $0 otherwise. What is the expected value?", options: ["$10", "$5", "$2", "$0.20"], answer: 2,
+      why: "E[X] = 10 × 0.2 + 0 × 0.8 = $2: the long-run average per game." },
+    { q: "Which distribution best fits the number of customers arriving at a shop in one hour?", options: ["Poisson", "Normal", "Bernoulli", "Uniform"], answer: 0,
+      why: "Poisson counts how many events happen in a fixed time at an average rate." },
+    { q: "Ice cream sales and sunburns are strongly correlated. What can we conclude?", options: ["Ice cream causes sunburn", "They tend to rise together; a third factor (sunny weather) may drive both", "Sunburn causes ice cream sales", "They are independent"], answer: 1,
+      why: "Correlation shows they move together, not why; sunny weather is a likely confounder." },
+  ];
+  const fq = document.getElementById("finalQuizBox");
+  const certBox = document.getElementById("certBox");
+  const REPO = "https://github.com/IbrahimSobh/introduction-to-probability";
+  const PASS = 0.8;
+  let result = { correct: 0, answered: 0, total: finalQs.length };
+  const totalQs = finalQs.length;
+  const needed = Math.ceil(PASS * totalQs);
+  let certName = "", showScore = true;
+  // The provider who signs every certificate: fixed, never taken from the learner's input.
+  const PROVIDER = "Ibrahim Sobh";
+
+  // Re-render the certificate panel from the current answers.
+  function renderCert() {
+    const { correct, answered } = result;
+    const pct = Math.round(100 * correct / totalQs);
+    certBox.innerHTML = "";
+    certBox.append(DS.el("h3", { style: { margin: "0 0 4px" } }, "🎓 Certificate"));
+    if (answered < totalQs) {
+      certBox.append(
+        DS.el("p", { class: "fq-progress" }, `${answered} of ${totalQs} questions answered · ${correct} correct so far`),
+        DS.el("p", { style: { margin: "0", color: "var(--text-2)" } },
+          `Answer all ${totalQs} questions. You need at least ${needed} correct (80%) to earn your certificate.`));
+      return;
+    }
+    if (correct < needed) {
+      certBox.append(DS.el("div", { class: "callout warn fq-result" },
+        DS.el("b", {}, `Not yet: you scored ${correct} / ${totalQs} (${pct}%).`),
+        ` You need ${needed} / ${totalQs} (80%) for the certificate, so ${needed - correct} more correct answer${needed - correct > 1 ? "s" : ""}. `,
+        "Read the explanations above, then press ", DS.el("b", {}, "Try again"), " to retake the quiz."));
+      return;
+    }
+    const nameIn = DS.el("input", { type: "text", maxlength: "60", placeholder: "Your full name", "aria-label": "Your name for the certificate", style: { minWidth: "220px" } });
+    nameIn.value = certName;
+    const err = DS.el("span", { style: { color: "var(--bad)", fontWeight: "600" } });
+    const scoreCb = DS.el("input", { type: "checkbox", style: { accentColor: "var(--accent)", margin: "0 6px 0 0" } });
+    scoreCb.checked = showScore;
+    // Toggling updates a certificate that is already on screen.
+    scoreCb.addEventListener("change", () => { showScore = scoreCb.checked; if (certName) showCert(certName, correct, pct); });
+    const make = () => {
+      const name = nameIn.value.trim().replace(/\s+/g, " ");
+      if (!name) { err.textContent = "Please enter your name first."; nameIn.focus(); return; }
+      certName = name; err.textContent = "";
+      showCert(name, correct, pct);
+    };
+    nameIn.addEventListener("keydown", e => { if (e.key === "Enter") make(); });
+    certBox.append(DS.el("div", { class: "callout tip fq-result" },
+      DS.el("b", {}, `✓ Passed! You scored ${correct} / ${totalQs} (${pct}%).`),
+      " Enter your name to get your certificate.",
+      DS.el("div", { class: "controls" }, nameIn, DS.el("button", { class: "always", onclick: make }, "Get my certificate"), err),
+      DS.el("label", { style: { display: "inline-flex", alignItems: "center", marginTop: "8px", cursor: "pointer" } },
+        scoreCb, "Show my score on the certificate")));
+    if (certName) showCert(certName, correct, pct);
+  }
+
+  function showCert(name, correct, pct) {
+    const old = certBox.querySelector(".cert-wrap");
+    if (old) old.remove();
+    const date = new Date().toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
+    const cert = DS.el("div", { class: "cert", role: "img", "aria-label": `Certificate of completion for ${name}` },
+      DS.el("div", { class: "c-kicker" }, "Certificate of completion"),
+      DS.el("div", { class: "c-title" }, "Introduction to Probability"),
+      DS.el("div", { class: "c-body" }, "This certifies that"),
+      DS.el("div", { class: "c-name" }, name),
+      DS.el("div", { class: "c-body" }, "has completed the self-paced course and passed its final quiz, covering the language of chance (outcomes, events and sets), counting, the basic probability rules, conditional probability and independence, Bayes' theorem, random variables and expected value, common distributions, and how two variables relate."),
+      showScore && DS.el("div", { class: "c-score" }, `Score: ${correct} / ${totalQs} (${pct}%)`),
+      DS.el("div", { class: "c-foot" },
+        DS.el("div", { class: "c-date" }, `Date: ${date}`),
+        DS.el("div", { class: "c-sign" },
+          DS.el("div", { class: "c-sig" }, PROVIDER),
+          DS.el("div", { class: "c-sigrole" }, "Course Provider"))));
+    const wrap = DS.el("div", { class: "cert-wrap" }, cert,
+      DS.el("div", { class: "controls", style: { justifyContent: "center", marginTop: "14px" } },
+        DS.el("button", { class: "always", onclick: () => printCert(cert) }, "Print / Save as PDF"),
+        DS.el("button", { class: "always", onclick: () => downloadCert(name, correct, pct, date) }, "Download as image")),
+      DS.el("p", { class: "cert-star", style: { textAlign: "center", margin: "14px 0 0", color: "var(--text-2)" } },
+        "🎉 Congratulations! If you enjoyed the course, ",
+        DS.el("a", { href: REPO, target: "_blank", rel: "noopener" }, "⭐ star it on GitHub"),
+        " and share it with others."));
+    certBox.append(wrap);
+  }
+
+  // Print only the certificate: copy it into a top-level element that the print CSS keeps visible.
+  function printCert(cert) {
+    let host = document.getElementById("certPrint");
+    if (!host) { host = DS.el("div", { id: "certPrint" }); document.body.append(host); }
+    host.innerHTML = "";
+    host.append(cert.cloneNode(true));
+    window.print();
+  }
+
+  // Draw the certificate onto a canvas (same look as the printed one) and save it as a PNG.
+  async function downloadCert(name, correct, pct, date) {
+    if (document.fonts && document.fonts.ready) await document.fonts.ready;
+    const W = 800, S = 2, BLUE = "#2a78d6", LINE = "#c9d8ec", GREY = "#333";
+    const SANS = 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+    const SCRIPT = '"Segoe Script", "Brush Script MT", "Lucida Handwriting", "Apple Chancery", cursive';
+    const body = "has completed the self-paced course and passed its final quiz, covering the language of chance (outcomes, events and sets), counting, the basic probability rules, conditional probability and independence, Bayes' theorem, random variables and expected value, common distributions, and how two variables relate.";
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    // Lay out (and, when draw is true, paint) the certificate; returns its height.
+    function layout(draw) {
+      const text = (s, x, y, font, color, align = "center") => {
+        ctx.font = font; ctx.fillStyle = color; ctx.textAlign = align;
+        if (draw) ctx.fillText(s, x, y);
+        return ctx.measureText(s).width;
+      };
+      const line = (x1, y1, x2, y2, color) => {
+        if (!draw) return;
+        ctx.strokeStyle = color; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+      };
+      let y = 100;
+      // Spaced capitals, drawn letter by letter so every browser spaces them the same.
+      ctx.font = `13px ${SANS}`;
+      const kicker = "CERTIFICATE OF COMPLETION", gap = 2.6;
+      const kw = [...kicker].reduce((w, c) => w + ctx.measureText(c).width + gap, -gap);
+      let kx = (W - kw) / 2;
+      for (const c of kicker) { text(c, kx, y, `13px ${SANS}`, GREY, "left"); kx += ctx.measureText(c).width + gap; }
+      y += 50; text("Introduction to Probability", W / 2, y, `700 30px ${SANS}`, "#000");
+      y += 52; text("This certifies that", W / 2, y, `16px ${SANS}`, GREY);
+      y += 52;
+      ctx.font = `700 34px ${SANS}`;
+      let shown = name;
+      while (ctx.measureText(shown).width > W - 140 && shown.length > 1) shown = shown.slice(0, -1);
+      if (shown !== name) shown = shown.trimEnd() + "…";
+      const nw = text(shown, W / 2, y, `700 34px ${SANS}`, BLUE);
+      y += 16; line(W / 2 - nw / 2 - 24, y, W / 2 + nw / 2 + 24, y, LINE);
+      ctx.font = `16px ${SANS}`;
+      const lines = [];
+      let cur = "";
+      for (const word of body.split(" ")) {
+        const next = cur ? cur + " " + word : word;
+        if (ctx.measureText(next).width > W - 100 && cur) { lines.push(cur); cur = word; } else cur = next;
+      }
+      lines.push(cur);
+      y += 18;
+      for (const l of lines) { y += 26; text(l, W / 2, y, `16px ${SANS}`, GREY); }
+      if (showScore) { y += 38; text(`Score: ${correct} / ${totalQs} (${pct}%)`, W / 2, y, `600 18px ${SANS}`, "#000"); }
+      y += 64;
+      text(`Date: ${date}`, 60, y + 4, `13.5px ${SANS}`, GREY, "left");
+      const sx = W - 170;
+      const sw = Math.max(200, text(PROVIDER, sx, y, `italic 30px ${SCRIPT}`, BLUE) + 20);
+      line(sx - sw / 2, y + 12, sx + sw / 2, y + 12, LINE);
+      text("Course Provider", sx, y + 34, `13.5px ${SANS}`, GREY);
+      const H = y + 80;
+      if (draw) {
+        // Thin outer frame, then the double blue border, as on the printed certificate.
+        ctx.strokeStyle = LINE; ctx.lineWidth = 1; ctx.beginPath(); ctx.roundRect(14.5, 14.5, W - 29, H - 29, 10); ctx.stroke();
+        ctx.strokeStyle = BLUE;
+        for (const i of [21.5, 24.5]) { ctx.beginPath(); ctx.roundRect(i, i, W - 2 * i, H - 2 * i, 6); ctx.stroke(); }
+      }
+      return H;
+    }
+
+    const H = layout(false);
+    canvas.width = W * S; canvas.height = H * S;
+    ctx.scale(S, S);
+    ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, W, H);
+    ctx.textBaseline = "alphabetic";
+    layout(true);
+
+    const slug = name.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, "-").replace(/^-+|-+$/g, "") || "certificate";
+    canvas.toBlob(blob => {
+      const a = DS.el("a", { href: URL.createObjectURL(blob), download: `certificate-${slug}.png` });
+      document.body.append(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    }, "image/png");
+  }
+
+  const qBox = DS.el("div");
+  const reset = () => {
+    qBox.innerHTML = "";
+    result = { correct: 0, answered: 0, total: totalQs };
+    DS.quiz(qBox, finalQs, r => { result = r; renderCert(); });
+  };
+  fq.append(DS.el("div", { class: "card", style: { marginBottom: "16px" } },
+    DS.el("div", { style: { display: "flex", alignItems: "baseline", gap: "12px", flexWrap: "wrap" } },
+      DS.el("h3", { style: { margin: "0" } }, "Final quiz"),
+      DS.el("span", { style: { color: "var(--text-2)", flex: "1" } }, `${totalQs} questions covering every lesson.`),
+      DS.el("button", { class: "secondary always", onclick: reset }, "Try again")),
+    qBox));
+  reset();
+})();
+</script>
+
+<footer>Introduction to Probability — a free, self-paced course by Ibrahim Sobh. Every formula comes with a worked example; the code panels are short Python sketches of the same calculation. Single self-contained file; works offline.<br><a href="https://github.com/IbrahimSobh/introduction-to-probability" target="_blank" rel="noopener">Source on GitHub</a> · ⭐ Star the repo if you found it useful.</footer>
+</main>
+</div>
+
+<script>
+/* Build the sidebar from every section that has a data-title, and track the current one. */
+(() => {
+  const nav = document.getElementById("nav");
+  const sections = [...document.querySelectorAll("section[data-title]")];
+  const links = sections.map(s => {
+    const a = DS.el("a", { href: "#" + s.id }, s.dataset.title);
+    nav.append(a);
+    return a;
+  });
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (en.isIntersecting) {
+        links.forEach(l => {
+          const on = l.getAttribute("href") === "#" + en.target.id;
+          l.classList.toggle("current", on);
+          // In the narrow-screen chip bar, keep the current chip visible (horizontal scroll only).
+          if (on && nav.scrollWidth > nav.clientWidth) {
+            const left = l.offsetLeft - (nav.clientWidth - l.offsetWidth) / 2;
+            nav.scrollTo({ left: Math.max(0, left), behavior: DS.reducedMotion() ? "auto" : "smooth" });
+          }
+        });
+      }
+    });
+  }, { rootMargin: "-40% 0px -55% 0px" });
+  sections.forEach(s => io.observe(s));
+})();
+</script>
+</body>
+</html>
