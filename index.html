@@ -674,14 +674,14 @@ const KIT = (() => {
 
   <h3>The words we use</h3>
   <p>Our first examples use a coin and a die. A <b>coin</b> has two sides, called heads and tails; a fair coin lands on each side with the same chance. A <b>die</b> (plural: dice) is a small cube whose six faces show the numbers 1 to 6. When you roll it, one face ends up on top, and on a fair die each of the six numbers has the same chance.</p>
-  <table class="cx">
+  <div style="overflow-x:auto"><table class="cx">
     <thead><tr><th>Term</th><th>Meaning</th><th>Example (rolling a die)</th></tr></thead>
     <tbody>
       <tr><td><b>Random experiment</b></td><td>anything with an uncertain result that we can repeat</td><td>rolling a die</td></tr>
       <tr><td><b>Outcome</b></td><td>one possible result</td><td>rolling a 4</td></tr>
       <tr><td><b>Event</b></td><td>a group of outcomes we care about</td><td>"an even number": 2, 4 or 6</td></tr>
     </tbody>
-  </table>
+  </table></div>
 
   <h3>See it settle: the law of large numbers</h3>
   <p>Flip a fair coin a few times and the share of heads jumps around. Flip it many times and the share settles close to 50%. Try it with a coin, or switch to the die and watch the share of sixes settle near 1/6:</p>
@@ -711,14 +711,14 @@ const KIT = (() => {
 
   <h3>Three ways to find a probability</h3>
   <p>From here on we write the probability of an event in short as <b>P(event)</b>. For example, P(heads) means "the probability of heads", and P(late) means "the probability that the bus is late". The sign ≈ means "about".</p>
-  <table class="cx">
+  <div style="overflow-x:auto"><table class="cx">
     <thead><tr><th>Approach</th><th>How it works</th><th>Example</th></tr></thead>
     <tbody>
       <tr><td><b>Classical</b></td><td>count the outcomes, when they are all equally likely</td><td>a fair coin: 1 of 2 outcomes is heads, so P(heads) = ½</td></tr>
       <tr><td><b>Frequency</b></td><td>use the share of times it happened in many repeated trials</td><td>the bus was late on 6 of the last 50 days, so P(late) ≈ 6/50 = 12%</td></tr>
       <tr><td><b>Subjective</b></td><td>a reasoned degree of belief, when we can't count or repeat</td><td>"I'm 80% sure this project will finish on time"</td></tr>
     </tbody>
-  </table>
+  </table></div>
   <p>A weather forecast mixes these ideas: forecasters look at how often it rained on past days with similar conditions (frequency), using computer models and expert judgement.</p>
 
   <h3>Where it shows up</h3>
@@ -844,14 +844,14 @@ print(share)                            # close to 1/6 = 0.167`,
 
   <h3>Union, intersection and complement</h3>
   <p>We name events with capital letters, like A and B. In the table, A is "the roll is even" = {2, 4, 6} and B is "the roll is greater than 3" = {4, 5, 6}.</p>
-  <table class="cx">
+  <div style="overflow-x:auto"><table class="cx">
     <thead><tr><th>Operation</th><th>Symbol</th><th>In words</th><th>Die example (A = even, B = greater than 3)</th></tr></thead>
     <tbody>
       <tr><td><b>Union</b></td><td>A ∪ B</td><td>A <b>or</b> B (or both)</td><td>{2, 4, 5, 6}</td></tr>
       <tr><td><b>Intersection</b></td><td>A ∩ B</td><td>A <b>and</b> B</td><td>{4, 6}</td></tr>
       <tr><td><b>Complement</b></td><td>Aᶜ</td><td><b>not</b> A</td><td>{1, 3, 5}</td></tr>
     </tbody>
-  </table>
+  </table></div>
   <p>A <b>Venn diagram</b> draws Ω as a box and each event as a circle, so these operations become regions you can see. The demo has three examples: a die roll; a class of 30 students, where some take math and some take physics; and a die roll split into even and odd numbers. Pick an example and an operation:</p>
 
   <div class="w-venn">
@@ -1026,7 +1026,7 @@ omega - A                    # complement: {1, 3, 5}`, lines: { A: 2, B: 3, unio
   <p>Now suppose we only want a <b>team</b> of 3, where nobody has a special place. The six orders ABC, ACB, BAC, BCA, CAB and CBA all describe the same team: A, B and C. So the 60 ordered picks count each team several times. How many times? That's the number of ways to put 3 people in order, and it is the multiplication rule again: 3 choices for who goes first, then 2, then 1, so 3 × 2 × 1 = <b>6</b>.</p>
   <p>This "count down to 1" product has a name: the <b>factorial</b>, written n! and read "n factorial". n! = n × (n − 1) × … × 1 is the number of ways to put n things in order, so 3! = 6.</p>
   <p>Every team appears 3! = 6 times among the 60 ordered picks, so the number of different teams is 60 ÷ 6 = <b>10</b>. These 10 teams are the combinations of 3 people from 5: the order doesn't count.</p>
-  <table class="cx">
+  <div style="overflow-x:auto"><table class="cx">
     <thead><tr><th></th><th>Permutations</th><th>Combinations</th></tr></thead>
     <tbody>
       <tr><td><b>Order matters?</b></td><td>yes: ABC and CBA are different</td><td>no: ABC and CBA are the same group</td></tr>
@@ -1034,16 +1034,16 @@ omega - A                    # complement: {1, 3, 5}`, lines: { A: 2, B: 3, unio
       <tr><td><b>Choose 3 of 5</b></td><td>5 × 4 × 3 = <b>60</b></td><td>60 ÷ 3! = <b>10</b></td></tr>
       <tr><td><b>Examples</b></td><td>gold, silver and bronze medals; a running order</td><td>a team, a handshake, pizza toppings</td></tr>
     </tbody>
-  </table>
+  </table></div>
   <p><b>How the three tools fit together:</b> each one is built from the one before it.</p>
-  <table class="cx">
+  <div style="overflow-x:auto"><table class="cx">
     <thead><tr><th>Tool</th><th>How to count</th><th>Example</th></tr></thead>
     <tbody>
       <tr><td><b>Multiplication rule</b></td><td>the basic idea: multiply the number of choices at each step</td><td>meals: 3 starters × 4 mains × 2 desserts = <b>24</b></td></tr>
       <tr><td><b>Permutations</b> (order matters)</td><td>the multiplication rule with one choice fewer at each step; for k picks from n: n × (n − 1) × … (k numbers)</td><td>3 of 5 in order: 5 × 4 × 3 = <b>60</b></td></tr>
       <tr><td><b>Combinations</b> (order doesn't matter)</td><td>permutations ÷ k!, which removes the repeated orders of each group</td><td>teams of 3 from 5: 60 ÷ 3! = 60 ÷ 6 = <b>10</b></td></tr>
     </tbody>
-  </table>
+  </table></div>
   <div class="callout tip">Ask yourself: "If I swap two of my choices, is it a different result?" If yes, order matters (permutation). If no, it's a combination: count the arrangements, then divide by the number of ways to order the chosen items.</div>
 
   <p>The demo below has two modes. <b>Outfits</b> builds outfits from 3 shirts, 2 pairs of trousers and 2 pairs of shoes, using the multiplication rule (3 × 2 × 2 = 12). <b>Team of 3</b> repeats the example above: it lists the 60 ordered picks (permutations), groups the ones with the same 3 people, and ends with the 10 teams (combinations).</p>
@@ -1187,14 +1187,14 @@ comb(5, 3)             # order doesn't: 60 / 3! = 10 teams`, "counting.py");
   <p>Everything else follows from these three axioms.</p>
   <p>The examples below use a standard deck of playing cards. In case you haven't used one: a deck has <b>52 cards</b>, split into 4 <b>suits</b> (groups, each with its own symbol): ♥ hearts and ♦ diamonds are red, ♠ spades and ♣ clubs are black. Each suit has the same 13 <b>ranks</b>: A (ace), 2, 3, 4, 5, 6, 7, 8, 9, 10, J (jack), Q (queen) and K (king). J, Q and K show a picture of a person, so they are called <b>face cards</b>: 3 in each suit, 12 in the whole deck. Every card appears exactly once, so 4 suits × 13 ranks = 52 cards.</p>
   <p>In practice, the rules you'll use most are:</p>
-  <table class="cx">
+  <div style="overflow-x:auto"><table class="cx">
     <thead><tr><th>Rule</th><th>Formula</th><th>Example with a deck of 52 cards</th></tr></thead>
     <tbody>
       <tr><td><b>Equally likely outcomes</b></td><td>P(A) = favourable ÷ total</td><td>P(heart) = 13/52 = 1/4</td></tr>
       <tr><td><b>Addition rule</b></td><td>P(A ∪ B) = P(A) + P(B) − P(A ∩ B)</td><td>P(heart or face card) = 13/52 + 12/52 − 3/52 = 22/52</td></tr>
       <tr><td><b>Complement rule</b></td><td>P(Aᶜ) = 1 − P(A)</td><td>P(not a heart) = 1 − 13/52 = 39/52</td></tr>
     </tbody>
-  </table>
+  </table></div>
   <p>Why subtract P(A ∩ B)? The cards that are both hearts and face cards (J♥, Q♥, K♥) were counted once in "hearts" and once in "face cards". Subtracting them once counts each card exactly once. See it on the deck:</p>
 
   <div class="w-cards">
@@ -1335,25 +1335,25 @@ p_not = 1 - len(hearts) / 52                     # 39/52`, "cards.py");
 
   <h3>The formula and the multiplication rule</h3>
   <p>The numbers below come from the demo: of the 100 emails, 30 are spam, 31 contain "free", and 24 are both spam and contain "free". So P(spam) = 0.30, P(free) = 0.31, P(spam and free) = 0.24, and P(free | spam) = 24/30 = 0.80.</p>
-  <table class="cx">
+  <div style="overflow-x:auto"><table class="cx">
     <thead><tr><th>Rule</th><th>Formula</th><th>With the emails</th></tr></thead>
     <tbody>
       <tr><td><b>Conditional probability</b></td><td>P(A | B) = P(A ∩ B) ÷ P(B)</td><td>P(spam | free) = 0.24 ÷ 0.31 ≈ 0.77</td></tr>
       <tr><td><b>Multiplication rule for probabilities</b> (also called the <b>product rule</b>)</td><td>P(A ∩ B) = P(B) × P(A | B)</td><td>P(spam and free) = 0.30 × 0.80 = 0.24</td></tr>
     </tbody>
-  </table>
+  </table></div>
   <p>Careful: this is a different rule from the counting rule in lesson 3, even though both are called a multiplication rule. Lesson 3 multiplies <i>numbers of choices</i>; this one multiplies <i>probabilities</i>. The second row is just the first row turned around: multiply both sides of the conditional formula by P(B).</p>
 
   <h3>Independent events</h3>
   <p>Two events are <b>independent</b> when knowing one doesn't change the chance of the other: P(A | B) = P(A). Then the multiplication rule becomes simply <b>P(A ∩ B) = P(A) × P(B)</b>.</p>
-  <table class="cx">
+  <div style="overflow-x:auto"><table class="cx">
     <thead><tr><th>Independent</th><th>Not independent (dependent)</th></tr></thead>
     <tbody>
       <tr><td>two separate coin flips</td><td>"spam" and "contains free"</td></tr>
       <tr><td>rolling a die and drawing a card</td><td>"cloudy" and "rain"</td></tr>
       <tr><td>drawing a card, putting it back, then drawing again</td><td>drawing two cards without putting the first back</td></tr>
     </tbody>
-  </table>
+  </table></div>
   <p>For example, the chance of two heads in two flips is ½ × ½ = ¼, because the second flip doesn't care about the first.</p>
 
   <h3>The gambler's fallacy</h3>
@@ -1611,7 +1611,7 @@ p_sick_given_pos = true_pos / positives   # Bayes: 9 / 98 = 9%`, "medical_test.p
   <p>A shop owner can't know how many customers will come in the next hour, but after many hours she knows the pattern: usually 8 to 12, rarely more than 20, and about 10 on average. A random variable and its distribution describe exactly that kind of pattern.</p>
 
   <h3>Discrete and continuous</h3>
-  <table class="cx">
+  <div style="overflow-x:auto"><table class="cx">
     <thead><tr><th></th><th>Discrete</th><th>Continuous</th></tr></thead>
     <tbody>
       <tr><td><b>Values</b></td><td>separate values you can list: 0, 1, 2, …</td><td>any value in a range, like 3.27</td></tr>
@@ -1619,7 +1619,7 @@ p_sick_given_pos = true_pos / positives   # Bayes: 9 / 98 = 9%`, "medical_test.p
       <tr><td><b>Described by</b></td><td><b>PMF</b> (probability mass function): P(X = x), the chance of each possible value x (capital X is the random variable; small x stands for one particular value it can take, like 3)</td><td><b>PDF</b> (probability density function): a curve; probabilities are <b>areas</b> under it</td></tr>
       <tr><td><b>Both have</b></td><td colspan="2"><b>CDF</b> (cumulative distribution function): P(X ≤ x), the chance of getting x or less. It rises from 0 to 1.</td></tr>
     </tbody>
-  </table>
+  </table></div>
 
   <h3>A simple dice game</h3>
   <p>Roll a die. On a 6 you win 3 points; on a 4 or 5 you win 1 point; on 1, 2 or 3 you lose 1 point. Your winnings X is a discrete random variable with three values. Is the game worth playing?</p>
@@ -1646,14 +1646,14 @@ p_sick_given_pos = true_pos / positives   # Bayes: 9 / 98 = 9%`, "medical_test.p
   </div>
 
   <h3>Expected value, variance and standard deviation</h3>
-  <table class="cx">
+  <div style="overflow-x:auto"><table class="cx">
     <thead><tr><th>Measure</th><th>What it tells you</th><th>How to compute (discrete; Σ means "add up over all values")</th><th>Dice game</th></tr></thead>
     <tbody>
       <tr><td><b>Expected value</b> E[X]</td><td>the long-run average: the "centre" of the distribution</td><td>Σ value × probability</td><td>≈ <b>0.33</b> points per game</td></tr>
       <tr><td><b>Variance</b> Var(X)</td><td>how spread out the values are around E[X]</td><td>Σ (value − E[X])² × probability</td><td>≈ 2.22</td></tr>
       <tr><td><b>Standard deviation</b> σ</td><td>the typical distance from the average, in the same units as X</td><td>√Var(X)</td><td>≈ <b>1.49</b> points</td></tr>
     </tbody>
-  </table>
+  </table></div>
   <p><b>Working it out for the dice game.</b> First the chance of each value: a 6 is 1 face of 6, so P(win 3) = 1/6; a 4 or 5 is 2 faces, so P(win 1) = 2/6; a 1, 2 or 3 is 3 faces, so P(lose 1) = 3/6.</p>
   <ul>
     <li><b>Expected value:</b> multiply each value by its chance and add up: 3 × 1/6 + 1 × 2/6 + (−1) × 3/6 = (3 + 2 − 3) ÷ 6 = 2/6 ≈ <b>0.33</b>.</li>
@@ -1780,7 +1780,7 @@ print(sum(games) / len(games))       # average: close to 0.33`, "dice_game.py");
   </div>
 
   <h3>The seven distributions at a glance</h3>
-  <table class="cx">
+  <div style="overflow-x:auto"><table class="cx">
     <thead><tr><th>Distribution</th><th>Type</th><th>Counts or measures…</th><th>Parameter(s)</th><th>Average</th></tr></thead>
     <tbody>
       <tr><td><b>Bernoulli</b></td><td>discrete</td><td>one yes/no trial (1 = yes, 0 = no)</td><td>p = chance of yes</td><td>p</td></tr>
@@ -1791,10 +1791,10 @@ print(sum(games) / len(games))       # average: close to 0.33`, "dice_game.py");
       <tr><td><b>Exponential</b></td><td>continuous</td><td>waiting time until the next event</td><td>average wait</td><td>the average wait</td></tr>
       <tr><td><b>Normal</b></td><td>continuous</td><td>values that cluster around an average in a bell shape</td><td>μ ("mu", the <b>mean</b>: another word for the average), σ (standard deviation)</td><td>μ</td></tr>
     </tbody>
-  </table>
+  </table></div>
 
   <h3>How to choose</h3>
-  <table class="cx">
+  <div style="overflow-x:auto"><table class="cx">
     <thead><tr><th>Ask yourself…</th><th>Use</th></tr></thead>
     <tbody>
       <tr><td>Is it one yes/no event?</td><td>Bernoulli</td></tr>
@@ -1805,7 +1805,7 @@ print(sum(games) / len(games))       # average: close to 0.33`, "dice_game.py");
       <tr><td>Any value in a range, all equally likely?</td><td>Uniform</td></tr>
       <tr><td>A measurement that clusters around an average (heights, scores, errors)?</td><td>Normal</td></tr>
     </tbody>
-  </table>
+  </table></div>
   <div class="callout tip"><b>The 68-95-99.7 rule:</b> for a Normal distribution, about 68% of values fall within 1 standard deviation of the mean, 95% within 2, and 99.7% within 3. With exam scores averaging 70 and σ = 10, about 95% of students score between 50 and 90 (70 − 2 × 10 and 70 + 2 × 10). The Normal shows up so often because adding up many small, independent effects tends to produce a bell shape.</div>
 
   <h3>Where it shows up</h3>
@@ -1935,36 +1935,36 @@ within_2sd = 0.95              # 95% between ${70 - 2 * s} and ${70 + 2 * s}` },
 
   <h3>A joint table</h3>
   <p>For two discrete variables, a table lists the probability of every combination. Here: weather and ice cream sales on a random summer day.</p>
-  <table class="cx">
+  <div style="overflow-x:auto"><table class="cx">
     <thead><tr><th></th><th>Sales high</th><th>Sales low</th><th>Total (weather)</th></tr></thead>
     <tbody>
       <tr><td><b>Sunny</b></td><td>0.45</td><td>0.15</td><td>0.60</td></tr>
       <tr><td><b>Rainy</b></td><td>0.10</td><td>0.30</td><td>0.40</td></tr>
       <tr><td><b>Total (sales)</b></td><td>0.55</td><td>0.45</td><td>1.00</td></tr>
     </tbody>
-  </table>
+  </table></div>
   <p>The totals at the edges give each variable on its own: P(sunny) = 0.60, P(high sales) = 0.55. Are they <b>independent</b>? If they were, P(sunny and high) would equal 0.60 × 0.55 = 0.33. It's 0.45, so no: sunny days make high sales more likely, just like dependent events in lesson 5. Two random variables are independent when every cell equals the product of its two totals.</p>
 
   <h3>The sum rule and the product rule</h3>
   <p>A joint table makes two rules easy to see. We write <b>P(X, Y)</b> for "X and Y together", one cell of the table. From these two rules you can derive the other rules for combining probabilities in this course, including conditional probability, the law of total probability and Bayes' theorem. They are also the starting point of many AI methods. Σ with a small Y under it means: add up over every value of Y (here, over "sales high" and "sales low").</p>
-  <table class="cx">
+  <div style="overflow-x:auto"><table class="cx">
     <thead><tr><th>Rule</th><th>Formula</th><th>In words</th><th>With the table</th></tr></thead>
     <tbody>
       <tr><td><b>Sum rule</b> (marginalization)</td><td>P(X) = Σ<sub>Y</sub> P(X, Y)</td><td>add a row (or column) of the joint table to get one variable on its own</td><td>P(sunny) = 0.45 + 0.15 = <b>0.60</b></td></tr>
       <tr><td><b>Product rule</b></td><td>P(X, Y) = P(Y | X) × P(X)</td><td>a joint chance = conditional chance × chance of the condition</td><td>P(sunny, high) = 0.75 × 0.60 = <b>0.45</b>, since P(high | sunny) = 0.45 ÷ 0.60 = 0.75</td></tr>
     </tbody>
-  </table>
+  </table></div>
   <p>The totals at the edge of the table are called <b>marginal</b> probabilities, because they sit in the margins; that's where "marginalization" comes from. You've met both rules already: the product rule is the multiplication rule for probabilities from lesson 5, and the law of total probability in lesson 6 is the sum rule combined with the product rule.</p>
   <div class="callout tip"><b>Bayes' theorem from the two rules:</b> write the product rule both ways, P(X, Y) = P(Y | X) P(X) = P(X | Y) P(Y), and divide: <b>P(X | Y) = P(Y | X) P(X) ÷ P(Y)</b>, where P(Y) comes from the sum rule. With the table: P(sunny | high) = 0.75 × 0.60 ÷ 0.55 ≈ <b>0.82</b>. On a high-sales day, it was probably sunny.</div>
 
   <h3>Covariance and correlation</h3>
-  <table class="cx">
+  <div style="overflow-x:auto"><table class="cx">
     <thead><tr><th>Measure</th><th>What it tells you</th><th>Values</th></tr></thead>
     <tbody>
       <tr><td><b>Covariance</b></td><td>the <b>direction</b>: do the two tend to be above their averages at the same time?</td><td>positive = together, negative = opposite, near 0 = no straight-line pattern; its size depends on the units</td></tr>
       <tr><td><b>Correlation</b> r</td><td>direction <b>and strength</b>, without units</td><td>from −1 (perfect opposite) through 0 (none) to +1 (perfect together)</td></tr>
     </tbody>
-  </table>
+  </table></div>
   <p>Drag the slider to see what different correlations look like, then try the ice cream example:</p>
   <div class="w-corr">
   <div class="grid2">
