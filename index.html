@@ -670,9 +670,10 @@ const KIT = (() => {
 <section class="section" id="why" data-title="1. Why probability?">
   <h2>1. Why probability? <small style="color:var(--muted);font-weight:500">(measuring uncertainty)</small></h2>
   <p class="lead"><b>Probability</b> is a number between 0 and 1 that says how likely something is: 0 means it can't happen, 1 means it's certain, and ½ means it's as likely as not. We often write it as a percentage, from 0% to 100%.</p>
-  <p>Life is full of uncertainty: will it rain, will the bus be late, will the coin land heads? We can't know the answer in advance, but we can measure how likely each answer is. A forecast of "70% chance of rain" doesn't promise rain; it says that rain is more likely than not, so an umbrella is a good idea.</p>
+  <p>Life is full of uncertainty: will it rain, will the bus be late, which side will a tossed coin land on? We can't know the answer in advance, but we can measure how likely each answer is. A forecast of "70% chance of rain" doesn't promise rain; it says that rain is more likely than not, so an umbrella is a good idea.</p>
 
   <h3>The words we use</h3>
+  <p>Our first examples use a coin and a die. A <b>coin</b> has two sides, called heads and tails; a fair coin lands on each side with the same chance. A <b>die</b> (plural: dice) is a small cube whose six faces show the numbers 1 to 6. When you roll it, one face ends up on top, and on a fair die each of the six numbers has the same chance.</p>
   <table class="cx">
     <thead><tr><th>Term</th><th>Meaning</th><th>Example (rolling a die)</th></tr></thead>
     <tbody>
@@ -1211,7 +1212,16 @@ comb(5, 3)             # order doesn't: 60 / 3! = 10 teams`, "counting.py");
   </div>
 
   <h3>The complement trick: "at least one six"</h3>
-  <p>What's the chance of rolling at least one six in several rolls? Counting all the ways to get one, two, three… sixes is hard. The complement is easy: "at least one six" is the opposite of "no six at all". Each roll has a 5/6 chance of not being a six, and rolls don't affect each other (they are <i>independent</i>, more in lesson 5), so P(no six in n rolls) = (5/6)ⁿ.</p>
+  <p>The complement rule from the table above is most useful when an event is hard to count directly but its opposite is easy. This example leaves the cards and uses a die: the six-sided cube from lesson 1, with faces 1 to 6.</p>
+  <p><b>The question:</b> roll a die 4 times. What's the chance that <b>at least one</b> of the 4 rolls shows a six? "At least one" means one six, two sixes, three sixes or four sixes: any number of sixes except zero.</p>
+  <p>Counting each of those cases is long. The opposite is much simpler: the opposite of "at least one six" is "<b>no six at all</b>". By the complement rule, P(at least one six) = 1 − P(no six). So we only need P(no six), and the counting tools from lesson 3 give it:</p>
+  <ol class="ex">
+    <li><b>All possible results:</b> each roll can show any of 6 faces, so by the multiplication rule 4 rolls can give 6 × 6 × 6 × 6 = <b>1,296</b> different sequences (like 3, 6, 1, 1). On a fair die they are all equally likely.</li>
+    <li><b>Results with no six:</b> each roll must show one of the other 5 faces (1, 2, 3, 4 or 5), so there are 5 × 5 × 5 × 5 = <b>625</b> sequences with no six.</li>
+    <li><b>P(no six)</b> = 625 ÷ 1,296 ≈ <b>0.482</b>. This is the same as (5/6) × (5/6) × (5/6) × (5/6): for each roll, 5 of the 6 faces avoid a six. Multiplying 5/6 by itself 4 times is written (5/6)⁴, and for n rolls it is (5/6)ⁿ.</li>
+    <li><b>The answer:</b> P(at least one six) = 1 − 0.482 = <b>0.518</b>, a little more than half.</li>
+  </ol>
+  <p>Move the slider to change the number of rolls. The green bar is P(at least one six), the orange bar is P(no six), and the two always add up to 1.</p>
   <div class="card w-six" style="margin:12px 0">
     <div class="controls">
       <label class="inl">number of rolls <input type="range" class="sx-n" min="1" max="20" value="4" style="width:180px;vertical-align:middle" aria-label="Number of rolls"> <b class="sx-v" style="font-family:var(--mono)">4</b></label>
@@ -1278,7 +1288,7 @@ p_not = 1 - len(hearts) / 52                     # 39/52`, "cards.py");
     s$(".sx-v").textContent = n;
     s$(".sx-bar").style.width = (p * 100).toFixed(1) + "%"; s$(".sx-p").textContent = p.toFixed(3);
     s$(".sx-bar2").style.width = (q * 100).toFixed(1) + "%"; s$(".sx-q").textContent = q.toFixed(3);
-    s$(".sx-status").innerHTML = `With <b>${n}</b> roll${n > 1 ? "s" : ""}: 1 − (5/6)<sup>${n}</sup> = <b>${p.toFixed(3)}</b>` +
+    s$(".sx-status").innerHTML = `With <b>${n}</b> roll${n > 1 ? "s" : ""}: P(no six) = (5/6)<sup>${n}</sup> = ${q.toFixed(3)}, so P(at least one six) = 1 − ${q.toFixed(3)} = <b>${p.toFixed(3)}</b>` +
       (n === 4 ? ": just over half. With 4 rolls, a six is slightly more likely than not." : n < 4 ? ": less likely than not." : p > 0.95 ? ": almost certain, but never quite 1." : ".");
   }
   s$(".sx-n").addEventListener("input", upd); upd();
