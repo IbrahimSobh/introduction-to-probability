@@ -1464,46 +1464,53 @@ p_both = p_spam * p_free_given_spam       # multiplication rule: 0.24`, "spam.py
   <p>Think of a smoke alarm. It almost always beeps when there's a fire, but it also beeps for burnt toast. When it beeps, how likely is a real fire? It depends on how often each cause happens, and burnt toast is far more common than fires.</p>
 
   <h3>The law of total probability</h3>
-  <p>Example: a factory has two machines. Machine 1 makes 60% of the items and 2% of its items are defective (faulty); machine 2 makes 40% and 5% of its items are defective. What share of all items is defective?</p>
-  <p>A defective item comes either from machine 1 or from machine 2, never from both, so we can work out each way on its own and add the results. "2% of its items are defective" is a conditional probability: P(defective | machine 1) = 0.02. To get the chance that an item is made by machine 1 <b>and</b> is defective, use the multiplication rule for probabilities from lesson 5 (also called the <b>product rule</b>), P(A ∩ B) = P(B) × P(A | B):</p>
+  <p>Back to the smoke alarm, now with numbers. Picture 1,000 evenings in one kitchen:</p>
   <ul>
-    <li>P(defective ∩ machine 1) = P(machine 1) × P(defective | machine 1) = 0.60 × 0.02 = 0.012</li>
-    <li>P(defective ∩ machine 2) = P(machine 2) × P(defective | machine 2) = 0.40 × 0.05 = 0.020</li>
+    <li>A real <b>fire</b> happens on <b>2</b> evenings, and the alarm beeps every time: <b>2 beeps</b>.</li>
+    <li><b>Burnt toast</b> happens on <b>100</b> evenings, and its smoke sets the alarm off 30% of the time: 30% of 100 = <b>30 beeps</b>.</li>
+    <li>On the other <b>898</b> evenings nothing happens and the alarm stays quiet. (To keep it simple, a fire and burnt toast never happen on the same evening.)</li>
   </ul>
-  <p>Adding the two ways gives P(defective) = 0.012 + 0.020 = <b>0.032</b>, so 3.2% of all items are defective. The table below shows the same steps.</p>
-  <p>In general: if something can happen in several separate ways, its total probability is the sum over those ways: <b>P(B) = P(B | A₁) × P(A₁) + P(B | A₂) × P(A₂) + …</b>. Here B is the event we care about (a defect), and A₁, A₂, … are the separate ways it can happen (machine 1, machine 2). The small numbers just number the ways. They must be mutually exclusive and cover every case.</p>
+  <p>How often does the alarm beep? A beep comes either from a fire or from toast, never from both, so we count each way on its own and add them: 2 + 30 = <b>32 beeps</b> in 1,000 evenings, so P(beep) = 32 ÷ 1,000 = <b>0.032</b>.</p>
+  <p>The same steps with probabilities. "The alarm beeps every time there's a fire" is a conditional probability: P(beep | fire) = 1. To get the chance of a fire <b>and</b> a beep on an evening, use the multiplication rule for probabilities from lesson 5 (also called the <b>product rule</b>), P(A ∩ B) = P(B) × P(A | B):</p>
+  <ul>
+    <li>P(beep ∩ fire) = P(fire) × P(beep | fire) = 0.002 × 1 = 0.002</li>
+    <li>P(beep ∩ toast) = P(toast) × P(beep | toast) = 0.10 × 0.30 = 0.030</li>
+  </ul>
+  <p>Adding the two ways gives P(beep) = 0.002 + 0.030 = <b>0.032</b>, the same as counting. The table below shows the same steps.</p>
+  <p>In general: if something can happen in several separate ways, its total probability is the sum over those ways: <b>P(B) = P(B | A₁) × P(A₁) + P(B | A₂) × P(A₂) + …</b>. Here B is the event we care about (a beep), and A₁, A₂, … are the separate situations it can come from (a fire, burnt toast, a quiet evening). The small numbers just number them. They must be mutually exclusive and cover every case; a situation that never causes B, like a quiet evening, simply adds 0.</p>
   <div style="overflow-x:auto"><table class="cx">
-    <thead><tr><th>Factory example</th><th>Share of items: P(machine)</th><th>Defect rate: P(defective | machine)</th><th>Defective share: P(machine) × P(defective | machine)</th></tr></thead>
+    <thead><tr><th>Smoke alarm</th><th>How often: P(situation)</th><th>Beep chance: P(beep | situation)</th><th>Beeps: P(situation) × P(beep | situation)</th></tr></thead>
     <tbody>
-      <tr><td><b>Machine 1</b></td><td>60%</td><td>2%</td><td>0.60 × 0.02 = 0.012</td></tr>
-      <tr><td><b>Machine 2</b></td><td>40%</td><td>5%</td><td>0.40 × 0.05 = 0.020</td></tr>
-      <tr><td><b>Total</b></td><td>100%</td><td></td><td><b>P(defective) = 0.032</b> (3.2%)</td></tr>
+      <tr><td><b>Fire</b></td><td>2 of 1,000 = 0.002</td><td>1</td><td>0.002 × 1 = 0.002</td></tr>
+      <tr><td><b>Burnt toast</b></td><td>100 of 1,000 = 0.10</td><td>0.30</td><td>0.10 × 0.30 = 0.030</td></tr>
+      <tr><td><b>Quiet evening</b></td><td>898 of 1,000 = 0.898</td><td>0</td><td>0.898 × 0 = 0</td></tr>
+      <tr><td><b>Total</b></td><td>1,000 of 1,000 = 1</td><td></td><td><b>P(beep) = 0.032</b> (32 beeps in 1,000 evenings)</td></tr>
     </tbody>
   </table></div>
 
   <h3>Bayes' theorem</h3>
   <p>Bayes' theorem links two events:</p>
   <ul>
-    <li>The <b>cause</b> (A) is the possible explanation we want to find out about but can't see directly, such as which machine made an item.</li>
-    <li>The <b>evidence</b> (B) is what we actually observe, such as "this item is defective".</li>
+    <li>The <b>cause</b> (A) is the possible explanation we want to find out about but can't see directly, such as "there is a fire".</li>
+    <li>The <b>evidence</b> (B) is what we actually observe, such as "the alarm beeps".</li>
   </ul>
   <p>We usually know how likely the evidence is for each possible cause, P(evidence | cause). We want the reverse, P(cause | evidence).</p>
   <div style="overflow-x:auto"><table class="cx">
     <thead><tr><th>Example</th><th>Cause A (hidden)</th><th>Evidence B (observed)</th><th>We know P(B | A)</th><th>We want P(A | B)</th></tr></thead>
     <tbody>
-      <tr><td><b>Smoke alarm</b></td><td>there is a fire</td><td>the alarm beeps</td><td>P(beeps | fire): almost 1</td><td>P(fire | beeps)</td></tr>
-      <tr><td><b>Factory</b></td><td>the item was made by machine 2</td><td>the item is defective</td><td>P(defective | machine 2) = 0.05</td><td>P(machine 2 | defective)</td></tr>
+      <tr><td><b>Smoke alarm</b></td><td>there is a fire</td><td>the alarm beeps</td><td>P(beep | fire) = 1 in our example</td><td>P(fire | beep)</td></tr>
       <tr><td><b>Medical test</b> (demo below)</td><td>the person has the disease</td><td>the test is positive</td><td>P(positive | disease): how often the test finds it</td><td>P(disease | positive)</td></tr>
     </tbody>
   </table></div>
   <p>The formula is <b>P(A | B) = P(B | A) × P(A) ÷ P(B)</b>. In words: how likely the evidence is if the cause is true, times how common the cause was before we saw any evidence, divided by how common the evidence is overall.</p>
-  <p>For the factory: a defective item is picked at random; which machine made it? Here A = "made by machine 2" and B = "defective", and the three numbers come from the total probability example above:</p>
+  <p>For the smoke alarm: the alarm beeps; how likely is a real fire? Here A = "there is a fire" and B = "the alarm beeps", and the three numbers come from the total probability example above:</p>
   <ul>
-    <li>P(B | A) = P(defective | machine 2) = 0.05: how likely a defect is if machine 2 made the item.</li>
-    <li>P(A) = P(machine 2) = 0.40: how common machine 2's items are before we know anything about the item (the <b>base rate</b>).</li>
-    <li>P(B) = P(defective) = 0.032: how common defects are overall, from the law of total probability.</li>
+    <li>P(B | A) = P(beep | fire) = 1: if there's a fire, the alarm always beeps.</li>
+    <li>P(A) = P(fire) = 0.002: how common fires are before we hear anything (the <b>base rate</b>).</li>
+    <li>P(B) = P(beep) = 0.032: how often the alarm beeps overall, from the law of total probability.</li>
   </ul>
-  <p>So P(machine 2 | defective) = 0.05 × 0.40 ÷ 0.032 = 0.020 ÷ 0.032 = <b>62.5%</b>. Machine 2 makes fewer items (40%) but more of the defective ones (62.5%), because its defect rate is higher.</p>
+  <p>So P(fire | beep) = 1 × 0.002 ÷ 0.032 ≈ <b>0.06 = 6%</b>. Check it with the counts: of the 32 beeps, only 2 were a fire, and 2 ÷ 32 ≈ 6%. The formula and the counting give the same answer.</p>
+  <div class="callout tip"><b>Why so low?</b> The alarm is reliable, but fires are rare and burnt toast is common, so most beeps come from toast. That's the base rate at work. It doesn't mean you can ignore the alarm: a 6% chance of a fire is serious, so you always check.</div>
   <p>The easiest way to use Bayes is with counts of people instead of percentages. Take a medical test for a disease. A test result is <b>positive</b> when the test says "you have it", and <b>negative</b> when it says "you don't". Tests make mistakes both ways. The demo has three sliders:</p>
   <ul>
     <li><b>how common:</b> the share of people who really have the disease (the base rate),</li>
@@ -1604,7 +1611,7 @@ p_sick_given_pos = true_pos / positives   # Bayes: 9 / 98 = 9%`, "medical_test.p
       why: "Bayes reverses the condition: from how likely the evidence is given the cause, to how likely the cause is given the evidence." },
     { q: "A disease is rare and a good test comes back positive. Why can the chance of being sick still be low?", options: ["Because tests are never useful", "Because there are many healthy people, so even a few false alarms outnumber the true positives", "Because the test finds no sick people", "Because positive results are random"], answer: 1,
       why: "With a low base rate, false positives among the many healthy people can outnumber true positives among the few sick." },
-    { q: "Machine 1 makes 60% of items (2% defective), machine 2 makes 40% (5% defective). What is P(defect)?", options: ["7%", "3.2%", "3.5%", "2%"], answer: 1,
+    { q: "A factory has two machines. Machine 1 makes 60% of items (2% of them defective, meaning faulty), machine 2 makes 40% (5% defective). What is P(defect)?", options: ["7%", "3.2%", "3.5%", "2%"], answer: 1,
       why: "Law of total probability: 0.60 × 0.02 + 0.40 × 0.05 = 0.012 + 0.020 = 0.032." },
   ]);
 })();
@@ -1819,7 +1826,7 @@ print(sum(games) / len(games))       # average: close to 0.33`, "dice_game.py");
   <h3>Where it shows up</h3>
   <ul>
     <li>Call centres and shops plan staff with Poisson counts and Exponential waiting times.</li>
-    <li>Quality control uses the Binomial (defects in a batch) and the Normal (measurement errors).</li>
+    <li>Quality control uses the Binomial (faulty items in a batch) and the Normal (measurement errors).</li>
     <li>Grading, heights, blood pressure and many measurements are summarised with a mean and a standard deviation.</li>
   </ul>
   <div class="quizbox"></div>
@@ -2113,7 +2120,7 @@ r = st.correlation(ice_cream, drownings)   # strongly positive...
       <tr><td><b>P(A ∩ B) = P(A) × P(B)</b></td><td>"and" for independent events</td><td>two heads: ½ × ½ = ¼</td></tr>
       <tr><td><b>P(X) = Σ<sub>Y</sub> P(X, Y)</b></td><td>sum rule (marginalization)</td><td>P(sunny) = 0.45 + 0.15 = 0.60</td></tr>
       <tr><td><b>P(X, Y) = P(Y | X) × P(X)</b></td><td>product rule</td><td>P(sunny, high) = 0.75 × 0.60 = 0.45</td></tr>
-      <tr><td><b>P(B) = Σ P(B | Aᵢ) × P(Aᵢ)</b></td><td>law of total probability</td><td>P(defect) = 0.6 × 0.02 + 0.4 × 0.05 = 0.032</td></tr>
+      <tr><td><b>P(B) = Σ P(B | Aᵢ) × P(Aᵢ)</b></td><td>law of total probability</td><td>P(beep) = 0.002 × 1 + 0.10 × 0.30 = 0.032</td></tr>
       <tr><td><b>P(A | B) = P(B | A) × P(A) ÷ P(B)</b></td><td>Bayes' theorem</td><td>P(sick | positive) ≈ 9 ÷ 98 ≈ 9%</td></tr>
       <tr><td><b>E[X] = Σ x × P(X = x)</b></td><td>expected value: the long-run average</td><td>dice game: 0.33 points</td></tr>
       <tr><td><b>Var(X) = Σ (x − E[X])² × P(X = x)</b>, <b>σ = √Var(X)</b></td><td>spread around the average</td><td>dice game: σ ≈ 1.49 points</td></tr>
