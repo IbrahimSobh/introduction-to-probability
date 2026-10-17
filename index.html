@@ -605,15 +605,6 @@ const KIT = (() => {
     #intro .facts { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 14px 0 0; padding: 0; list-style: none; font-size: .9rem; color: var(--text-2); }
     #intro .facts b { color: var(--text); }
     @media (max-width: 700px) { #intro .pillars { grid-template-columns: minmax(0, 1fr); } }
-    #intro .ckey { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin: 16px 0 0; }
-    #intro .ckey h3 { margin: 0 0 2px; font-size: 1rem; }
-    #intro .ckey > p { margin: 0 0 12px; color: var(--text-2); font-size: .92rem; }
-    #intro .ckey ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 18px; }
-    #intro .ckey li { display: flex; align-items: center; gap: 12px; }
-    #intro .ckey .node { flex: none; min-width: 40px; height: 40px; font-size: 14px; transform: none; }
-    #intro .ckey b { display: block; }
-    @media (max-width: 560px) { #intro .ckey ul { grid-template-columns: minmax(0, 1fr); } }
-    #intro .ckey small { color: var(--text-2); font-size: .85rem; line-height: 1.35; display: block; }
     #intro .map { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 4fr); gap: 12px; }
     #intro .map h4 { margin: 0 0 6px; font-size: .9rem; color: var(--text-2); }
     @media (max-width: 700px) { #intro .map { grid-template-columns: minmax(0, 1fr); } }
@@ -649,17 +640,6 @@ const KIT = (() => {
     <li><b>Take the final quiz</b><span>10 questions on the main concepts. Score 8 of 10 or more (80%) to earn your certificate.</span></li>
   </ol>
   <div class="callout tip"><b>Tip:</b> every formula appears with a worked example in real numbers. The code panels are short, readable Python sketches of the same calculation; you don't need to run them or know Python to follow along. Use the <b>Animation speed</b> slider at the top to slow down any demo, and retake any quiz as often as you like.</div>
-
-  <div class="ckey" role="group" aria-labelledby="ckeyTitle">
-    <h3 id="ckeyTitle">Colour key for the demos</h3>
-    <p>When a demo runs, boxes change colour to show what's happening at that moment:</p>
-    <ul>
-      <li><span class="node" aria-hidden="true">A</span><span><b>Normal</b><small>An item that isn't involved in the current step.</small></span></li>
-      <li><span class="node active" aria-hidden="true">A</span><span><b>Working on it</b><small>The step, item or tool being used right now.</small></span></li>
-      <li><span class="node visited" aria-hidden="true">A</span><span><b>Retrieved / remembered</b><small>Something looked up, chosen or kept for later.</small></span></li>
-      <li><span class="node found" aria-hidden="true">A</span><span><b>Result</b><small>The answer, prediction or finished step.</small></span></li>
-    </ul>
-  </div>
 
   <h3>Course map</h3>
   <h4 style="margin:10px 0 6px;color:var(--text-2)">Part A · Chance and counting</h4>
