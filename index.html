@@ -1353,7 +1353,9 @@ p_not = 1 - len(hearts) / 52                     # 39/52`, "cards.py");
   <p>Careful: this is a different rule from the counting rule in lesson 3, even though both are called a multiplication rule. Lesson 3 multiplies <i>numbers of choices</i>; this one multiplies <i>probabilities</i>. The second row is just the first row turned around: multiply both sides of the conditional formula by P(B).</p>
 
   <h3>Independent events</h3>
-  <p>Two events are <b>independent</b> when knowing one doesn't change the chance of the other: P(A | B) = P(A). Then the multiplication rule becomes simply <b>P(A ∩ B) = P(A) × P(B)</b>.</p>
+  <p>Two events are <b>independent</b> when knowing one doesn't change the chance of the other: P(A | B) = P(A). In words: the chance of A is the same whether or not we know that B happened, so B gives no information about A.</p>
+  <p><b>Example:</b> flip a coin and roll a die at the same time. Let A = "the die shows a six" and B = "the coin shows heads". On its own, P(six) = 1/6. Now suppose someone tells you the coin landed heads. The coin can't affect the die, so the die still has the same 6 faces, each equally likely: P(six | heads) = 1/6. Knowing B didn't change the chance of A, so P(A | B) = P(A): the events are independent. Compare the emails above: there, knowing "free" raised the chance of spam from 0.30 to 0.77, so those two events are <i>not</i> independent.</p>
+  <p><b>Why independence makes "and" so simple.</b> The multiplication rule for probabilities says P(A ∩ B) = P(B) × P(A | B). For independent events, P(A | B) is just P(A), so we can swap it in: P(A ∩ B) = P(B) × P(A), usually written <b>P(A ∩ B) = P(A) × P(B)</b>. For the coin and die: P(heads and six) = ½ × 1/6 = <b>1/12</b>. Check it by counting: the coin has 2 results and the die 6, so by the counting rule from lesson 3 there are 2 × 6 = 12 equally likely pairs (heads-1, heads-2, … tails-6), and exactly one of them is heads and six: 1/12.</p>
   <div style="overflow-x:auto"><table class="cx">
     <thead><tr><th>Independent</th><th>Not independent (dependent)</th></tr></thead>
     <tbody>
