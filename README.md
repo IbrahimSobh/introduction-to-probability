@@ -2,6 +2,8 @@
 
 A **self-paced online course, completely free**, that teaches how to think clearly about chance: what probability means, how to count possibilities, how new information changes the odds (conditional probability and Bayes' theorem), and how random variables and common distributions describe uncertain quantities. High-level and concept-focused: only school arithmetic needed, no calculus and no coding.
 
+<sub><i>Created by <a href="https://www.linkedin.com/in/ibrahim-sobh-phd-8681757/">Ibrahim Sobh, PhD</a></i></sub>
+
 **The certificate is free too.** No sign-up and no fees: pass the final quiz and get a certificate with your name.
 
 ## 🚀 Take the course: [ibrahimsobh.github.io/introduction-to-probability](https://ibrahimsobh.github.io/introduction-to-probability/)
