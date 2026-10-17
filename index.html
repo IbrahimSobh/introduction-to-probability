@@ -1965,13 +1965,13 @@ within_2sd = 0.95              # 95% between ${70 - 2 * s} and ${70 + 2 * s}` },
   <div style="overflow-x:auto"><table class="cx">
     <thead><tr><th>Rule</th><th>Formula</th><th>In words</th><th>With the table</th></tr></thead>
     <tbody>
-      <tr><td><b>Sum rule</b> (marginalization)</td><td>P(X) = Σ<sub>Y</sub> P(X, Y)</td><td>add a row (or column) of the joint table to get one variable on its own</td><td>P(sunny) = 0.45 + 0.15 = <b>0.60</b></td></tr>
-      <tr><td><b>Product rule</b></td><td>P(X, Y) = P(Y | X) × P(X)</td><td>a joint chance = conditional chance × chance of the condition</td><td>P(sunny, high) = 0.75 × 0.60 = <b>0.45</b>, since P(high | sunny) = 0.45 ÷ 0.60 = 0.75</td></tr>
+      <tr><td><b>Sum rule</b> (marginalization)</td><td>P(X) = Σ<sub>Y</sub> P(X, Y)</td><td>add a row (or column) of the joint table to get one variable on its own</td><td>P(sunny) = P(sunny, high) + P(sunny, low) = 0.45 + 0.15 = <b>0.60</b></td></tr>
+      <tr><td><b>Product rule</b></td><td>P(X, Y) = P(Y | X) × P(X)</td><td>a joint chance = conditional chance × chance of the condition</td><td>first P(high | sunny) = P(sunny, high) ÷ P(sunny) = 0.45 ÷ (0.45 + 0.15) = 0.45 ÷ 0.60 = 0.75; then P(sunny, high) = P(sunny) × P(high | sunny) = 0.60 × 0.75 = <b>0.45</b></td></tr>
     </tbody>
   </table></div>
-  <p>The same two rules as pictures. The whole box is all days, with area 1, and the area of each shaded region equals its probability.</p>
+  <p>The same two rules as pictures. The whole box is all days, with area 1, and the area of each region equals its probability. In the first picture the box is split by the dashed line into two columns, one per sales level. Each column's width is its chance, from the bottom row of the table: high sales 0.55, low sales 0.45. Inside each column, the top piece is the sunny days and the bottom piece the rainy days, so the four pieces are the four cells of the table: 0.45 and 0.10 in the high-sales column (0.45 + 0.10 = 0.55), 0.15 and 0.30 in the low-sales column (0.15 + 0.30 = 0.45).</p>
   <figure style="margin:14px 0">
-    <svg class="plot" viewBox="0 0 400 300" role="img" aria-label="Sum rule: the sunny region is cut into two pieces, 0.45 on high-sales days and 0.15 on low-sales days, which add up to 0.60" style="max-width:440px;margin:0 auto">
+    <svg class="plot" viewBox="0 0 400 300" role="img" aria-label="Sum rule: the sunny region is cut into two pieces, P(sunny and sales high) = 0.45 and P(sunny and sales low) = 0.15, which add up to P(sunny) = 0.60" style="max-width:440px;margin:0 auto">
       <text x="20" y="14" fill="var(--text)" font-family="var(--sans)" font-size="13" font-weight="600">Ω: all days (area 1)</text>
       <text x="119" y="34" text-anchor="middle" fill="var(--text)" font-family="var(--sans)" font-size="12">Sales high (0.55)</text>
       <text x="299" y="34" text-anchor="middle" fill="var(--text)" font-family="var(--sans)" font-size="12">Sales low (0.45)</text>
@@ -1983,10 +1983,10 @@ within_2sd = 0.95              # 95% between ${70 - 2 * s} and ${70 + 2 * s}` },
       <text x="299" y="80" text-anchor="middle" fill="var(--text)" font-family="var(--sans)" font-size="14" font-weight="700">sunny: 0.15</text>
       <text x="119" y="228" text-anchor="middle" fill="var(--text)" font-family="var(--sans)" font-size="12">rainy: 0.10</text>
       <text x="299" y="180" text-anchor="middle" fill="var(--text)" font-family="var(--sans)" font-size="12">rainy: 0.30</text>
-      <text x="200" y="272" text-anchor="middle" fill="var(--text)" font-family="var(--sans)" font-size="14" font-weight="700">P(sunny) = 0.45 + 0.15 = 0.60</text>
-      <text x="200" y="292" text-anchor="middle" fill="var(--text-2)" font-family="var(--sans)" font-size="12">the sunny region is cut into two pieces: add the pieces</text>
+      <text x="200" y="272" text-anchor="middle" fill="var(--text)" font-family="var(--sans)" font-size="13" font-weight="700">P(sunny) = P(sunny, high) + P(sunny, low)</text>
+      <text x="200" y="292" text-anchor="middle" fill="var(--text-2)" font-family="var(--sans)" font-size="13" font-weight="700">= 0.45 + 0.15 = 0.60</text>
     </svg>
-    <figcaption style="text-align:center;color:var(--text-2);font-size:.92rem;margin-top:6px"><b>Sum rule:</b> to get P(sunny) on its own, add up the sunny pieces on high-sales days and on low-sales days.</figcaption>
+    <figcaption style="text-align:center;color:var(--text-2);font-size:.92rem;margin-top:6px"><b>Sum rule:</b> P(sunny) = P(sunny and sales high) + P(sunny and sales low) = 0.45 + 0.15 = 0.60. In the picture, the dashed line cuts the sunny region into two pieces; add the two pieces to get all the sunny days.</figcaption>
   </figure>
   <figure style="margin:14px 0">
     <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center">
@@ -1998,17 +1998,17 @@ within_2sd = 0.95              # 95% between ${70 - 2 * s} and ${70 + 2 * s}` },
         <text x="70" y="122" text-anchor="middle" fill="var(--text)" font-family="var(--sans)" font-size="12">0.60</text>
         <text x="170" y="104" text-anchor="middle" fill="var(--text)" font-family="var(--sans)" font-size="12">rainy</text>
         <text x="170" y="122" text-anchor="middle" fill="var(--text)" font-family="var(--sans)" font-size="12">0.40</text>
-        <text x="110" y="196" text-anchor="middle" fill="var(--text-2)" font-family="var(--sans)" font-size="12">P(sunny) = 0.60</text>
+        <text x="110" y="196" text-anchor="middle" fill="var(--text-2)" font-family="var(--sans)" font-size="12">P(sunny) = 0.45 + 0.15 = 0.60</text>
       </svg>
-      <svg class="plot" viewBox="0 0 220 210" role="img" aria-label="Step 2: inside the sunny days, 75% have high sales" style="flex:1 1 200px;max-width:260px">
+      <svg class="plot" viewBox="0 0 220 210" role="img" aria-label="Step 2: inside the sunny days, the high-sales piece is 0.45 out of 0.60, so P(high given sunny) = 0.45 divided by 0.60 = 0.75" style="flex:1 1 200px;max-width:260px">
         <text x="110" y="16" text-anchor="middle" fill="var(--text)" font-family="var(--sans)" font-size="13" font-weight="600">2. Zoom into sunny days</text>
         <rect x="10" y="30" width="200" height="140" style="fill:var(--surface-2);opacity:.35" stroke="var(--border)"/>
         <rect x="10" y="30" width="120" height="105" style="fill:color-mix(in srgb, var(--s1) 40%, var(--surface))" stroke="var(--s1)" stroke-width="2"/>
         <rect x="10" y="135" width="120" height="35" style="fill:color-mix(in srgb, var(--s4) 45%, var(--surface))" stroke="var(--s4)" stroke-width="2"/>
         <text x="70" y="80" text-anchor="middle" fill="var(--text)" font-family="var(--sans)" font-size="13" font-weight="700">high sales</text>
-        <text x="70" y="98" text-anchor="middle" fill="var(--text)" font-family="var(--sans)" font-size="12">75% of sunny</text>
-        <text x="70" y="157" text-anchor="middle" fill="var(--text)" font-family="var(--sans)" font-size="11">low: 25%</text>
-        <text x="110" y="196" text-anchor="middle" fill="var(--text-2)" font-family="var(--sans)" font-size="12">P(high | sunny) = 0.75</text>
+        <text x="70" y="98" text-anchor="middle" fill="var(--text)" font-family="var(--sans)" font-size="12">0.45 of 0.60 = 75%</text>
+        <text x="70" y="157" text-anchor="middle" fill="var(--text)" font-family="var(--sans)" font-size="11">low: 0.15 of 0.60 = 25%</text>
+        <text x="110" y="196" text-anchor="middle" fill="var(--text-2)" font-family="var(--sans)" font-size="11">P(high | sunny) = 0.45 ÷ 0.60 = 0.75</text>
       </svg>
       <svg class="plot" viewBox="0 0 220 210" role="img" aria-label="Step 3: sunny and high sales together is 0.60 times 0.75 = 0.45 of all days" style="flex:1 1 200px;max-width:260px">
         <text x="110" y="16" text-anchor="middle" fill="var(--text)" font-family="var(--sans)" font-size="13" font-weight="600">3. The overlap</text>
@@ -2020,10 +2020,11 @@ within_2sd = 0.95              # 95% between ${70 - 2 * s} and ${70 + 2 * s}` },
         <text x="110" y="196" text-anchor="middle" fill="var(--text-2)" font-family="var(--sans)" font-size="12">0.60 × 0.75 = 0.45</text>
       </svg>
     </div>
-    <figcaption style="text-align:center;color:var(--text-2);font-size:.92rem;margin-top:6px"><b>Product rule:</b> P(sunny, high) = P(sunny) × P(high | sunny) = 0.60 × 0.75 = 0.45. Take the sunny part of the box, then 75% of that part: a share of a share.</figcaption>
+    <figcaption style="text-align:center;color:var(--text-2);font-size:.92rem;margin-top:6px"><b>Product rule:</b> P(sunny, high) = P(sunny) × P(high | sunny). <b>1.</b> The sunny days are 0.45 + 0.15 = 0.60 of all days. <b>2.</b> Inside the sunny days, the high-sales piece is 0.45 out of 0.60, so P(high | sunny) = P(sunny and high) ÷ P(sunny) = 0.45 ÷ 0.60 = 0.75 (75%). <b>3.</b> Take 75% of the sunny part: 0.60 × 0.75 = 0.45, the sunny-and-high piece. A share of a share.</figcaption>
   </figure>
+  <p>Here we read 0.75 from the table, so step 3 only takes us back to 0.45: a check that the rule works. The product rule is most useful the other way round, when you don't have the whole table: if a forecast says P(sunny) = 0.60 and past experience says sales are high on 75% of sunny days, the rule gives P(sunny and high) = 0.60 × 0.75 = 0.45 straight away.</p>
   <p>The totals at the edge of the table are called <b>marginal</b> probabilities, because they sit in the margins; that's where "marginalization" comes from. You've met both rules already: the product rule is the multiplication rule for probabilities from lesson 5, and the law of total probability in lesson 6 is the sum rule combined with the product rule.</p>
-  <div class="callout tip"><b>Bayes' theorem from the two rules:</b> write the product rule both ways, P(X, Y) = P(Y | X) P(X) = P(X | Y) P(Y), and divide: <b>P(X | Y) = P(Y | X) P(X) ÷ P(Y)</b>, where P(Y) comes from the sum rule. With the table: P(sunny | high) = 0.75 × 0.60 ÷ 0.55 ≈ <b>0.82</b>. On a high-sales day, it was probably sunny.</div>
+  <div class="callout tip"><b>Bayes' theorem from the two rules:</b> write the product rule both ways, P(X, Y) = P(Y | X) × P(X) = P(X | Y) × P(Y), and divide by P(Y): <b>P(X | Y) = P(Y | X) × P(X) ÷ P(Y)</b>, where P(Y) comes from the sum rule. With the table: P(sunny | high) = P(high | sunny) × P(sunny) ÷ P(high) = 0.75 × 0.60 ÷ 0.55 ≈ <b>0.82</b>. Here P(high) = P(sunny, high) + P(rainy, high) = 0.45 + 0.10 = 0.55 is the sum rule again, this time down the high-sales column. In the first picture: the high-sales column has area 0.55, and its sunny piece is 0.45, so 0.45 ÷ 0.55 ≈ 0.82. On a high-sales day, it was probably sunny.</div>
 
   <h3>Covariance and correlation</h3>
   <div style="overflow-x:auto"><table class="cx">
