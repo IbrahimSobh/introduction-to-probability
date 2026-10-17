@@ -1456,10 +1456,16 @@ p_both = p_spam * p_free_given_spam       # multiplication rule: 0.24`, "spam.py
   <p>Think of a smoke alarm. It almost always beeps when there's a fire, but it also beeps for burnt toast. When it beeps, how likely is a real fire? It depends on how often each cause happens, and burnt toast is far more common than fires.</p>
 
   <h3>The law of total probability</h3>
-  <p>Example: a factory has two machines. Machine 1 makes 60% of the items and 2% of its items are defective (faulty); machine 2 makes 40% and 5% of its items are defective. What share of all items is defective? A defective item can come from machine 1 <b>or</b> from machine 2, so we work out each way with the product rule from lesson 5 and add them up (table below).</p>
+  <p>Example: a factory has two machines. Machine 1 makes 60% of the items and 2% of its items are defective (faulty); machine 2 makes 40% and 5% of its items are defective. What share of all items is defective?</p>
+  <p>A defective item comes either from machine 1 or from machine 2, never from both, so we can work out each way on its own and add the results. "2% of its items are defective" is a conditional probability: P(defective | machine 1) = 0.02. To get the chance that an item is made by machine 1 <b>and</b> is defective, use the multiplication rule for probabilities from lesson 5 (also called the <b>product rule</b>), P(A ∩ B) = P(B) × P(A | B):</p>
+  <ul>
+    <li>P(defective ∩ machine 1) = P(machine 1) × P(defective | machine 1) = 0.60 × 0.02 = 0.012</li>
+    <li>P(defective ∩ machine 2) = P(machine 2) × P(defective | machine 2) = 0.40 × 0.05 = 0.020</li>
+  </ul>
+  <p>Adding the two ways gives P(defective) = 0.012 + 0.020 = <b>0.032</b>, so 3.2% of all items are defective. The table below shows the same steps.</p>
   <p>In general: if something can happen in several separate ways, its total probability is the sum over those ways: <b>P(B) = P(B | A₁) × P(A₁) + P(B | A₂) × P(A₂) + …</b>. Here B is the event we care about (a defect), and A₁, A₂, … are the separate ways it can happen (machine 1, machine 2). The small numbers just number the ways. They must be mutually exclusive and cover every case.</p>
   <table class="cx">
-    <thead><tr><th>Factory example</th><th>Share of items</th><th>Defect rate</th><th>Defective items (share of all)</th></tr></thead>
+    <thead><tr><th>Factory example</th><th>Share of items: P(machine)</th><th>Defect rate: P(defective | machine)</th><th>Defective items (share of all): P(machine) × P(defective | machine)</th></tr></thead>
     <tbody>
       <tr><td><b>Machine 1</b></td><td>60%</td><td>2%</td><td>0.60 × 0.02 = 0.012</td></tr>
       <tr><td><b>Machine 2</b></td><td>40%</td><td>5%</td><td>0.40 × 0.05 = 0.020</td></tr>
@@ -1468,7 +1474,7 @@ p_both = p_spam * p_free_given_spam       # multiplication rule: 0.24`, "spam.py
   </table>
 
   <h3>Bayes' theorem</h3>
-  <p><b>P(A | B) = P(B | A) × P(A) ÷ P(B)</b>. In words: how well A explains the evidence B, times how common A was to begin with, divided by how common the evidence is overall. For the factory: a defective item is picked at random; which machine made it? Here A = "made by machine 2" and B = "defective". From the table, P(B | A) × P(A) = 0.05 × 0.40 = 0.020 and P(B) = 0.032, so P(machine 2 | defect) = 0.020 ÷ 0.032 ≈ <b>62%</b>. Machine 2 makes fewer items but more of the defective ones.</p>
+  <p><b>P(A | B) = P(B | A) × P(A) ÷ P(B)</b>. In words: how well A explains the evidence B, times how common A was to begin with, divided by how common the evidence is overall. For the factory: a defective item is picked at random; which machine made it? Here A = "made by machine 2" and B = "defective". From the table, P(B | A) × P(A) = 0.05 × 0.40 = 0.020 and P(B) = 0.032, so P(machine 2 | defect) = 0.020 ÷ 0.032 = <b>62.5%</b>. Machine 2 makes fewer items but more of the defective ones.</p>
   <p>The easiest way to use Bayes is with counts of people instead of percentages. Take a medical test for a disease. A test result is <b>positive</b> when the test says "you have it", and <b>negative</b> when it says "you don't". Tests make mistakes both ways. The demo has three sliders:</p>
   <ul>
     <li><b>how common:</b> the share of people who really have the disease (the base rate),</li>
