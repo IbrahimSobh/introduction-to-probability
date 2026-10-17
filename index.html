@@ -2045,6 +2045,15 @@ within_2sd = 0.95              # 95% between ${70 - 2 * s} and ${70 + 2 * s}` },
     <li><b>Average the products:</b> (45 + 5 + 5 + 45) ÷ 4 = 100 ÷ 4 = <b>25</b>. It's positive, so more hours go with higher grades. (Statistics tools usually divide by one less than the count, 3 here, which gives about 33; the sign and the meaning are the same.)</li>
   </ol>
   <p>The sign of the covariance gives the direction, but its size is hard to read, because it depends on the units: with grades out of 10 instead of out of 100, every grade distance is 10 times smaller and so is the covariance, even though the link is exactly the same. <b>Correlation</b>, written <b>r</b>, fixes this. It rescales the covariance so it always lies between −1 and +1: <b>+1</b> means the dots lie exactly on a rising straight line, <b>−1</b> exactly on a falling straight line, and <b>0</b> means no straight-line pattern at all. Our 4 students lie exactly on a rising line (every 2 extra hours add 10 points), so for them r = <b>+1</b>.</p>
+  <p><b>As formulas.</b> E[ ] means "the average of", as in lesson 7, and σ<sub>X</sub> is the standard deviation of X (σ<sub>Y</sub> the same for Y):</p>
+  <div style="overflow-x:auto"><table class="cx">
+    <thead><tr><th>Measure</th><th>Formula</th><th>In words</th><th>The 4 students</th></tr></thead>
+    <tbody>
+      <tr><td><b>Covariance</b></td><td style="white-space:nowrap">Cov(X, Y) = E[(X − E[X]) × (Y − E[Y])]</td><td>the average of (distance of X from its average) × (distance of Y from its average): the recipe above</td><td>100 ÷ 4 = <b>25</b></td></tr>
+      <tr><td><b>Correlation</b></td><td style="white-space:nowrap">r = Cov(X, Y) ÷ (σ<sub>X</sub> × σ<sub>Y</sub>)</td><td>the covariance divided by the two standard deviations</td><td>σ<sub>hours</sub> = √((9 + 1 + 1 + 9) ÷ 4) = √5 ≈ 2.24; σ<sub>grades</sub> = √((225 + 25 + 25 + 225) ÷ 4) = √125 ≈ 11.18; r = 25 ÷ (2.24 × 11.18) = 25 ÷ 25 = <b>+1</b> (the product is exactly √5 × √125 = √625 = 25; the rounded numbers give 25.04)</td></tr>
+    </tbody>
+  </table></div>
+  <p>The standard deviations use the same distances as the recipe: square each distance (9 = 3 × 3, and so on), average them, and take the square root, just as for the dice game in lesson 7. Dividing by both standard deviations cancels the units, which is why r always stays between −1 and +1, whatever units you measure in. And if you put the same variable in twice, the covariance becomes the variance from lesson 7: Cov(X, X) = Var(X).</p>
   <div style="overflow-x:auto"><table class="cx">
     <thead><tr><th>Measure</th><th>What it tells you</th><th>Values</th></tr></thead>
     <tbody>
@@ -2054,7 +2063,7 @@ within_2sd = 0.95              # 95% between ${70 - 2 * s} and ${70 + 2 * s}` },
   </table></div>
   <p>The demo below has two examples:</p>
   <ul>
-    <li><b>📚 Study hours vs grade:</b> 40 made-up students. The slider sets how strongly hours and grades are linked in this class, from opposite (−1) to together (+1). The dashed lines mark the two averages. Dots at the top right (both above average) or bottom left (both below) push the correlation up; dots at the top left or bottom right push it down. The bar under the plot shows r: it grows to the right in green when r is positive, and to the left in orange when it is negative.</li>
+    <li><b>📚 Study hours vs grade:</b> 40 made-up students. The slider sets how strongly hours and grades are linked in this class, from opposite (−1) to together (+1). It is only there to show what each kind of pattern looks like: in real life, more study usually goes with higher grades, so a negative correlation here would be unusual. The dashed lines mark the two averages. Dots at the top right (both above average) or bottom left (both below) push the correlation up; dots at the top left or bottom right push it down. The bar under the plot shows r: it grows to the right in green when r is positive, and to the left in orange when it is negative.</li>
     <li><b>🍦 Ice cream vs drownings:</b> 40 summer days across a whole country. Each dot is one day: how much ice cream was sold, and how many people drowned. Look at the correlation first, then press <b>Show the hidden cause</b> to colour each day by its temperature.</li>
   </ul>
   <div class="w-corr">
@@ -2139,7 +2148,7 @@ r = st.correlation(ice_cream, drownings)   # strongly positive...
     return { r, c };
   }
   function describe(r) {
-    const a = Math.abs(r), dir = r > 0 ? "positive: more hours, higher grades" : "negative: more hours, lower grades";
+    const a = Math.abs(r), dir = r > 0 ? "positive: more hours, higher grades" : "negative: more hours, lower grades (unusual in real life; the slider just shows what this pattern would look like)";
     return a < 0.15 ? "no clear pattern: knowing the hours tells you almost nothing about the grade" : (a > 0.7 ? "strong " : a > 0.35 ? "moderate " : "weak ") + dir;
   }
   function update() {
@@ -2207,6 +2216,8 @@ r = st.correlation(ice_cream, drownings)   # strongly positive...
       <tr><td><b>Var(X) = Σ (x − E[X])² × P(X = x)</b>, <b>σ = √Var(X)</b></td><td>spread around the average</td><td>dice game: σ ≈ 1.49 points</td></tr>
       <tr><td><b>Binomial mean n × p</b> · <b>Poisson mean λ</b> · <b>Geometric mean 1 ÷ p</b></td><td>averages of common distributions</td><td>10 tosses: 5 heads on average</td></tr>
       <tr><td><b>68 · 95 · 99.7</b></td><td>share of a Normal within 1, 2, 3 standard deviations of the mean</td><td>scores 70 ± 10: 68% between 60 and 80</td></tr>
+      <tr><td><b>Cov(X, Y) = E[(X − E[X]) × (Y − E[Y])]</b></td><td>covariance: do two variables move together? (sign = direction)</td><td>4 students: 100 ÷ 4 = 25</td></tr>
+      <tr><td><b>r = Cov(X, Y) ÷ (σ<sub>X</sub> × σ<sub>Y</sub>)</b></td><td>correlation: covariance without units</td><td>4 students: 25 ÷ (2.24 × 11.18) = +1</td></tr>
       <tr><td><b>−1 ≤ r ≤ +1</b></td><td>correlation: direction and strength of a straight-line relationship</td><td>study hours and grades: r ≈ 0.8</td></tr>
     </tbody>
   </table></div>
