@@ -1004,13 +1004,48 @@ omega - A                    # complement: {1, 3, 5}`, lines: { A: 2, B: 3, unio
   <h3>The multiplication rule</h3>
   <p>If a choice happens in steps, with <i>a</i> options in the first step, <i>b</i> in the second and <i>c</i> in the third, the total is <b>a × b × c</b>. A 4-digit PIN has 10 choices for each digit, so there are 10 × 10 × 10 × 10 = 10,000 PINs.</p>
 
+  <h3>Permutations and combinations</h3>
+  <p>Both come straight from the multiplication rule. The only new idea: once someone is picked, they can't be picked again, so each step has <b>one choice fewer</b> than the step before.</p>
+  <p><b>Example:</b> 5 people, A, B, C, D and E. In how many ways can we pick 3 of them, one after another?</p>
+  <ol class="ex">
+    <li><b>First pick:</b> any of the 5 people, so <b>5</b> choices.</li>
+    <li><b>Second pick:</b> the first person is already taken, so <b>4</b> are left.</li>
+    <li><b>Third pick:</b> two people are taken, so <b>3</b> are left.</li>
+  </ol>
+  <p>Each first choice can go with each second choice and each third choice, so by the multiplication rule there are 5 × 4 × 3 = <b>60</b> ordered picks. You can check it: the picks that start with A are AB_, AC_, AD_ and AE_, each with 3 people left for the last place, so 4 × 3 = 12 of them. Each of the 5 people can be first, and 5 × 12 = 60.</p>
+  <p>Each of these 60 ordered picks is a <b>permutation</b>: the order counts, so ABC and CBA are different. That's right when the places mean something, like gold, silver and bronze medals.</p>
+  <p>Now suppose we only want a <b>team</b> of 3. ABC, ACB, BAC, BCA, CAB and CBA are all the same three people, so the 60 ordered picks count each team several times. How many times? That's the number of ways to put 3 people in order, and it is the multiplication rule again: 3 choices for who goes first, then 2, then 1, so 3 × 2 × 1 = <b>6</b>.</p>
+  <p>This "count down to 1" product has a name: the <b>factorial</b>, written n! and read "n factorial". n! = n × (n − 1) × … × 1 is the number of ways to put n things in order, so 3! = 6.</p>
+  <p>Every team appears 3! = 6 times among the 60 ordered picks, so the number of teams is 60 ÷ 6 = <b>10</b>. Each team is a <b>combination</b>: the order doesn't count.</p>
+  <table class="cx">
+    <thead><tr><th></th><th>Permutations</th><th>Combinations</th></tr></thead>
+    <tbody>
+      <tr><td><b>Order matters?</b></td><td>yes: ABC and CBA are different</td><td>no: ABC and CBA are the same group</td></tr>
+      <tr><td><b>Question</b></td><td>"In how many ways can we arrange or rank?"</td><td>"In how many ways can we choose a group?"</td></tr>
+      <tr><td><b>Choose 3 of 5</b></td><td>5 × 4 × 3 = <b>60</b></td><td>60 ÷ 3! = <b>10</b></td></tr>
+      <tr><td><b>Examples</b></td><td>gold, silver and bronze medals; a running order</td><td>a team, a lottery ticket, pizza toppings</td></tr>
+    </tbody>
+  </table>
+  <p><b>How the three tools fit together:</b> each one is built from the one before it.</p>
+  <table class="cx">
+    <thead><tr><th>Tool</th><th>How to count</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr><td><b>Multiplication rule</b></td><td>the basic idea: multiply the number of choices at each step</td><td>outfits: 3 × 2 × 2 = <b>12</b></td></tr>
+      <tr><td><b>Permutations</b> (order matters)</td><td>the multiplication rule with one choice fewer at each step; for k picks from n: n × (n − 1) × … (k numbers)</td><td>3 of 5 in order: 5 × 4 × 3 = <b>60</b></td></tr>
+      <tr><td><b>Combinations</b> (order doesn't matter)</td><td>permutations ÷ k!, which removes the repeated orders of each group</td><td>teams of 3 from 5: 60 ÷ 3! = 60 ÷ 6 = <b>10</b></td></tr>
+    </tbody>
+  </table>
+  <div class="callout tip">Ask yourself: "If I swap two of my choices, is it a different result?" If yes, order matters (permutation). If no, it's a combination: count the arrangements, then divide by the number of ways to order the chosen items.</div>
+
+  <p>Try both in the demo: <b>Outfits</b> uses the multiplication rule, and <b>Team of 3</b> counts the ordered picks first (permutations, 60), then the teams (combinations, 10).</p>
   <div class="w-count">
   <div class="grid2">
     <div class="card">
       <div class="controls">
-        <button class="secondary always ct-mode" data-m="outfit" aria-pressed="true">👕 Outfits</button>
-        <button class="secondary always ct-mode" data-m="team" aria-pressed="false">👥 Team of 3</button>
-        <span class="sep"></span>
+        <button class="secondary always ct-mode" data-m="outfit" aria-pressed="true">👕 Outfits · multiplication rule</button>
+        <button class="secondary always ct-mode" data-m="team" aria-pressed="false">👥 Team of 3 · permutations → combinations</button>
+      </div>
+      <div class="controls">
         <button class="ct-run">▶ Run</button>
         <button class="ct-step">Step</button>
         <button class="secondary ct-reset">Reset</button>
@@ -1021,19 +1056,6 @@ omega - A                    # complement: {1, 3, 5}`, lines: { A: 2, B: 3, unio
     <div class="code"></div>
   </div>
   </div>
-
-  <h3>Permutations and combinations</h3>
-  <p>The <b>factorial</b> n! ("n factorial") is n × (n − 1) × … × 1: the number of ways to put n things in order. For example 3! = 3 × 2 × 1 = 6.</p>
-  <table class="cx">
-    <thead><tr><th></th><th>Permutations</th><th>Combinations</th></tr></thead>
-    <tbody>
-      <tr><td><b>Order matters?</b></td><td>yes: ABC and CBA are different</td><td>no: ABC and CBA are the same group</td></tr>
-      <tr><td><b>Question</b></td><td>"In how many ways can we arrange or rank?"</td><td>"In how many ways can we choose a group?"</td></tr>
-      <tr><td><b>Choose 3 of 5</b></td><td>5 × 4 × 3 = <b>60</b></td><td>60 ÷ 3! = <b>10</b></td></tr>
-      <tr><td><b>Examples</b></td><td>gold, silver and bronze medals; a running order</td><td>a team, a lottery ticket, pizza toppings</td></tr>
-    </tbody>
-  </table>
-  <div class="callout tip">Ask yourself: "If I swap two of my choices, is it a different result?" If yes, order matters (permutation). If no, it's a combination: count the arrangements, then divide by the number of ways to order the chosen items.</div>
 
   <h3>Where it shows up</h3>
   <ul>
@@ -1114,9 +1136,9 @@ comb(5, 3)             # order doesn't: 60 / 3! = 10 teams`, "counting.py");
         : "Step 3: each of those goes with <b>2</b> pairs of shoes: 3 × 2 × 2 = <b>12</b> outfits. That's the multiplication rule.");
     } else {
       if (step === 1) { drawTeam(1); say("Five people, A to E. How many ways can we pick 3 of them?"); }
-      if (step === 2) { drawTeam(2); cp.hl(5); say("If <b>order matters</b> (first, second, third pick): 5 × 4 × 3 = <b>60</b> ordered lists. These are permutations."); }
-      if (step === 3) { drawTeam(3); cp.hl(4); say("But for a team, ABC, ACB, BAC… are the <b>same 3 people</b>. Each team appears 3! = <b>6</b> times (same colour)."); }
-      if (step === 4) { drawTeam(4); cp.hl(6); say("So the number of teams is 60 ÷ 6 = <b>10</b>. These are combinations: order doesn't matter."); }
+      if (step === 2) { drawTeam(2); cp.hl(5); say("If <b>order matters</b>: 5 choices for the first pick, 4 left for the second, 3 left for the third, so 5 × 4 × 3 = <b>60</b> ordered lists. These are <b>permutations</b>."); }
+      if (step === 3) { drawTeam(3); cp.hl(4); say("For a team, ABC, ACB, BAC, BCA, CAB and CBA are the <b>same 3 people</b>. 3 people can be ordered in 3 × 2 × 1 = 3! = <b>6</b> ways, so each team appears 6 times here (same colour)."); }
+      if (step === 4) { drawTeam(4); cp.hl(6); say("Each team was counted 6 times, so the number of teams is 60 ÷ 6 = <b>10</b>. These are <b>combinations</b>: order doesn't matter."); }
     }
     await DS.wait(0.4);
   }
