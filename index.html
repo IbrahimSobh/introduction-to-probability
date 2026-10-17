@@ -1464,17 +1464,38 @@ p_both = p_spam * p_free_given_spam       # multiplication rule: 0.24`, "spam.py
   </ul>
   <p>Adding the two ways gives P(defective) = 0.012 + 0.020 = <b>0.032</b>, so 3.2% of all items are defective. The table below shows the same steps.</p>
   <p>In general: if something can happen in several separate ways, its total probability is the sum over those ways: <b>P(B) = P(B | A₁) × P(A₁) + P(B | A₂) × P(A₂) + …</b>. Here B is the event we care about (a defect), and A₁, A₂, … are the separate ways it can happen (machine 1, machine 2). The small numbers just number the ways. They must be mutually exclusive and cover every case.</p>
-  <table class="cx">
-    <thead><tr><th>Factory example</th><th>Share of items: P(machine)</th><th>Defect rate: P(defective | machine)</th><th>Defective items (share of all): P(machine) × P(defective | machine)</th></tr></thead>
+  <div style="overflow-x:auto"><table class="cx">
+    <thead><tr><th>Factory example</th><th>Share of items: P(machine)</th><th>Defect rate: P(defective | machine)</th><th>Defective share: P(machine) × P(defective | machine)</th></tr></thead>
     <tbody>
       <tr><td><b>Machine 1</b></td><td>60%</td><td>2%</td><td>0.60 × 0.02 = 0.012</td></tr>
       <tr><td><b>Machine 2</b></td><td>40%</td><td>5%</td><td>0.40 × 0.05 = 0.020</td></tr>
-      <tr><td><b>Total</b></td><td>100%</td><td></td><td><b>P(defect) = 0.032</b> (3.2%)</td></tr>
+      <tr><td><b>Total</b></td><td>100%</td><td></td><td><b>P(defective) = 0.032</b> (3.2%)</td></tr>
     </tbody>
-  </table>
+  </table></div>
 
   <h3>Bayes' theorem</h3>
-  <p><b>P(A | B) = P(B | A) × P(A) ÷ P(B)</b>. In words: how well A explains the evidence B, times how common A was to begin with, divided by how common the evidence is overall. For the factory: a defective item is picked at random; which machine made it? Here A = "made by machine 2" and B = "defective". From the table, P(B | A) × P(A) = 0.05 × 0.40 = 0.020 and P(B) = 0.032, so P(machine 2 | defect) = 0.020 ÷ 0.032 = <b>62.5%</b>. Machine 2 makes fewer items but more of the defective ones.</p>
+  <p>Bayes' theorem links two events:</p>
+  <ul>
+    <li>The <b>cause</b> (A) is the possible explanation we want to find out about but can't see directly, such as which machine made an item.</li>
+    <li>The <b>evidence</b> (B) is what we actually observe, such as "this item is defective".</li>
+  </ul>
+  <p>We usually know how likely the evidence is for each possible cause, P(evidence | cause). We want the reverse, P(cause | evidence).</p>
+  <div style="overflow-x:auto"><table class="cx">
+    <thead><tr><th>Example</th><th>Cause A (hidden)</th><th>Evidence B (observed)</th><th>We know P(B | A)</th><th>We want P(A | B)</th></tr></thead>
+    <tbody>
+      <tr><td><b>Smoke alarm</b></td><td>there is a fire</td><td>the alarm beeps</td><td>P(beeps | fire): almost 1</td><td>P(fire | beeps)</td></tr>
+      <tr><td><b>Factory</b></td><td>the item was made by machine 2</td><td>the item is defective</td><td>P(defective | machine 2) = 0.05</td><td>P(machine 2 | defective)</td></tr>
+      <tr><td><b>Medical test</b> (demo below)</td><td>the person has the disease</td><td>the test is positive</td><td>P(positive | disease): how often the test finds it</td><td>P(disease | positive)</td></tr>
+    </tbody>
+  </table></div>
+  <p>The formula is <b>P(A | B) = P(B | A) × P(A) ÷ P(B)</b>. In words: how likely the evidence is if the cause is true, times how common the cause was before we saw any evidence, divided by how common the evidence is overall.</p>
+  <p>For the factory: a defective item is picked at random; which machine made it? Here A = "made by machine 2" and B = "defective", and the three numbers come from the total probability example above:</p>
+  <ul>
+    <li>P(B | A) = P(defective | machine 2) = 0.05: how likely a defect is if machine 2 made the item.</li>
+    <li>P(A) = P(machine 2) = 0.40: how common machine 2's items are before we know anything about the item (the <b>base rate</b>).</li>
+    <li>P(B) = P(defective) = 0.032: how common defects are overall, from the law of total probability.</li>
+  </ul>
+  <p>So P(machine 2 | defective) = 0.05 × 0.40 ÷ 0.032 = 0.020 ÷ 0.032 = <b>62.5%</b>. Machine 2 makes fewer items (40%) but more of the defective ones (62.5%), because its defect rate is higher.</p>
   <p>The easiest way to use Bayes is with counts of people instead of percentages. Take a medical test for a disease. A test result is <b>positive</b> when the test says "you have it", and <b>negative</b> when it says "you don't". Tests make mistakes both ways. The demo has three sliders:</p>
   <ul>
     <li><b>how common:</b> the share of people who really have the disease (the base rate),</li>
