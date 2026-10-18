@@ -40,8 +40,8 @@ It isn't aimed at readers looking for proofs, measure theory, calculus-based der
 
 **Part B · Updating with information**
 
-5. **Conditional probability and independence**: P(A | B) as "zooming in", the multiplication (product) rule, independent events, and the gambler's fallacy
-6. **Total probability and Bayes' theorem**: reasoning backwards from evidence, a medical test on 1,000 people, and why base rates matter
+5. **Conditional probability and independence**: P(A | B) as "zooming in", why the formula works (a step-by-step die demo), the multiplication (product) rule, independent events, and the gambler's fallacy
+6. **Total probability and Bayes' theorem**: slicing the sample space into pieces (a step-by-step die demo), reasoning backwards from evidence, a medical test on 1,000 people, and why base rates matter
 
 **Part C · Random variables**
 
@@ -62,16 +62,16 @@ It isn't aimed at readers looking for proofs, measure theory, calculus-based der
 
 ## How long it takes
 
-About 3 hours if you're new to the topic, or about 1.5 hours if you already know some maths or statistics.
+About 3¼ hours if you're new to the topic, or about 1¾ hours if you already know some maths or statistics.
 
 | Part | New to the topic | Already know some maths |
 |---|---|---|
 | Part A: 4 lessons | 4 × 15 min = 60 min | 4 × 8 min = 32 min |
-| Part B: 2 lessons | 2 × 20 min = 40 min | 2 × 10 min = 20 min |
+| Part B: 2 lessons | 2 × 25 min = 50 min | 2 × 13 min = 26 min |
 | Part C: 3 lessons | 3 × 20 min = 60 min | 3 × 10 min = 30 min |
 | Glossary and formulas review | 10 min | 5 min |
 | Final quiz and certificate | 15 min | 10 min |
-| **Total** | **185 min ≈ 3 hours** | **97 min ≈ 1.5 hours** |
+| **Total** | **195 min ≈ 3¼ hours** | **103 min ≈ 1¾ hours** |
 
 ## Final quiz and certificate
 

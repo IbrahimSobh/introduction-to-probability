@@ -1325,8 +1325,87 @@ p_not = 1 - len(hearts) / 52                     # 39/52`, "cards.py");
   <p class="lead"><b>Conditional probability</b> P(A | B), read "the probability of A given B", is the chance of A once we know that B happened. We <b>zoom into B</b>: only the outcomes in B count now, and we ask what share of them is also in A.</p>
   <p>The chance that a random person is wearing a coat might be 30%. But if you know it's snowing outside, the chance is much higher. The extra information doesn't change the people; it changes which group you're looking at.</p>
 
+  <h3>Why P(A | B) = P(A ∩ B) ÷ P(B)</h3>
+  <div class="callout"><b>The question:</b> why is <b>P(A | B) = P(A ∩ B) ÷ P(B)</b>, and so <b>P(A ∩ B) = P(A | B) × P(B)</b>? Think about it for a moment, then step through the demo below: five small steps on a single die roll answer it.</div>
+  <p>Start with the die from lesson 2: one roll, with A = "even" = {2, 4, 6} and B = "greater than 3" = {4, 5, 6}. The demo below works out P(A | B) one step at a time. Press <b>Next</b> to go forward, <b>Back</b> to go back a step, and <b>Reset</b> to start again. In the picture, the blue circle is A, the green circle is B, the purple region is where they overlap (A ∩ B), and outcomes that are ruled out fade.</p>
+  <div class="w-given">
+  <div class="grid2">
+    <div class="card">
+      <div class="controls">
+        <button class="secondary gv-back">◀ Back</button>
+        <button class="gv-next">Next ▶</button>
+        <button class="secondary gv-reset">Reset</button>
+      </div>
+      <div class="viz" style="min-height:290px"><span class="caption">One die roll · Ω = {1, 2, 3, 4, 5, 6}</span><div class="gv-plot" style="padding-top:22px"></div></div>
+      <div class="status"></div>
+    </div>
+    <div class="code"></div>
+  </div>
+  </div>
+  <p>So conditioning just <b>rescales</b> the overlap by the size of B: P(A | B) = P(A ∩ B) ÷ P(B) = (2/6) ÷ (3/6) = 2/3. Turned around, it gives the multiplication rule for probabilities: P(A ∩ B) = P(B) × P(A | B) = 3/6 × 2/3 = 2/6.</p>
+<script>
+(() => {
+  const root = document.querySelector("#conditional .w-given");
+  const $ = s => root.querySelector(s);
+  const cp = DS.code($(".code"), `omega = {1, 2, 3, 4, 5, 6}
+A = {2, 4, 6}                         # even
+B = {4, 5, 6}                         # greater than 3
+p_both = len(A & B) / len(omega)      # P(A ∩ B) = 2/6
+p_A_given_B = len(A & B) / len(B)     # count inside B: 2/3
+p_both / (len(B) / len(omega))        # (2/6) ÷ (3/6) = 2/3
+len(B) / len(omega) * p_A_given_B     # 3/6 × 2/3 = 2/6`, "conditional.py");
+  const STEPS = [
+    { head: "Start with all six outcomes.", lines: [1, 2, 3], view: {},
+      text: "Each of the 6 outcomes is equally likely, so every probability is (number of outcomes) ÷ 6. A = even = {2, 4, 6} and B = greater than 3 = {4, 5, 6}, so P(B) = 3/6." },
+    { head: "The overlap A ∩ B.", lines: [4], view: { both: true },
+      text: "The purple region holds the outcomes that are even <b>and</b> greater than 3: {4, 6}. Measured against all 6 outcomes, P(A ∩ B) = 2/6." },
+    { head: "Given B: B becomes the new world.", lines: [5], view: { both: true, given: true },
+      text: "Now we're told B happened: the roll was 4, 5 or 6. Outcomes 1, 2 and 3 are ruled out (faded), so only B's 3 outcomes are left. Of those 3, two are also in A ({4, 6}): P(A | B) = 2/3." },
+    { head: "Write the counts as probabilities.", lines: [6], view: { both: true, given: true },
+      text: "Divide the top and the bottom of 2/3 by 6; that doesn't change the ratio: 2/3 = (2/6) ÷ (3/6) = P(A ∩ B) ÷ P(B). That's the formula: the overlap, rescaled by the size of B." },
+    { head: "Turn it around: the multiplication rule.", lines: [7], view: { both: true, tintB: true },
+      text: "Multiply both sides by P(B): P(A ∩ B) = P(B) × P(A | B) = 3/6 × 2/3 = 2/6 ✓, the same as step 2. In words: the chance of landing in B, times the chance of being in A once you're in B." },
+  ];
+  const CA = [205, 150], CB = [315, 150], R = 92;
+  const ITEMS = [["2", 160, 150], ["4", 260, 125], ["6", 260, 178], ["5", 362, 150], ["1", 50, 70], ["3", 470, 250]];
+  const inB = (x, y) => Math.hypot(x - CB[0], y - CB[1]) < R;
+  let step = 0;
+  function draw() {
+    const v = STEPS[step].view, box = $(".gv-plot"); box.innerHTML = "";
+    const s = DS.svg("svg", { viewBox: "0 0 520 290", class: "plot", role: "img", "aria-label": "Venn diagram: A = even, B = greater than 3" });
+    const circ = (c, extra = {}) => DS.svg("circle", { cx: c[0], cy: c[1], r: R, ...extra });
+    s.append(DS.svg("defs", {}, DS.svg("clipPath", { id: "gvClipA" }, circ(CA))));
+    if (v.given || v.tintB) s.append(circ(CB, { fill: "color-mix(in srgb, var(--s3) 14%, var(--surface))" }));
+    if (v.both) s.append(circ(CB, { "clip-path": "url(#gvClipA)", fill: "color-mix(in srgb, var(--violet) 40%, var(--surface))" }));
+    s.append(DS.svg("rect", { x: 12, y: 18, width: 496, height: 262, rx: 10, fill: "none", stroke: "var(--muted)", "stroke-width": 1.5, opacity: v.given ? 0.35 : 1 }));
+    s.append(DS.svg("text", { class: "lbl", x: 22, y: 36, style: `font-weight:700;opacity:${v.given ? 0.35 : 1}` }, "Ω"));
+    s.append(circ(CA, { fill: "none", stroke: "var(--s1)", "stroke-width": 3, opacity: v.given ? 0.4 : 1 }));
+    s.append(circ(CB, { fill: "none", stroke: "var(--s3)", "stroke-width": v.given ? 5 : 3 }));
+    s.append(DS.svg("text", { class: "lbl", x: CA[0] - 40, y: CA[1] - R - 8, "text-anchor": "middle", style: `font-weight:700;fill:var(--s1);opacity:${v.given ? 0.4 : 1}` }, "A = even"));
+    s.append(DS.svg("text", { class: "lbl", x: CB[0] + 40, y: CB[1] - R - 8, "text-anchor": "middle", style: "font-weight:700;fill:var(--s3)" }, "B = greater than 3"));
+    if (v.given) s.append(DS.svg("text", { class: "lbl", x: CB[0] + 70, y: 272, "text-anchor": "middle", style: "font-weight:700;fill:var(--s3)" }, "B is the new world"));
+    ITEMS.forEach(([t, x, y]) => {
+      const faded = v.given && !inB(x, y);
+      s.append(DS.svg("text", { x, y: y + 7, "text-anchor": "middle", style: `font:700 20px var(--mono);fill:var(--text);opacity:${faded ? 0.2 : 1}` }, t));
+    });
+    box.append(s);
+  }
+  function show(i) {
+    step = Math.max(0, Math.min(STEPS.length - 1, i));
+    const st = STEPS[step];
+    draw(); cp.hl(...st.lines);
+    $(".status").innerHTML = `<b>Step ${step + 1} of ${STEPS.length} · ${st.head}</b> ${st.text}`;
+    $(".gv-back").disabled = step === 0; $(".gv-next").disabled = step === STEPS.length - 1;
+  }
+  $(".gv-next").onclick = () => show(step + 1);
+  $(".gv-back").onclick = () => show(step - 1);
+  $(".gv-reset").onclick = () => show(0);
+  show(0);
+})();
+</script>
+
   <h3>Zoom in: spam and the word "free"</h3>
-  <p><b>Spam</b> means unwanted junk email, such as adverts or scams. Email programs try to spot it, and one clue is the word "free". Here are 100 emails. Orange ones are spam, blue ones are not, and a ★ marks emails that contain the word "free". Zoom in and count:</p>
+  <p>Now the same zoom-in with real data. <b>Spam</b> means unwanted junk email, such as adverts or scams. Email programs try to spot it, and one clue is the word "free". Here are 100 emails. Orange ones are spam, blue ones are not, and a ★ marks emails that contain the word "free". Zoom in and count:</p>
   <div class="w-cond">
   <div class="grid2">
     <div class="card">
@@ -1353,7 +1432,7 @@ p_not = 1 - len(hearts) / 52                     # 39/52`, "cards.py");
       <tr><td><b>Multiplication rule for probabilities</b> (also called the <b>product rule</b>)</td><td>P(A ∩ B) = P(B) × P(A | B)</td><td>P(spam and free) = 0.30 × 0.80 = 0.24</td></tr>
     </tbody>
   </table></div>
-  <p>Careful: this is a different rule from the counting rule in lesson 3, even though both are called a multiplication rule. Lesson 3 multiplies <i>numbers of choices</i>; this one multiplies <i>probabilities</i>. The second row is just the first row turned around: multiply both sides of the conditional formula by P(B).</p>
+  <p>Careful: this is a different rule from the counting rule in lesson 3, even though both are called a multiplication rule. Lesson 3 multiplies <i>numbers of choices</i>; this one multiplies <i>probabilities</i>. The second row is just the first row turned around (multiply both sides by P(B)), exactly as in the last step of the die demo above.</p>
 
   <h3>Independent events</h3>
   <p>Two events are <b>independent</b> when knowing one doesn't change the chance of the other: P(A | B) = P(A). In words: the chance of A is the same whether or not we know that B happened, so B gives no information about A.</p>
@@ -1452,8 +1531,8 @@ p_both = p_spam * p_free_given_spam       # multiplication rule: 0.24`, "spam.py
   g$(".gf-status").textContent = "Press the button to run the simulation.";
 
   DS.quiz(document.querySelector("#conditional .quizbox"), [
-    { q: "What does P(A | B) mean?", options: ["The chance of A and B together", "The chance of A, given that B happened", "The chance of B, given that A happened", "The chance of A or B"], answer: 1,
-      why: "The bar means \"given\": we zoom into B and ask how likely A is there." },
+    { q: "A die is rolled, and you're told the result is greater than 3. What is P(even | greater than 3)?", options: ["1/2", "2/3", "1/3", "3/6"], answer: 1,
+      why: "Given \"greater than 3\", only {4, 5, 6} is left: B becomes the new world. Two of those 3 outcomes (4 and 6) are even, so the answer is 2/3." },
     { q: "Events A and B are independent. P(A) = 0.5 and P(B) = 0.2. What is P(A and B)?", options: ["0.7", "0.1", "0.3", "0.25"], answer: 1,
       why: "For independent events, P(A ∩ B) = P(A) × P(B) = 0.5 × 0.2 = 0.1." },
     { q: "A fair coin lands heads 5 times in a row. What is the chance the next flip is heads?", options: ["Less than 50%, tails is due", "More than 50%, heads is on a streak", "Exactly 50%", "It can't be known"], answer: 2,
@@ -1469,7 +1548,105 @@ p_both = p_spam * p_free_given_spam       # multiplication rule: 0.24`, "spam.py
   <p>Think of a smoke alarm. It almost always beeps when there's a fire, but it also beeps for burnt toast. When it beeps, how likely is a real fire? It depends on how often each cause happens, and burnt toast is far more common than fires.</p>
 
   <h3>The law of total probability</h3>
-  <p>Back to the smoke alarm, now with numbers. Picture 1,000 evenings in one kitchen:</p>
+  <div class="callout"><b>The question:</b> why is <b>P(B) = Σᵢ P(B ∩ Aᵢ) = Σᵢ P(B | Aᵢ) × P(Aᵢ)</b>? Here B is an event, A₁, A₂, … are slices that split the sample space (explained just below), and Σᵢ means "add up over every slice i". Think about it for a moment, then step through the demo below: five small steps on a single die roll answer it.</div>
+  <p>The idea: <b>slice the sample space into pieces, find how much of the event sits in each piece, then add the pieces up</b>. It helps when an event is hard to count directly but easy to count inside each piece. We'll see it first on the die from lesson 2, then use it on a real example.</p>
+  <p>The slices must form a <b>partition</b>. Like the slices of a cake, they don't overlap (every outcome is in exactly one slice), and together they cover everything (nothing is left out). Here the event is B = "the roll is even" = {2, 4, 6}, and the slices are A₁ = {1}, A₂ = {2, 3, 4} and A₃ = {5, 6}; the small numbers just number the slices. In the demo, the blue outline is B, and the orange, green and pink strips are the three slices. Press <b>Next</b>, <b>Back</b> or <b>Reset</b> to move through the steps.</p>
+  <div class="w-slices">
+  <div class="grid2">
+    <div class="card">
+      <div class="controls">
+        <button class="secondary sl-back">◀ Back</button>
+        <button class="sl-next">Next ▶</button>
+        <button class="secondary sl-reset">Reset</button>
+      </div>
+      <div class="viz" style="min-height:420px"><span class="caption">One die roll · B = even · slices A₁, A₂, A₃</span><div class="sl-plot" style="padding-top:22px"></div></div>
+      <div class="status"></div>
+    </div>
+    <div class="code"></div>
+  </div>
+  </div>
+<script>
+(() => {
+  const root = document.querySelector("#bayes .w-slices");
+  const $ = s => root.querySelector(s);
+  const cp = DS.code($(".code"), `omega = {1, 2, 3, 4, 5, 6}
+B = {2, 4, 6}                                 # even: P(B) = 3/6
+slices = [{1}, {2, 3, 4}, {5, 6}]             # A1, A2, A3: a partition
+p = lambda E: len(E) / len(omega)             # the chance of an event
+pieces = [p(B & A) for A in slices]           # 0, 2/6, 1/6
+shares = [len(B & A) / len(A) for A in slices] # P(B | Ai): 0, 2/3, 1/2
+sum(p(A) * s for A, s in zip(slices, shares)) # 0 + 2/6 + 1/6 = 3/6`, "total_probability.py");
+  const STEPS = [
+    { head: "The event B on its own.", lines: [1, 2], view: {},
+      text: "B = even = {2, 4, 6}. Counting directly, P(B) = 3/6. Now let's get the same answer a different way, by slicing Ω into pieces." },
+    { head: "Slice Ω into A₁, A₂, A₃.", lines: [3], view: { slices: true },
+      text: "A₁ = {1}, A₂ = {2, 3, 4} and A₃ = {5, 6}: no overlaps, nothing left out. Their chances are 1/6, 3/6 and 2/6, which add up to 1. Each strip is drawn as wide as its chance." },
+    { head: "The slices cut B into pieces.", lines: [4, 5], view: { slices: true, pieces: true },
+      text: "Each slice holds a piece of B: B ∩ A₁ = ∅ (no even number), B ∩ A₂ = {2, 4} and B ∩ A₃ = {6}. Add the pieces back up: 0/6 + 2/6 + 1/6 = 3/6 = P(B) ✓. A slice that misses B just adds 0." },
+    { head: "Each piece = slice size × share of the slice.", lines: [6], view: { slices: true, pieces: true, area: true },
+      text: "By the multiplication rule from lesson 5, P(B ∩ Aᵢ) = P(Aᵢ) × P(B | Aᵢ). P(B | Aᵢ) is the share of slice Aᵢ that is even: 0 of 1, 2 of 3, 1 of 2. In the bottom picture, each column is as wide as P(Aᵢ) and its dark part is as tall as P(B | Aᵢ), so each dark area is one piece: 1/6 × 0 = 0, 3/6 × 2/3 = 2/6, 2/6 × 1/2 = 1/6." },
+    { head: "The law of total probability.", lines: [7], view: { slices: true, pieces: true, area: true, total: true },
+      text: "P(B) = P(B | A₁) × P(A₁) + P(B | A₂) × P(A₂) + P(B | A₃) × P(A₃) = 0 + 2/6 + 1/6 = 3/6: the total dark area. It's also a <b>weighted average</b> of the shares 0, 2/3 and 1/2: an average where bigger slices count more, because each share is multiplied by its slice's size." },
+  ];
+  const X0 = 20, W = 480, COLS = [
+    { sub: "₁", name: "A₁ = {1}", w: 1 / 6, share: 0, shareTxt: "0", c: "var(--s2)", area: "0", pA: "1/6" },
+    { sub: "₂", name: "A₂ = {2, 3, 4}", w: 3 / 6, share: 2 / 3, shareTxt: "2/3", c: "var(--s3)", area: "2/6", pA: "3/6" },
+    { sub: "₃", name: "A₃ = {5, 6}", w: 2 / 6, share: 1 / 2, shareTxt: "1/2", c: "var(--s5)", area: "1/6", pA: "2/6" },
+  ];
+  let x = X0; COLS.forEach(c => { c.x = x; c.px = c.w * W; x += c.px; });
+  const ITEMS = [["1", 60, 120], ["3", 220, 42], ["2", 180, 125], ["4", 280, 125], ["5", 420, 42], ["6", 420, 130]];
+  const E = { cx: 306, cy: 120, rx: 165, ry: 55 };
+  const tint = (c, pct) => `color-mix(in srgb, ${c} ${pct}%, var(--surface))`;
+  let step = 0;
+  function draw() {
+    const v = STEPS[step].view, box = $(".sl-plot"); box.innerHTML = "";
+    const s = DS.svg("svg", { viewBox: "0 0 520 470", class: "plot", role: "img", "aria-label": "The die's outcomes split into three slices, and an area picture of each slice's share of even numbers" });
+    s.append(DS.svg("defs", {}, ...COLS.map((c, i) => DS.svg("clipPath", { id: "slClip" + i }, DS.svg("rect", { x: c.x, y: 12, width: c.px, height: 186 })))));
+    // top picture: Ω, slices, the event B
+    if (v.slices) COLS.forEach(c => s.append(DS.svg("rect", { x: c.x, y: 12, width: c.px, height: 186, fill: tint(c.c, 16) })));
+    if (v.pieces) COLS.forEach((c, i) => s.append(DS.svg("ellipse", { ...E, fill: tint(c.c, 55), "clip-path": `url(#slClip${i})` })));
+    s.append(DS.svg("rect", { x: X0, y: 12, width: W, height: 186, rx: 8, fill: "none", stroke: "var(--muted)", "stroke-width": 1.5 }));
+    s.append(DS.svg("text", { class: "lbl", x: 28, y: 30, style: "font-weight:700" }, "Ω"));
+    if (v.slices) {
+      COLS.slice(1).forEach(c => s.append(DS.svg("line", { x1: c.x, x2: c.x, y1: 12, y2: 198, stroke: "var(--muted)", "stroke-width": 1.5, "stroke-dasharray": "6 5" })));
+      COLS.forEach(c => s.append(DS.svg("text", { class: "lbl", x: c.x + c.px / 2, y: 190, "text-anchor": "middle", style: `font-weight:700;fill:${c.c}` }, c.name)));
+    }
+    s.append(DS.svg("ellipse", { ...E, fill: "none", stroke: "var(--s1)", "stroke-width": 3 }));
+    s.append(DS.svg("text", { class: "lbl", x: E.cx, y: E.cy - E.ry - 11, "text-anchor": "middle", style: "font-weight:700;fill:var(--s1)" }, "B = even"));
+    ITEMS.forEach(([t, ix, iy]) => s.append(DS.svg("text", { x: ix, y: iy + 7, "text-anchor": "middle", style: "font:700 20px var(--mono);fill:var(--text)" }, t)));
+    // bottom picture: the area view (faint until step 4)
+    const g = DS.svg("g", { opacity: v.area ? 1 : 0.15 });
+    const top = 262, H = 150, bottom = top + H;
+    g.append(DS.svg("text", { class: "lbl", x: X0, y: 240, style: "font-size:12px" }, "Area view: column width = P(Aᵢ), dark height = P(B | Aᵢ)"));
+    COLS.forEach(c => {
+      g.append(DS.svg("rect", { x: c.x, y: top, width: c.px, height: H, fill: tint(c.c, 12) }));
+      const h = c.share * H;
+      if (h > 0) g.append(DS.svg("rect", { x: c.x, y: bottom - h, width: c.px, height: h, fill: tint(c.c, 70) }));
+      else g.append(DS.svg("line", { x1: c.x + 3, x2: c.x + c.px - 3, y1: bottom - 1, y2: bottom - 1, stroke: c.c, "stroke-width": 3 }));
+      g.append(DS.svg("text", { class: "lbl", x: c.x + c.px / 2, y: bottom - h - 8, "text-anchor": "middle", style: `font-size:11px;font-weight:700;fill:${c.c}` }, "P(B | A" + c.sub + ") = " + c.shareTxt));
+      g.append(DS.svg("text", { class: "lbl", x: c.x + c.px / 2, y: h > 30 ? bottom - h / 2 + 5 : bottom - 22, "text-anchor": "middle", style: "font-size:12px;font-weight:700" }, "area = " + c.area));
+      g.append(DS.svg("text", { class: "lbl", x: c.x + c.px / 2, y: bottom + 16, "text-anchor": "middle", style: `font-size:11px;fill:${c.c}` }, "P(A" + c.sub + ") = " + c.pA));
+    });
+    g.append(DS.svg("rect", { x: X0, y: top, width: W, height: H, fill: "none", stroke: "var(--muted)", "stroke-width": 1.5 }));
+    COLS.slice(1).forEach(c => g.append(DS.svg("line", { x1: c.x, x2: c.x, y1: top, y2: bottom, stroke: "var(--muted)", "stroke-width": 1.5, "stroke-dasharray": "6 5" })));
+    if (v.total) g.append(DS.svg("text", { class: "lbl", x: X0 + W / 2, y: 458, "text-anchor": "middle", style: "font-size:13px;font-weight:700;fill:var(--s1)" }, "total dark area = 0 + 2/6 + 1/6 = 3/6 = P(B)"));
+    s.append(g);
+    box.append(s);
+  }
+  function show(i) {
+    step = Math.max(0, Math.min(STEPS.length - 1, i));
+    const st = STEPS[step];
+    draw(); cp.hl(...st.lines);
+    $(".status").innerHTML = `<b>Step ${step + 1} of ${STEPS.length} · ${st.head}</b> ${st.text}`;
+    $(".sl-back").disabled = step === 0; $(".sl-next").disabled = step === STEPS.length - 1;
+  }
+  $(".sl-next").onclick = () => show(step + 1);
+  $(".sl-back").onclick = () => show(step - 1);
+  $(".sl-reset").onclick = () => show(0);
+  show(0);
+})();
+</script>
+  <p>Now a real example: the smoke alarm from the start of this lesson. Here the event is a beep, and the slices are the three things that can happen on an evening: a fire, burnt toast, or a quiet evening. Picture 1,000 evenings in one kitchen:</p>
   <ul>
     <li>A real <b>fire</b> happens on <b>2</b> evenings, and the alarm beeps every time: <b>2 beeps</b>.</li>
     <li><b>Burnt toast</b> happens on <b>100</b> evenings, and its smoke sets the alarm off 30% of the time: 30% of 100 = <b>30 beeps</b>.</li>
@@ -1612,8 +1789,8 @@ p_sick_given_pos = true_pos / positives   # Bayes: 9 / 98 = 9%`, "medical_test.p
   reset();
 
   DS.quiz(document.querySelector("#bayes .quizbox"), [
-    { q: "What does Bayes' theorem help you find?", options: ["P(evidence | cause) from P(cause | evidence)", "P(cause | evidence) from P(evidence | cause)", "The number of possible outcomes", "The average of a random variable"], answer: 1,
-      why: "Bayes reverses the condition: from how likely the evidence is given the cause, to how likely the cause is given the evidence." },
+    { q: "To use the law of total probability, the slices A₁, A₂, A₃ must…", options: ["not overlap, and together cover everything", "all have the same probability", "all contain the event B", "overlap a little, so nothing is missed"], answer: 0,
+      why: "They must form a partition: every outcome is in exactly one slice. Then the pieces of B add up to all of B, with nothing counted twice or left out." },
     { q: "A disease is rare and a good test comes back positive. Why can the chance of being sick still be low?", options: ["Because tests are never useful", "Because there are many healthy people, so even a few false alarms outnumber the true positives", "Because the test finds no sick people", "Because positive results are random"], answer: 1,
       why: "With a low base rate, false positives among the many healthy people can outnumber true positives among the few sick." },
     { q: "A factory has two machines. Machine 1 makes 60% of items (2% of them defective, meaning faulty), machine 2 makes 40% (5% defective). What is P(defect)?", options: ["7%", "3.2%", "3.5%", "2%"], answer: 1,
@@ -2262,6 +2439,7 @@ r = st.correlation(ice_cream, drownings)   # strongly positive...
     ["Conditional", "#conditional", "Conditional probability P(A | B)", "the chance of A once we know B happened"],
     ["Conditional", "#conditional", "Independent events", "knowing one doesn't change the chance of the other"],
     ["Conditional", "#conditional", "Gambler's fallacy", "wrongly believing past independent results change the next one"],
+    ["Conditional", "#bayes", "Partition", "slices of the sample space that don't overlap and together cover everything"],
     ["Conditional", "#bayes", "Law of total probability", "add up the chance of B over every separate way it can happen"],
     ["Conditional", "#bayes", "Bayes' theorem", "turns P(evidence | cause) into P(cause | evidence)"],
     ["Conditional", "#bayes", "Base rate", "how common something is before any evidence"],
