@@ -685,6 +685,14 @@ const KIT = (() => {
 
   <h3>The words we use</h3>
   <p>Our first examples use a coin and a die. A <b>coin</b> has two sides, called heads and tails; a fair coin lands on each side with the same chance. A <b>die</b> (plural: dice) is a small cube whose six faces show the numbers 1 to 6. When you roll it, one face ends up on top, and on a fair die each of the six numbers has the same chance.</p>
+  <figure style="margin:12px 0">
+    <svg class="plot" viewBox="0 0 440 140" role="img" aria-label="A coin with two sides, H for heads and T for tails, and a die with six faces" style="max-width:440px;margin:0 auto">
+      <g transform="translate(120,60)"><circle r="40" fill="color-mix(in srgb, var(--s4) 45%, var(--surface))" stroke="var(--s4)" stroke-width="3"/><line x1="0" y1="-40" x2="0" y2="40" stroke="var(--s4)" stroke-width="2"/><text x="-18" y="9" text-anchor="middle" style="font:700 24px var(--sans);fill:var(--text)">H</text><text x="18" y="9" text-anchor="middle" style="font:700 24px var(--sans);fill:var(--text)">T</text></g>
+      <text class="lbl" x="120" y="128" text-anchor="middle">coin: 2 sides, heads (H) and tails (T)</text>
+      <g transform="translate(330,62)"><polygon points="0.0,-46.0 40.0,-24.0 0.0,-2.0 -40.0,-24.0" fill="var(--surface)" stroke="var(--text-2)" stroke-width="2"/><polygon points="-40.0,-24.0 0.0,-2.0 0.0,44.0 -40.0,22.0" fill="var(--surface-2)" stroke="var(--text-2)" stroke-width="2"/><polygon points="40.0,-24.0 0.0,-2.0 0.0,44.0 40.0,22.0" fill="color-mix(in srgb, var(--text) 12%, var(--surface-2))" stroke="var(--text-2)" stroke-width="2"/><ellipse cx="0" cy="-24.0" rx="7.0" ry="4.5" fill="var(--bad)"/><circle cx="-29.0" cy="-4.0" r="4.0" fill="var(--text)"/><circle cx="-11.0" cy="21.0" r="4.0" fill="var(--text)"/><circle cx="11.0" cy="-1.0" r="4.0" fill="var(--text)"/><circle cx="20.0" cy="11.0" r="4.0" fill="var(--text)"/><circle cx="29.0" cy="23.0" r="4.0" fill="var(--text)"/></g>
+      <text class="lbl" x="330" y="128" text-anchor="middle">die: 6 faces, showing 1 to 6</text>
+    </svg>
+  </figure>
   <div style="overflow-x:auto"><table class="cx">
     <thead><tr><th>Term</th><th>Meaning</th><th>Example (rolling a die)</th></tr></thead>
     <tbody>
@@ -1197,6 +1205,14 @@ comb(5, 3)             # order doesn't: 60 / 3! = 10 teams`, "counting.py");
   </ol>
   <p>Everything else follows from these three axioms.</p>
   <p>The examples below use a standard deck of playing cards. In case you haven't used one: a deck has <b>52 cards</b>, split into 4 <b>suits</b> (groups, each with its own symbol): ♥ hearts and ♦ diamonds are red, ♠ spades and ♣ clubs are black. Each suit has the same 13 <b>ranks</b>: A (ace), 2, 3, 4, 5, 6, 7, 8, 9, 10, J (jack), Q (queen) and K (king). J, Q and K show a picture of a person, so they are called <b>face cards</b>: 3 in each suit, 12 in the whole deck. Every card appears exactly once, so 4 suits × 13 ranks = 52 cards.</p>
+  <figure style="margin:12px 0">
+    <svg class="plot" viewBox="0 0 520 130" role="img" aria-label="Four cards, one from each suit: hearts and diamonds are red, spades and clubs are black; and the three face cards jack, queen and king" style="max-width:520px;margin:0 auto">
+      <rect x="20" y="10" width="56" height="80" rx="6" fill="var(--surface)" stroke="var(--text-2)" stroke-width="1.5"/><text x="26" y="26" style="font:700 13px var(--sans);fill:var(--bad)">A</text><text x="26" y="39" style="font:13px var(--sans);fill:var(--bad)">♥</text><text x="48.0" y="64.0" text-anchor="middle" style="font:30px var(--sans);fill:var(--bad)">♥</text><rect x="86" y="10" width="56" height="80" rx="6" fill="var(--surface)" stroke="var(--text-2)" stroke-width="1.5"/><text x="92" y="26" style="font:700 13px var(--sans);fill:var(--bad)">7</text><text x="92" y="39" style="font:13px var(--sans);fill:var(--bad)">♦</text><text x="114.0" y="64.0" text-anchor="middle" style="font:30px var(--sans);fill:var(--bad)">♦</text><rect x="152" y="10" width="56" height="80" rx="6" fill="var(--surface)" stroke="var(--text-2)" stroke-width="1.5"/><text x="158" y="26" style="font:700 13px var(--sans);fill:var(--text)">4</text><text x="158" y="39" style="font:13px var(--sans);fill:var(--text)">♠</text><text x="180.0" y="64.0" text-anchor="middle" style="font:30px var(--sans);fill:var(--text)">♠</text><rect x="218" y="10" width="56" height="80" rx="6" fill="var(--surface)" stroke="var(--text-2)" stroke-width="1.5"/><text x="224" y="26" style="font:700 13px var(--sans);fill:var(--text)">9</text><text x="224" y="39" style="font:13px var(--sans);fill:var(--text)">♣</text><text x="246.0" y="64.0" text-anchor="middle" style="font:30px var(--sans);fill:var(--text)">♣</text>
+      <text class="lbl" x="139" y="112" text-anchor="middle">4 suits: ♥ ♦ red, ♠ ♣ black</text>
+      <rect x="300" y="10" width="56" height="80" rx="6" fill="var(--surface)" stroke="var(--text-2)" stroke-width="1.5"/><text x="306" y="26" style="font:700 13px var(--sans);fill:var(--bad)">J</text><text x="306" y="39" style="font:13px var(--sans);fill:var(--bad)">♥</text><text x="328.0" y="64.0" text-anchor="middle" style="font:700 28px var(--sans);fill:var(--bad)">J</text><rect x="366" y="10" width="56" height="80" rx="6" fill="var(--surface)" stroke="var(--text-2)" stroke-width="1.5"/><text x="372" y="26" style="font:700 13px var(--sans);fill:var(--bad)">Q</text><text x="372" y="39" style="font:13px var(--sans);fill:var(--bad)">♥</text><text x="394.0" y="64.0" text-anchor="middle" style="font:700 28px var(--sans);fill:var(--bad)">Q</text><rect x="432" y="10" width="56" height="80" rx="6" fill="var(--surface)" stroke="var(--text-2)" stroke-width="1.5"/><text x="438" y="26" style="font:700 13px var(--sans);fill:var(--bad)">K</text><text x="438" y="39" style="font:13px var(--sans);fill:var(--bad)">♥</text><text x="460.0" y="64.0" text-anchor="middle" style="font:700 28px var(--sans);fill:var(--bad)">K</text>
+      <text class="lbl" x="395" y="112" text-anchor="middle">face cards: J, Q, K</text>
+    </svg>
+  </figure>
   <p>In practice, the rules you'll use most are:</p>
   <div style="overflow-x:auto"><table class="cx">
     <thead><tr><th>Rule</th><th>Formula</th><th>Example with a deck of 52 cards</th></tr></thead>
@@ -1206,7 +1222,129 @@ comb(5, 3)             # order doesn't: 60 / 3! = 10 teams`, "counting.py");
       <tr><td><b>Complement rule</b></td><td>P(Aᶜ) = 1 − P(A)</td><td>P(not a heart) = 1 − 13/52 = 39/52</td></tr>
     </tbody>
   </table></div>
-  <p>Why subtract P(A ∩ B)? The cards that are both hearts and face cards (J♥, Q♥, K♥) were counted once in "hearts" and once in "face cards". Subtracting them once counts each card exactly once. See it on the deck:</p>
+  <h3>Adding probabilities: when events can't happen together</h3>
+  <div class="callout"><b>The question:</b> why, for <b>mutually exclusive</b> A and B, is <b>P(A or B) = P(A) + P(B)</b>? Think about it for a moment, then step through the demo below.</div>
+  <p>Recall from lesson 2: two events are <b>mutually exclusive</b> when they can't happen at the same time, so they share no outcomes (A ∩ B = ∅). A spinner shows this clearly. It is a circle split into 4 equal sections, numbered 1 to 4, with a needle in the middle: you spin the needle, and the section where it stops is the result. Let A = "the needle lands on 1" and B = "the needle lands on 3". In the demo, section 1 is blue and section 3 is green. Press <b>Next</b>, <b>Back</b> or <b>Reset</b> to move through the steps.</p>
+  <div class="w-spin">
+  <div class="grid2">
+    <div class="card">
+      <div class="controls">
+        <button class="secondary sp-back">◀ Back</button>
+        <button class="sp-next">Next ▶</button>
+        <button class="secondary sp-reset">Reset</button>
+      </div>
+      <div class="viz" style="min-height:320px"><span class="caption">A spinner with 4 equal sections</span><div class="sp-plot" style="padding-top:22px"></div></div>
+      <div class="status"></div>
+    </div>
+    <div class="code"></div>
+  </div>
+  </div>
+<script>
+(() => {
+  const root = document.querySelector("#rules .w-spin");
+  const $ = s => root.querySelector(s);
+  const cp = DS.code($(".code"), `sections = [1, 2, 3, 4]                 # 4 equal sections
+p = lambda E: len(E) / len(sections)    # each section: 1/4
+p({1})                                  # land on 1: 1/4
+p({3})                                  # land on 3: 1/4
+{1} & {3}                               # empty: can't happen together
+p({1}) + p({3})                         # 1/4 + 1/4 = 1/2 = p({1, 3})`, "spinner.py");
+  const STEPS = [
+    { head: "The spinner.", lines: [1, 2], view: { needle: 1 }, cap: "4 equal sections",
+      text: "The 4 sections are the same size, so the needle is equally likely to stop in any of them: each number has chance 1/4." },
+    { head: "A = land on 1.", lines: [3], view: { one: true, needle: 1 }, cap: "P(1) = 1/4",
+      text: "Section 1 (blue) is 1 of the 4 equal sections: P(A) = P(1) = 1/4." },
+    { head: "B = land on 3.", lines: [4], view: { three: true, needle: 3 }, cap: "P(3) = 1/4",
+      text: "Section 3 (green) is another section, separate from section 1: P(B) = P(3) = 1/4." },
+    { head: "Can both happen at once?", lines: [5], view: { one: true, three: true, needle: 1 }, cap: "the needle stops in one section only",
+      text: "No. The needle stops in exactly one section, so a single spin can't land on 1 and on 3 together: {1} ∩ {3} = ∅, so P(1 and 3) = 0. The two events are mutually exclusive." },
+    { head: "Add the probabilities.", lines: [6], view: { one: true, three: true, needle: 3 }, cap: "1 or 3: 2 of 4 sections = 1/2",
+      text: "The two sections share nothing, so nothing is counted twice and we can simply add: P(1 or 3) = P(1) + P(3) = 1/4 + 1/4 = 2/4 = 1/2. In the picture, the blue and green sections together cover half of the spinner." },
+  ];
+  const CX = 260, CY = 165, R = 130;
+  // section centre angles (degrees, SVG coordinates: 0 = right, 90 = down)
+  const ANG = { 1: 225, 2: 315, 3: 135, 4: 45 };
+  const QUAD = { 1: [180, 270], 2: [270, 360], 3: [90, 180], 4: [0, 90] };
+  const pt = (a, r) => [CX + r * Math.cos(a * Math.PI / 180), CY + r * Math.sin(a * Math.PI / 180)];
+  const wedge = (n, fill) => { const [a0, a1] = QUAD[n], p0 = pt(a0, R), p1 = pt(a1, R); return `<path d="M${CX},${CY} L${p0[0]},${p0[1]} A${R},${R} 0 0 1 ${p1[0]},${p1[1]} Z" fill="${fill}"/>`; };
+  const tint = (c, p) => `color-mix(in srgb, ${c} ${p}%, var(--surface))`;
+  let step = 0;
+  function draw() {
+    const v = STEPS[step].view;
+    let g = `<svg class="plot" viewBox="0 0 520 330" role="img" aria-label="A spinner with four equal sections numbered 1 to 4 and a needle">`;
+    [1, 2, 3, 4].forEach(n => { g += wedge(n, n === 1 && v.one ? tint("var(--s1)", 40) : n === 3 && v.three ? tint("var(--s3)", 40) : "var(--surface)"); });
+    g += `<circle cx="${CX}" cy="${CY}" r="${R}" fill="none" stroke="var(--text)" stroke-width="4"/>`;
+    g += `<line x1="${CX - R}" y1="${CY}" x2="${CX + R}" y2="${CY}" stroke="var(--text-2)" stroke-width="2"/><line x1="${CX}" y1="${CY - R}" x2="${CX}" y2="${CY + R}" stroke="var(--text-2)" stroke-width="2"/>`;
+    [1, 2, 3, 4].forEach(n => { const [x, y] = pt(ANG[n], R * 0.55); g += `<text x="${x}" y="${y + 14}" text-anchor="middle" style="font:700 40px var(--sans);fill:var(--text)">${n}</text>`; });
+    const a = ANG[v.needle] + (v.needle === 1 ? 20 : -20), tip = pt(a, R * 0.86), tail = pt(a + 180, R * 0.16), l = pt(a + 90, 7), r2 = pt(a - 90, 7);
+    g += `<polygon points="${tip[0]},${tip[1]} ${l[0]},${l[1]} ${tail[0]},${tail[1]} ${r2[0]},${r2[1]}" fill="var(--text)"/>`;
+    g += `<circle cx="${CX}" cy="${CY}" r="13" fill="var(--text-2)" stroke="var(--surface)" stroke-width="3"/>`;
+    g += `<text x="${CX}" y="322" text-anchor="middle" style="font:700 16px var(--sans);fill:var(--text)">${STEPS[step].cap}</text></svg>`;
+    $(".sp-plot").innerHTML = g;
+  }
+  function show(i) {
+    step = Math.max(0, Math.min(STEPS.length - 1, i));
+    const st = STEPS[step];
+    draw(); cp.hl(...st.lines);
+    $(".status").innerHTML = `<b>Step ${step + 1} of ${STEPS.length} · ${st.head}</b> ${st.text}`;
+    $(".sp-back").disabled = step === 0; $(".sp-next").disabled = step === STEPS.length - 1;
+  }
+  $(".sp-next").onclick = () => show(step + 1);
+  $(".sp-back").onclick = () => show(step - 1);
+  $(".sp-reset").onclick = () => show(0);
+  show(0);
+})();
+</script>
+  <p>The same idea works on the die from lesson 2. Take one roll with A = "even" = {2, 4, 6} and B = "odd" = {1, 3, 5}. In the picture, the blue circle is A and the green circle is B, and they don't touch.</p>
+  <figure style="margin:12px 0">
+    <svg class="plot" viewBox="0 0 520 290" role="img" aria-label="Two separate circles: A = even holds 2, 4, 6 and B = odd holds 1, 3, 5; they do not overlap" style="max-width:460px;margin:0 auto">
+      <rect x="12" y="18" width="496" height="262" rx="10" fill="none" stroke="var(--muted)" stroke-width="1.5"/>
+      <text class="lbl" x="22" y="36" style="font-weight:700">Ω</text>
+      <circle cx="160" cy="150" r="88" fill="color-mix(in srgb, var(--s1) 12%, var(--surface))" stroke="var(--s1)" stroke-width="3"/>
+      <circle cx="362" cy="150" r="88" fill="color-mix(in srgb, var(--s3) 12%, var(--surface))" stroke="var(--s3)" stroke-width="3"/>
+      <text class="lbl" x="160" y="52" text-anchor="middle" style="font-weight:700;fill:var(--s1)">A = even</text>
+      <text class="lbl" x="362" y="52" text-anchor="middle" style="font-weight:700;fill:var(--s3)">B = odd</text>
+      <g style="font:700 20px var(--mono);fill:var(--text)" text-anchor="middle">
+        <text x="130" y="122">2</text><text x="185" y="157">4</text><text x="130" y="195">6</text>
+        <text x="335" y="122">1</text><text x="390" y="157">3</text><text x="335" y="195">5</text>
+      </g>
+    </svg>
+    <figcaption style="text-align:center;color:var(--text-2);font-size:.92rem;margin-top:6px">Mutually exclusive: no outcome is in both circles, so nothing is counted twice.</figcaption>
+  </figure>
+  <p>"A or B" means the roll lands in either circle. Because the circles don't overlap, every outcome in "A or B" is in exactly one of them, so we can count each circle on its own and add: 3 outcomes + 3 outcomes = 6 outcomes. As probabilities: <b>P(A or B) = P(A) + P(B) = 3/6 + 3/6 = 6/6 = 1</b>. That's correct: every roll is either even or odd. This is the third axiom above ("separate events add up"), seen on a picture.</p>
+
+  <h3>The addition rule: when events overlap</h3>
+  <div class="callout"><b>The question:</b> why is <b>P(A or B) = P(A ∪ B) = P(A) + P(B) − P(A ∩ B)</b>? In other words, why subtract the overlap? Think about it for a moment, then read on.</div>
+  <p>Now keep A = "even" = {2, 4, 6} but change B to "greater than 3" = {4, 5, 6}, the events from lesson 2. These two <b>can</b> happen together: a roll of 4 or 6 is both. In the picture, the blue circle is A, the green circle is B, and the purple region is their overlap A ∩ B = {4, 6}.</p>
+  <figure style="margin:12px 0">
+    <svg class="plot" viewBox="0 0 520 290" role="img" aria-label="Two overlapping circles: A = even and B = greater than 3 share 4 and 6, which are marked as counted twice" style="max-width:460px;margin:0 auto">
+      <defs><clipPath id="rlClipA"><circle cx="205" cy="150" r="92"/></clipPath></defs>
+      <circle cx="315" cy="150" r="92" fill="color-mix(in srgb, var(--violet) 40%, var(--surface))" clip-path="url(#rlClipA)"/>
+      <rect x="12" y="18" width="496" height="262" rx="10" fill="none" stroke="var(--muted)" stroke-width="1.5"/>
+      <text class="lbl" x="22" y="36" style="font-weight:700">Ω</text>
+      <circle cx="205" cy="150" r="92" fill="none" stroke="var(--s1)" stroke-width="3"/>
+      <circle cx="315" cy="150" r="92" fill="none" stroke="var(--s3)" stroke-width="3"/>
+      <text class="lbl" x="165" y="50" text-anchor="middle" style="font-weight:700;fill:var(--s1)">A = even</text>
+      <text class="lbl" x="355" y="50" text-anchor="middle" style="font-weight:700;fill:var(--s3)">B = greater than 3</text>
+      <g style="font:700 20px var(--mono);fill:var(--text)" text-anchor="middle">
+        <text x="160" y="157">2</text><text x="260" y="132">4</text><text x="260" y="185">6</text><text x="362" y="157">5</text>
+        <text x="50" y="77">1</text><text x="470" y="257">3</text>
+      </g>
+      <g style="font:700 16px var(--sans);fill:var(--hot)">
+        <text x="274" y="122">×2</text><text x="274" y="176">×2</text>
+      </g>
+    </svg>
+    <figcaption style="text-align:center;color:var(--text-2);font-size:.92rem;margin-top:6px">Overlapping: 4 and 6 sit in both circles, so simply adding the two circles counts them twice (orange ×2).</figcaption>
+  </figure>
+  <ol class="ex">
+    <li><b>Just add, as before:</b> P(A) + P(B) = 3/6 + 3/6 = 6/6 = 1. But that's <b>too big</b>: a probability of 1 would mean every roll is even or greater than 3, yet a roll of 1 or 3 is neither.</li>
+    <li><b>Find the mistake:</b> counting A gives 2, 4, 6 and counting B gives 4, 5, 6, so 4 and 6 were counted <b>twice</b>, once in each circle (the orange ×2 marks).</li>
+    <li><b>Fix it:</b> subtract the double-counted overlap once: P(A) + P(B) − P(A ∩ B) = 3/6 + 3/6 − 2/6 = <b>4/6</b>.</li>
+    <li><b>Check by counting:</b> A ∪ B = {2, 4, 5, 6}, which is 4 of the 6 outcomes: 4/6 ✓.</li>
+  </ol>
+  <p>So the addition rule is <b>P(A ∪ B) = P(A) + P(B) − P(A ∩ B)</b>, and the mutually exclusive case is just the special case where the overlap is empty: P(A ∩ B) = 0, so there is nothing to subtract. The two die examples give the same total, 3/6 + 3/6 = 1, but it is right for "even or odd" (no overlap) and wrong for "even or greater than 3" (overlap). Always ask first: <b>can both happen at once?</b></p>
+
+  <p>The same thing happens with cards. The cards that are both hearts and face cards (J♥, Q♥, K♥) are counted once in "hearts" and once in "face cards", so the addition rule subtracts them once: 13/52 + 12/52 − 3/52 = 22/52. See it on the deck:</p>
 
   <div class="w-cards">
   <div class="grid2">
@@ -1224,8 +1362,29 @@ comb(5, 3)             # order doesn't: 60 / 3! = 10 teams`, "counting.py");
   </div>
   </div>
 
+  <h3>The complement rule: the chance that something doesn't happen</h3>
+  <div class="callout"><b>The question:</b> how do we find the probability that A does <b>not</b> happen? Think about it for a moment, then read on.</div>
+  <p>Roll a die once, and let A = "a six" = {6}, so P(A) = 1/6. "Not A" is written <b>Aᶜ</b>, the complement from lesson 2: every outcome that is not in A, here {1, 2, 3, 4, 5}. In the bar below, each cell is one face of the die (count the dots): the orange cell is A and the blue cells are Aᶜ.</p>
+  <figure style="margin:12px 0">
+    <svg class="plot" viewBox="0 0 520 116" role="img" aria-label="A bar of six die faces: cell 6 is A, a six, with 1/6; cells 1 to 5 are not a six, with 5/6; together the whole bar is 1" style="max-width:520px;margin:0 auto">
+      <text class="lbl" x="220" y="16" text-anchor="middle" style="font-weight:700;fill:var(--s1)">Aᶜ = not a six: 5 of 6 cells = 5/6</text>
+      <text class="lbl" x="460" y="16" text-anchor="middle" style="font-weight:700;fill:var(--hot)">A: 1/6</text>
+      <g stroke="var(--muted)" stroke-width="1.5">
+        <rect x="20" y="26" width="80" height="56" fill="color-mix(in srgb, var(--s1) 22%, var(--surface))"/><rect x="38" y="32" width="44" height="44" rx="7.0" fill="var(--surface)" stroke="var(--text-2)" stroke-width="1.5"/><circle cx="60.0" cy="54.0" r="3.7" fill="var(--bad)"/>
+        <rect x="100" y="26" width="80" height="56" fill="color-mix(in srgb, var(--s1) 22%, var(--surface))"/><rect x="118" y="32" width="44" height="44" rx="7.0" fill="var(--surface)" stroke="var(--text-2)" stroke-width="1.5"/><circle cx="128.1" cy="42.1" r="3.7" fill="var(--text)"/><circle cx="151.9" cy="65.9" r="3.7" fill="var(--text)"/>
+        <rect x="180" y="26" width="80" height="56" fill="color-mix(in srgb, var(--s1) 22%, var(--surface))"/><rect x="198" y="32" width="44" height="44" rx="7.0" fill="var(--surface)" stroke="var(--text-2)" stroke-width="1.5"/><circle cx="208.1" cy="42.1" r="3.7" fill="var(--text)"/><circle cx="220.0" cy="54.0" r="3.7" fill="var(--text)"/><circle cx="231.9" cy="65.9" r="3.7" fill="var(--text)"/>
+        <rect x="260" y="26" width="80" height="56" fill="color-mix(in srgb, var(--s1) 22%, var(--surface))"/><rect x="278" y="32" width="44" height="44" rx="7.0" fill="var(--surface)" stroke="var(--text-2)" stroke-width="1.5"/><circle cx="288.1" cy="42.1" r="3.7" fill="var(--text)"/><circle cx="311.9" cy="42.1" r="3.7" fill="var(--text)"/><circle cx="288.1" cy="65.9" r="3.7" fill="var(--text)"/><circle cx="311.9" cy="65.9" r="3.7" fill="var(--text)"/>
+        <rect x="340" y="26" width="80" height="56" fill="color-mix(in srgb, var(--s1) 22%, var(--surface))"/><rect x="358" y="32" width="44" height="44" rx="7.0" fill="var(--surface)" stroke="var(--text-2)" stroke-width="1.5"/><circle cx="368.1" cy="42.1" r="3.7" fill="var(--text)"/><circle cx="391.9" cy="42.1" r="3.7" fill="var(--text)"/><circle cx="380.0" cy="54.0" r="3.7" fill="var(--text)"/><circle cx="368.1" cy="65.9" r="3.7" fill="var(--text)"/><circle cx="391.9" cy="65.9" r="3.7" fill="var(--text)"/>
+        <rect x="420" y="26" width="80" height="56" fill="color-mix(in srgb, var(--hot) 45%, var(--surface))"/><rect x="438" y="32" width="44" height="44" rx="7.0" fill="var(--surface)" stroke="var(--text-2)" stroke-width="1.5"/><circle cx="448.1" cy="42.1" r="3.7" fill="var(--text)"/><circle cx="471.9" cy="42.1" r="3.7" fill="var(--text)"/><circle cx="448.1" cy="54.0" r="3.7" fill="var(--text)"/><circle cx="471.9" cy="54.0" r="3.7" fill="var(--text)"/><circle cx="448.1" cy="65.9" r="3.7" fill="var(--text)"/><circle cx="471.9" cy="65.9" r="3.7" fill="var(--text)"/>
+      </g>
+      <text class="lbl" x="260" y="104" text-anchor="middle">the whole bar = all 6 outcomes = P(Ω) = 1</text>
+    </svg>
+  </figure>
+  <p>A and Aᶜ can't happen together (a roll is either a six or not), so they are mutually exclusive and we can add them, as in the even and odd example above. Together they fill the whole bar, which is the whole sample space, and P(Ω) = 1 (the second axiom). So P(A) + P(Aᶜ) = 1, which gives the <b>complement rule: P(Aᶜ) = 1 − P(A)</b>. Here P(not a six) = 1 − 1/6 = <b>5/6</b>. Check by counting: 5 of the 6 faces are not a six ✓.</p>
+  <p>The complement rule is most useful when "not A" is easier to count than A, as the next example shows.</p>
+
   <h3>The complement trick: "at least one six"</h3>
-  <p>The complement rule from the table above is most useful when an event is hard to count directly but its opposite is easy. This example leaves the cards and uses a die: the six-sided cube from lesson 1, with faces 1 to 6.</p>
+  <p>Here is the complement rule at its most useful: an event that is hard to count directly, but whose opposite is easy. We use the same die, but now roll it several times.</p>
   <p><b>The question:</b> roll a die 4 times. What's the chance that <b>at least one</b> of the 4 rolls shows a six? "At least one" means one six, two sixes, three sixes or four sixes: any number of sixes except zero.</p>
   <p>Counting each of those cases is long. The opposite is much simpler: the opposite of "at least one six" is "<b>no six at all</b>". By the complement rule, P(at least one six) = 1 − P(no six). So we only need P(no six), and the counting tools from lesson 3 give it:</p>
   <ol class="ex">
@@ -1311,8 +1470,8 @@ p_not = 1 - len(hearts) / 52                     # 39/52`, "cards.py");
       why: "Equally likely outcomes: 3 favourable out of 10 marbles." },
     { q: "If P(rain) = 0.3, what is P(no rain)?", options: ["0.3", "0.7", "1.3", "0"], answer: 1,
       why: "Complement rule: P(not A) = 1 − P(A) = 1 − 0.3 = 0.7." },
-    { q: "Why does the addition rule subtract P(A ∩ B)?", options: ["To make the answer smaller than 1/2", "Because outcomes in both A and B were counted twice", "Because A and B are always independent", "Because B is the complement of A"], answer: 1,
-      why: "Outcomes in both events appear in P(A) and in P(B); subtracting once counts them exactly once." },
+    { q: "One die roll: A = even and B = greater than 3. Just adding gives 3/6 + 3/6 = 1. What is P(A or B)?", options: ["1", "4/6", "5/6", "2/6"], answer: 1,
+      why: "4 and 6 are in both events, so plain adding counts them twice. Subtract the overlap once: 3/6 + 3/6 − 2/6 = 4/6, the outcomes {2, 4, 5, 6}." },
   ]);
 })();
 </script>
@@ -1434,10 +1593,206 @@ len(B) / len(omega) * p_A_given_B     # 3/6 × 2/3 = 2/6`, "conditional.py");
   </table></div>
   <p>Careful: this is a different rule from the counting rule in lesson 3, even though both are called a multiplication rule. Lesson 3 multiplies <i>numbers of choices</i>; this one multiplies <i>probabilities</i>. The second row is just the first row turned around (multiply both sides by P(B)), exactly as in the last step of the die demo above.</p>
 
+  <h3>Two draws from a box: the multiplication rule as a tree</h3>
+  <div class="callout"><b>The question:</b> why is <b>P(A and B) = P(A ∩ B) = P(A) × P(B | A)</b>, when A happens first and B second? Think about it for a moment, then step through the demo below.</div>
+  <p>A box holds 3 red and 5 blue balls, 8 in total. We draw two balls, one after the other, <b>without replacement</b>: the first ball stays out, so the box changes before the second draw. Let A = "the first ball is red" and B = "the second ball is blue". What is P(A and B)?</p>
+  <p>The demo shows the box before each draw (red and blue dots are the balls) and a <b>tree diagram</b>: each branch is one possible draw, labelled with its chance, and each path from left to right is one possible result of both draws. The orange path is the one we follow. Press <b>Next</b>, <b>Back</b> or <b>Reset</b> to move through the steps.</p>
+  <div class="w-tree">
+  <div class="grid2">
+    <div class="card">
+      <div class="controls">
+        <button class="secondary tr-back">◀ Back</button>
+        <button class="tr-next">Next ▶</button>
+        <button class="secondary tr-reset">Reset</button>
+      </div>
+      <div class="viz" style="min-height:380px"><span class="caption">A box of 3 red and 5 blue balls · two draws</span><div class="tr-plot" style="padding-top:22px"></div></div>
+      <div class="status"></div>
+    </div>
+    <div class="code"></div>
+  </div>
+  </div>
+  <p>So for events that happen one after the other, <b>multiply along the path</b>: the chance of the first step, times the chance of the second step given the first. This is the multiplication rule from the table above, P(A ∩ B) = P(B) × P(A | B), just written in the order things happen: when A comes first, condition on A, so P(A ∩ B) = P(A) × P(B | A). Both give the same P(A ∩ B).</p>
+  <p>Notice the last step: when the first ball is <b>put back</b> (<b>with replacement</b>), the box is the same for the second draw, so the first draw no longer changes the second one: P(B | A) = P(B) = 5/8. Events like that have a name, which is the next idea.</p>
+<script>
+(() => {
+  const root = document.querySelector("#conditional .w-tree");
+  const $ = s => root.querySelector(s);
+  const cp = DS.code($(".code"), `box = ["R"] * 3 + ["B"] * 5         # 3 red, 5 blue: 8 balls
+p_A = 3 / 8                           # first ball red
+box.remove("R")                       # not put back: 2 red, 5 blue left
+p_B_given_A = 5 / 7                   # second blue, given first red
+p_A * p_B_given_A                     # 15/56: multiply along the path
+6/56 + 15/56 + 15/56 + 20/56          # all four paths add up to 1
+3/8 * 5/8                             # with replacement: 15/64`, "two_draws.py");
+  const STEPS = [
+    { head: "The box before any draw.", line: 1, view: { box2: "empty", tree: 0 },
+      text: "The box holds 3 red and 5 blue balls, 8 in total. We want P(first red and second blue)." },
+    { head: "1st draw: A = first ball is red.", line: 2, view: { box2: "empty", hl1: "R", tree: 1 },
+      text: "3 of the 8 balls are red, so P(A) = 3/8. That's the first branch of the tree, from the start to R." },
+    { head: "The box changes.", line: 3, view: { box2: "without", tree: 1 },
+      text: "A red ball came out and was not put back. The box now holds 2 red and 5 blue = 7 balls: the total and the red count each went down by one; the blue count stayed at 5." },
+    { head: "2nd draw: B = second ball is blue, given A.", line: 4, view: { box2: "without", hl2: "B", tree: 2 },
+      text: "Now 5 of the 7 remaining balls are blue, so P(B | A) = 5/7. It's a conditional probability, because it depends on what the first draw did to the box." },
+    { head: "Multiply along the path.", line: 5, view: { box2: "without", hl2: "B", tree: 3 },
+      text: "Follow the orange path, red then blue, and multiply its branches: P(A and B) = P(A) × P(B | A) = 3/8 × 5/7 = 15/56." },
+    { head: "Check: all four paths add up to 1.", line: 6, view: { box2: "without", tree: 4 },
+      text: "Each path is one possible result of the two draws: red-red 3/8 × 2/7 = 6/56, red-blue 3/8 × 5/7 = 15/56, blue-red 5/8 × 3/7 = 15/56, blue-blue 5/8 × 4/7 = 20/56. Together they cover every possibility: 6 + 15 + 15 + 20 = 56, so 56/56 = 1 ✓." },
+    { head: "Compare: with replacement.", line: 7, view: { box2: "with", hl2: "B", tree: 5 },
+      text: "If the first ball is put back, the box is 3 red and 5 blue again, so P(B | A) = 5/8, the same as P(B): the first draw has no effect on the second. Then P(A and B) = 3/8 × 5/8 = 15/64, a little less than 15/56." },
+  ];
+  const RED = "var(--bad)", BLUE = "var(--s1)", HOT = "var(--hot)";
+  let step = 0;
+  function box(s, x, title, red, blue, hl, out) {
+    s.append(DS.svg("text", { class: "lbl", x: x + 110, y: 16, "text-anchor": "middle", style: "font-weight:700" }, title));
+    s.append(DS.svg("rect", { x, y: 24, width: 220, height: 92, rx: 10, fill: "var(--surface)", stroke: "var(--muted)", "stroke-width": 1.5 }));
+    const balls = [...Array(red).fill("R"), ...Array(blue).fill("B")];
+    balls.forEach((b, i) => {
+      const cx = x + 30 + (i % 4) * 46, cy = 52 + Math.floor(i / 4) * 38;
+      const on = hl === b;
+      s.append(DS.svg("circle", { cx, cy, r: 13, fill: b === "R" ? RED : BLUE, opacity: hl && !on ? 0.3 : 1, stroke: on ? HOT : "none", "stroke-width": 3 }));
+    });
+    s.append(DS.svg("text", { class: "lbl", x: x + 110, y: 134, "text-anchor": "middle" }, `${red} red, ${blue} blue = ${red + blue} balls` + (out ? " (1 red taken out)" : "")));
+  }
+  function draw() {
+    const v = STEPS[step].view, box2El = $(".tr-plot"); box2El.innerHTML = "";
+    const s = DS.svg("svg", { viewBox: "0 0 520 400", class: "plot", role: "img", "aria-label": "The box before each draw, and a tree diagram of the two draws" });
+    box(s, 20, "Before the 1st draw", 3, 5, v.hl1, false);
+    if (v.box2 === "empty") {
+      s.append(DS.svg("text", { class: "lbl", x: 390, y: 16, "text-anchor": "middle", style: "font-weight:700;opacity:.4" }, "Before the 2nd draw"));
+      s.append(DS.svg("rect", { x: 280, y: 24, width: 220, height: 92, rx: 10, fill: "none", stroke: "var(--muted)", "stroke-width": 1.5, "stroke-dasharray": "6 5", opacity: 0.4 }));
+    } else if (v.box2 === "without") box(s, 280, "Before the 2nd draw", 2, 5, v.hl2, true);
+    else box(s, 280, "Before the 2nd draw (ball put back)", 3, 5, v.hl2, false);
+    // tree
+    const T = v.tree, wr = v.box2 === "with";
+    const root = [40, 290], R1 = [190, 240], B1 = [190, 345];
+    const L2 = { RR: [350, 215], RB: [350, 265], BR: [350, 320], BB: [350, 370] };
+    const p2 = wr ? { RR: "3/8", RB: "5/8", BR: "3/8", BB: "5/8" } : { RR: "2/7", RB: "5/7", BR: "3/7", BB: "4/7" };
+    const outv = wr ? { RR: "9/64", RB: "15/64", BR: "15/64", BB: "25/64" } : { RR: "6/56", RB: "15/56", BR: "15/56", BB: "20/56" };
+    const onPath = k => (T >= 3 && T !== 4 && (k === "R1" || k === "RB"));
+    const seg = (a, b, label, key, show) => {
+      if (!show) return;
+      const hot = onPath(key);
+      s.append(DS.svg("line", { x1: a[0], y1: a[1], x2: b[0], y2: b[1], stroke: hot ? HOT : "var(--muted)", "stroke-width": hot ? 4 : 2 }));
+      s.append(DS.svg("text", { class: "lbl", x: (a[0] + b[0]) / 2, y: (a[1] + b[1]) / 2 - 7, "text-anchor": "middle", style: `font-weight:700;fill:${hot ? HOT : "var(--text)"}` }, label));
+    };
+    s.append(DS.svg("text", { class: "lbl", x: 20, y: 172, style: "font-weight:700" }, "Tree diagram"));
+    seg(root, R1, "3/8", "R1", T >= 1);
+    seg(root, B1, "5/8", "B1", T >= 4 || T === 5);
+    seg(R1, L2.RB, p2.RB, "RB", T >= 2);
+    seg(R1, L2.RR, p2.RR, "RR", T >= 4);
+    seg(B1, L2.BR, p2.BR, "BR", T >= 4);
+    seg(B1, L2.BB, p2.BB, "BB", T >= 4);
+    s.append(DS.svg("circle", { cx: root[0], cy: root[1], r: 5, fill: "var(--text)" }));
+    const node = (p, c, t, show) => { if (!show) return; s.append(DS.svg("circle", { cx: p[0], cy: p[1], r: 9, fill: c })); s.append(DS.svg("text", { x: p[0], y: p[1] + 4, "text-anchor": "middle", style: "font:700 11px var(--sans);fill:#fff" }, t)); };
+    node(R1, RED, "R", T >= 1); node(B1, BLUE, "B", T >= 4);
+    node(L2.RB, BLUE, "B", T >= 2); node(L2.RR, RED, "R", T >= 4); node(L2.BR, RED, "R", T >= 4); node(L2.BB, BLUE, "B", T >= 4);
+    const outT = (k, txt, show) => { if (!show) return; const hot = onPath("RB") && k === "RB"; s.append(DS.svg("text", { class: "lbl", x: L2[k][0] + 16, y: L2[k][1] + 4, style: `font-weight:700;fill:${hot ? HOT : "var(--text)"}` }, txt)); };
+    outT("RB", "red, blue = " + outv.RB, T >= 3);
+    outT("RR", "red, red = " + outv.RR, T >= 4);
+    outT("BR", "blue, red = " + outv.BR, T >= 4);
+    outT("BB", "blue, blue = " + outv.BB, T >= 4);
+    box2El.append(s);
+  }
+  function show(i) {
+    step = Math.max(0, Math.min(STEPS.length - 1, i));
+    const st = STEPS[step];
+    draw(); cp.hl(st.line);
+    $(".status").innerHTML = `<b>Step ${step + 1} of ${STEPS.length} · ${st.head}</b> ${st.text}`;
+    $(".tr-back").disabled = step === 0; $(".tr-next").disabled = step === STEPS.length - 1;
+  }
+  $(".tr-next").onclick = () => show(step + 1);
+  $(".tr-back").onclick = () => show(step - 1);
+  $(".tr-reset").onclick = () => show(0);
+  show(0);
+})();
+</script>
+
   <h3>Independent events</h3>
+  <div class="callout"><b>The question:</b> why, for <b>independent</b> A and B, is <b>P(A and B) = P(A) × P(B)</b>? Think about it for a moment, then read on.</div>
   <p>Two events are <b>independent</b> when knowing one doesn't change the chance of the other: P(A | B) = P(A). In words: the chance of A is the same whether or not we know that B happened, so B gives no information about A.</p>
-  <p><b>Example:</b> flip a coin and roll a die at the same time. Let A = "the die shows a six" and B = "the coin shows heads". On its own, P(six) = 1/6. Now suppose someone tells you the coin landed heads. The coin can't affect the die, so the die still has the same 6 faces, each equally likely: P(six | heads) = 1/6. Knowing B didn't change the chance of A, so P(A | B) = P(A): the events are independent. Compare the emails above: there, knowing "free" raised the chance of spam from 0.30 to 0.77, so those two events are <i>not</i> independent.</p>
-  <p><b>Why independence makes "and" so simple.</b> The multiplication rule for probabilities says P(A ∩ B) = P(B) × P(A | B). For independent events, P(A | B) is just P(A), so we can swap it in: P(A ∩ B) = P(B) × P(A), usually written <b>P(A ∩ B) = P(A) × P(B)</b>. For the coin and die: P(heads and six) = ½ × 1/6 = <b>1/12</b>. Check it by counting: the coin has 2 results and the die 6, so by the counting rule from lesson 3 there are 2 × 6 = 12 equally likely pairs (heads-1, heads-2, … tails-6), and exactly one of them is heads and six: 1/12.</p>
+  <p><b>Example:</b> toss a coin and roll a die at the same time. Let A = "the coin shows heads" and B = "the die shows an even number" (2, 4 or 6). Step through the demo: the grid has one cell for every possible result, with the coin as the row (H = heads, T = tails) and the die as the column. Press <b>Next</b>, <b>Back</b> or <b>Reset</b> to move through the steps.</p>
+  <div class="w-indep">
+  <div class="grid2">
+    <div class="card">
+      <div class="controls">
+        <button class="secondary ip-back">◀ Back</button>
+        <button class="ip-next">Next ▶</button>
+        <button class="secondary ip-reset">Reset</button>
+      </div>
+      <div class="viz" style="min-height:400px"><span class="caption">A coin toss and a die roll</span><div class="ip-plot" style="padding-top:22px"></div></div>
+      <div class="status"></div>
+    </div>
+    <div class="code"></div>
+  </div>
+  </div>
+  <p><b>Why independence makes "and" so simple.</b> The multiplication rule from the tree says P(A ∩ B) = P(A) × P(B | A). For independent events, P(B | A) is just P(B), as step 4 showed, so we can swap it in: <b>P(A ∩ B) = P(A) × P(B)</b>. For the coin and die: 1/2 × 1/2 = <b>1/4</b>, which is 3 of the 12 cells. Compare the emails above, where knowing "free" raised the chance of spam from 0.30 to 0.77, and the box of balls, where the first draw changed the second unless the ball was put back: those events are <i>not</i> independent, so you must use P(B | A).</p>
+<script>
+(() => {
+  const root = document.querySelector("#conditional .w-indep");
+  const $ = s => root.querySelector(s);
+  const cp = DS.code($(".code"), `coin = ["H", "T"]
+die = [1, 2, 3, 4, 5, 6]
+grid = [(c, d) for c in coin for d in die]      # 2 × 6 = 12 results
+heads = [g for g in grid if g[0] == "H"]        # 6 of 12: P(A) = 1/2
+even = [g for g in grid if g[1] % 2 == 0]       # 6 of 12: P(B) = 1/2
+len([g for g in heads if g[1] % 2 == 0]) / len(heads)   # 3/6 = 1/2 = P(B)
+1/2 * 1/2                                       # 1/4 = 3/12`, "independent.py");
+  const STEPS = [
+    { head: "Two separate experiments.", lines: [1, 2, 3], view: {},
+      text: "The coin has 2 results and the die has 6. Each coin result can go with each die result, so by the counting rule from lesson 3 there are 2 × 6 = 12 equally likely results: the 12 cells. Each cell has chance 1/12." },
+    { head: "A = heads.", lines: [4], view: { heads: true },
+      text: "The whole top row is heads (blue, inside the dashed line): 6 of the 12 cells, so P(A) = 6/12 = 1/2." },
+    { head: "B = even.", lines: [5], view: { even: true },
+      text: "Columns 2, 4 and 6 are even (green, inside the dashed lines): 6 of the 12 cells, so P(B) = 6/12 = 1/2." },
+    { head: "Why are they independent?", lines: [6], view: { heads: true, inHeads: true },
+      text: "Suppose you know the coin landed heads: only the top row is left. 3 of its 6 cells are even (purple), so P(even | heads) = 3/6 = 1/2, the same as P(even) on its own. The coin can't change the die, so knowing heads gave no information about even: P(B | A) = P(B), and the events are independent." },
+    { head: "Multiply the probabilities.", lines: [7], view: { both: true, heads: true, even: true },
+      text: "Half of the grid is heads, and half of that half is even, so a quarter of the grid is both: P(heads and even) = P(A) × P(B) = 1/2 × 1/2 = 1/4. Counting check: H2, H4 and H6 are 3 of the 12 cells, and 3/12 = 1/4 ✓." },
+  ];
+  const HEADER = `<g transform="translate(70,62)"><circle r="42" fill="color-mix(in srgb, var(--s4) 45%, var(--surface))" stroke="var(--s4)" stroke-width="3"/><line x1="0" y1="-42" x2="0" y2="42" stroke="var(--s4)" stroke-width="2"/><text x="-19" y="9" text-anchor="middle" style="font:700 24px var(--sans);fill:var(--text)">H</text><text x="19" y="9" text-anchor="middle" style="font:700 24px var(--sans);fill:var(--text)">T</text></g><text x="148" y="72" text-anchor="middle" style="font:700 28px var(--sans);fill:var(--text)">×</text><g transform="translate(225,62)"><polygon points="0.0,-46.0 40.0,-24.0 0.0,-2.0 -40.0,-24.0" fill="var(--surface)" stroke="var(--text-2)" stroke-width="2"/><polygon points="-40.0,-24.0 0.0,-2.0 0.0,44.0 -40.0,22.0" fill="var(--surface-2)" stroke="var(--text-2)" stroke-width="2"/><polygon points="40.0,-24.0 0.0,-2.0 0.0,44.0 40.0,22.0" fill="color-mix(in srgb, var(--text) 12%, var(--surface-2))" stroke="var(--text-2)" stroke-width="2"/><ellipse cx="0" cy="-24.0" rx="7.0" ry="4.5" fill="var(--bad)"/><circle cx="-29.0" cy="-4.0" r="4.0" fill="var(--text)"/><circle cx="-11.0" cy="21.0" r="4.0" fill="var(--text)"/><circle cx="11.0" cy="-1.0" r="4.0" fill="var(--text)"/><circle cx="20.0" cy="11.0" r="4.0" fill="var(--text)"/><circle cx="29.0" cy="23.0" r="4.0" fill="var(--text)"/></g>`;
+  const X0 = 100, Y0 = 190, W = 70, H = 70;
+  const tint = (c, p) => `color-mix(in srgb, ${c} ${p}%, var(--surface))`;
+  let step = 0;
+  function draw() {
+    const v = STEPS[step].view;
+    let g = `<svg class="plot" viewBox="0 0 560 360" role="img" aria-label="A coin times a die gives a grid of 12 results">${HEADER}`;
+    g += `<text x="420" y="72" text-anchor="middle" style="font:700 18px var(--sans);fill:var(--text)">2 × 6 = 12 results</text>`;
+    g += `<text class="lbl" x="70" y="126" text-anchor="middle">coin: 2 results</text><text class="lbl" x="225" y="126" text-anchor="middle">die: 6 results</text>`;
+    g += `<text class="lbl" x="${X0 + 3 * W}" y="${Y0 - 30}" text-anchor="middle" style="font-weight:700">die</text><text class="lbl" x="${X0 - 58}" y="${Y0 + H + 4}" text-anchor="middle" style="font-weight:700">coin</text>`;
+    for (let d = 1; d <= 6; d++) g += `<text x="${X0 + (d - 1) * W + W / 2}" y="${Y0 - 10}" text-anchor="middle" style="font:700 15px var(--sans);fill:var(--text)">${d}</text>`;
+    ["H", "T"].forEach((c, r) => {
+      g += `<text x="${X0 - 22}" y="${Y0 + r * H + H / 2 + 6}" text-anchor="middle" style="font:700 17px var(--sans);fill:var(--text)">${c}</text>`;
+      for (let d = 1; d <= 6; d++) {
+        const x = X0 + (d - 1) * W, y = Y0 + r * H, heads = c === "H", even = d % 2 === 0;
+        let fill = "var(--surface)";
+        if (v.both) fill = heads && even ? tint("var(--violet)", 50) : "var(--surface)";
+        else if (v.inHeads) fill = heads ? (even ? tint("var(--violet)", 50) : tint("var(--s1)", 25)) : "var(--surface)";
+        else if (v.heads && heads) fill = tint("var(--s1)", 35);
+        else if (v.even && even) fill = tint("var(--s3)", 35);
+        const faded = v.inHeads && !heads;
+        g += `<rect x="${x + 3}" y="${y + 3}" width="${W - 6}" height="${H - 6}" rx="8" fill="${fill}" stroke="var(--muted)" stroke-width="1.5" opacity="${faded ? 0.35 : 1}"/>`;
+        g += `<text x="${x + W / 2}" y="${y + H / 2 + 6}" text-anchor="middle" style="font:16px var(--mono);fill:var(--text);opacity:${faded ? 0.35 : 1}">${c}${d}</text>`;
+      }
+    });
+    if (v.heads) g += `<rect x="${X0 - 2}" y="${Y0 - 2}" width="${6 * W + 4}" height="${H + 4}" rx="10" fill="none" stroke="var(--s1)" stroke-width="3" stroke-dasharray="7 5"/>`;
+    if (v.even) [2, 4, 6].forEach(d => { g += `<rect x="${X0 + (d - 1) * W - 1}" y="${Y0 - 2}" width="${W + 2}" height="${2 * H + 4}" rx="10" fill="none" stroke="var(--s3)" stroke-width="3" stroke-dasharray="7 5"/>`; });
+    const cap = ["12 equally likely results", "heads = 6 of 12 = 1/2", "even = 6 of 12 = 1/2", "inside the heads row: even = 3 of 6 = 1/2", "heads and even = 3 of 12 = 1/4"][step];
+    g += `<text x="280" y="350" text-anchor="middle" style="font:700 16px var(--sans);fill:var(--text)">${cap}</text></svg>`;
+    $(".ip-plot").innerHTML = g;
+  }
+  function show(i) {
+    step = Math.max(0, Math.min(STEPS.length - 1, i));
+    const st = STEPS[step];
+    draw(); cp.hl(...st.lines);
+    $(".status").innerHTML = `<b>Step ${step + 1} of ${STEPS.length} · ${st.head}</b> ${st.text}`;
+    $(".ip-back").disabled = step === 0; $(".ip-next").disabled = step === STEPS.length - 1;
+  }
+  $(".ip-next").onclick = () => show(step + 1);
+  $(".ip-back").onclick = () => show(step - 1);
+  $(".ip-reset").onclick = () => show(0);
+  show(0);
+})();
+</script>
   <div style="overflow-x:auto"><table class="cx">
     <thead><tr><th>Independent</th><th>Not independent (dependent)</th></tr></thead>
     <tbody>
@@ -1533,8 +1888,8 @@ p_both = p_spam * p_free_given_spam       # multiplication rule: 0.24`, "spam.py
   DS.quiz(document.querySelector("#conditional .quizbox"), [
     { q: "A die is rolled, and you're told the result is greater than 3. What is P(even | greater than 3)?", options: ["1/2", "2/3", "1/3", "3/6"], answer: 1,
       why: "Given \"greater than 3\", only {4, 5, 6} is left: B becomes the new world. Two of those 3 outcomes (4 and 6) are even, so the answer is 2/3." },
-    { q: "Events A and B are independent. P(A) = 0.5 and P(B) = 0.2. What is P(A and B)?", options: ["0.7", "0.1", "0.3", "0.25"], answer: 1,
-      why: "For independent events, P(A ∩ B) = P(A) × P(B) = 0.5 × 0.2 = 0.1." },
+    { q: "A box has 2 red and 3 blue balls. You draw two, without putting the first back. What is P(red, then red)?", options: ["4/25", "1/10", "2/5", "1/5"], answer: 1,
+      why: "First red: 2 of 5 balls. One red is now gone, so 1 red of the 4 balls left: 1/4. Multiply along the path: 2/5 × 1/4 = 2/20 = 1/10." },
     { q: "A fair coin lands heads 5 times in a row. What is the chance the next flip is heads?", options: ["Less than 50%, tails is due", "More than 50%, heads is on a streak", "Exactly 50%", "It can't be known"], answer: 2,
       why: "Flips are independent: the coin has no memory, so it's still 50%. Thinking otherwise is the gambler's fallacy." },
   ]);
@@ -2402,7 +2757,8 @@ r = st.correlation(ice_cream, drownings)   # strongly positive...
       <tr><td><b>P(A ∪ B) = P(A) + P(B) − P(A ∩ B)</b></td><td>addition rule ("or")</td><td>heart or face card: 22/52</td></tr>
       <tr><td><b>P(Aᶜ) = 1 − P(A)</b></td><td>complement rule ("not")</td><td>at least one six in 4 rolls: 1 − (5/6)⁴ ≈ 0.52</td></tr>
       <tr><td><b>P(A | B) = P(A ∩ B) ÷ P(B)</b></td><td>conditional probability: zoom into B</td><td>P(spam | free) = 0.24 ÷ 0.31 ≈ 0.77</td></tr>
-      <tr><td><b>P(A ∩ B) = P(A) × P(B)</b></td><td>"and" for independent events</td><td>two heads: ½ × ½ = ¼</td></tr>
+      <tr><td><b>P(A ∩ B) = P(A) × P(B | A)</b></td><td>"and", one step after another: multiply along a tree path</td><td>red then blue: 3/8 × 5/7 = 15/56</td></tr>
+      <tr><td><b>P(A ∩ B) = P(A) × P(B)</b></td><td>"and" for independent events</td><td>heads and even: ½ × ½ = ¼</td></tr>
       <tr><td><b>P(X) = Σ<sub>Y</sub> P(X, Y)</b></td><td>sum rule (marginalization)</td><td>P(sunny) = 0.45 + 0.15 = 0.60</td></tr>
       <tr><td><b>P(X, Y) = P(Y | X) × P(X)</b></td><td>product rule</td><td>P(sunny, high) = 0.75 × 0.60 = 0.45</td></tr>
       <tr><td><b>P(B) = Σ P(B | Aᵢ) × P(Aᵢ)</b></td><td>law of total probability</td><td>P(beep) = 0.002 × 1 + 0.10 × 0.30 = 0.032</td></tr>
@@ -2437,6 +2793,8 @@ r = st.correlation(ice_cream, drownings)   # strongly positive...
     ["Rules", "#rules", "Addition rule", "P(A or B) = P(A) + P(B) − P(A and B)"],
     ["Rules", "#rules", "Complement rule", "P(not A) = 1 − P(A); handy for \"at least one\""],
     ["Conditional", "#conditional", "Conditional probability P(A | B)", "the chance of A once we know B happened"],
+    ["Conditional", "#conditional", "Tree diagram", "one branch per possible step, labelled with its chance; multiply along a path for the chance of that sequence"],
+    ["Conditional", "#conditional", "With / without replacement", "putting a drawn item back keeps the chances the same for the next draw; not putting it back changes them"],
     ["Conditional", "#conditional", "Independent events", "knowing one doesn't change the chance of the other"],
     ["Conditional", "#conditional", "Gambler's fallacy", "wrongly believing past independent results change the next one"],
     ["Conditional", "#bayes", "Partition", "slices of the sample space that don't overlap and together cover everything"],
@@ -2541,8 +2899,8 @@ r = st.correlation(ice_cream, drownings)   # strongly positive...
       why: "Mutually exclusive events can't overlap, so P(A ∪ B) = 0.4 + 0.3 = 0.7." },
     { q: "Of 40 students, 10 play chess, and 6 of the chess players also play piano. What is P(piano | chess)?", options: ["6/40", "10/40", "6/10", "4/10"], answer: 2,
       why: "Zoom into the 10 chess players: 6 of them play piano, so P(piano | chess) = 6/10." },
-    { q: "Two events A and B are independent. What does that mean?", options: ["They can't happen together", "Knowing that one happened doesn't change the chance of the other", "They always happen together", "Their probabilities add up to 1"], answer: 1,
-      why: "Independence means P(A | B) = P(A): one event gives no information about the other." },
+    { q: "A coin is tossed and a die is rolled. What is P(heads and an even number)?", options: ["1/2", "1/4", "1/12", "3/6"], answer: 1,
+      why: "The coin and the die are independent, so multiply: P(heads) × P(even) = 1/2 × 1/2 = 1/4. Counting check: H2, H4 and H6 are 3 of the 12 results." },
     { q: "A test for a rare condition is positive. Why might the chance of having it still be low?", options: ["Because the test is random", "Because false alarms among the many healthy people can outnumber the true positives", "Because Bayes' theorem doesn't apply to tests", "Because the condition is common"], answer: 1,
       why: "With a low base rate, even a good test produces more false positives than true positives." },
     { q: "In a game you win 10 points with probability 0.2 and 0 points otherwise. What is the expected value?", options: ["10 points", "5 points", "2 points", "0.2 points"], answer: 2,

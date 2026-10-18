@@ -36,11 +36,11 @@ It isn't aimed at readers looking for proofs, measure theory, calculus-based der
 1. **Why probability?**: uncertainty in daily life; experiment, outcome and event; classical, frequency and subjective probability; the law of large numbers, seen live with 1,000 coin flips
 2. **Sets and sample spaces**: the sample space Ω, events as sets, union, intersection and complement, Venn diagrams, and mutually exclusive events
 3. **Counting**: the multiplication rule, factorials, and permutations (order matters) vs. combinations (it doesn't)
-4. **Basic probability rules**: the three axioms in plain words, equally likely outcomes, the addition rule, and the complement rule ("at least one six")
+4. **Basic probability rules**: the three axioms in plain words, equally likely outcomes, adding mutually exclusive events, the addition rule (why we subtract the overlap), and the complement rule ("at least one six")
 
 **Part B · Updating with information**
 
-5. **Conditional probability and independence**: P(A | B) as "zooming in", why the formula works (a step-by-step die demo), the multiplication (product) rule, independent events, and the gambler's fallacy
+5. **Conditional probability and independence**: P(A | B) as "zooming in", why the formula works (a step-by-step die demo), the multiplication (product) rule as a tree diagram (two draws with and without replacement), independent events (a coin and die grid), and the gambler's fallacy
 6. **Total probability and Bayes' theorem**: slicing the sample space into pieces (a step-by-step die demo), reasoning backwards from evidence, a medical test on 1,000 people, and why base rates matter
 
 **Part C · Random variables**
@@ -62,16 +62,16 @@ It isn't aimed at readers looking for proofs, measure theory, calculus-based der
 
 ## How long it takes
 
-About 3¼ hours if you're new to the topic, or about 1¾ hours if you already know some maths or statistics.
+About 3½ hours if you're new to the topic, or about 1¾ hours if you already know some maths or statistics.
 
 | Part | New to the topic | Already know some maths |
 |---|---|---|
-| Part A: 4 lessons | 4 × 15 min = 60 min | 4 × 8 min = 32 min |
-| Part B: 2 lessons | 2 × 25 min = 50 min | 2 × 13 min = 26 min |
+| Part A: 4 lessons | 3 × 15 + 20 min = 65 min | 3 × 8 + 11 min = 35 min |
+| Part B: 2 lessons | 33 + 25 min = 58 min | 17 + 13 min = 30 min |
 | Part C: 3 lessons | 3 × 20 min = 60 min | 3 × 10 min = 30 min |
 | Glossary and formulas review | 10 min | 5 min |
 | Final quiz and certificate | 15 min | 10 min |
-| **Total** | **195 min ≈ 3¼ hours** | **103 min ≈ 1¾ hours** |
+| **Total** | **208 min ≈ 3½ hours** | **110 min ≈ 1¾ hours** |
 
 ## Final quiz and certificate
 
