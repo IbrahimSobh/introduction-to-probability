@@ -3145,7 +3145,8 @@ r = st.correlation(ice_cream, drownings)   # strongly positive...
       const t = h2.firstChild;   // drop the "4. " already shown as the big number
       if (t && t.nodeType === 3) t.textContent = t.textContent.replace(/^\d+\.\s*/, "");
     } else {
-      kicker.textContent = sec.id === "finalquiz" ? "Last step" : "After the lessons";
+      const before = lessons.length && sections.indexOf(sec) < sections.indexOf(lessons[0]);
+      kicker.textContent = sec.id === "finalquiz" ? "Last step" : before ? "Before you start" : "After the lessons";
     }
     const text = document.createElement("div");
     text.append(kicker);
@@ -3154,7 +3155,7 @@ r = st.correlation(ice_cream, drownings)   # strongly positive...
     band.append(text);
     const end = document.createElement("div");
     end.className = "endline";
-    end.textContent = m ? `End of lesson ${m[1]} of ${total}` : sec.id === "finalquiz" ? "End of the course" : "End of " + sec.dataset.title.toLowerCase();
+    end.textContent = m ? `End of lesson ${m[1]} of ${total}` : sec.id === "finalquiz" ? "End of the course" : "End of this section";
     sec.append(end);
   });
 })();
