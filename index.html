@@ -2390,7 +2390,243 @@ print(sum(games) / len(games))       # average: close to 0.33`, "dice_game.py");
       <tr><td>A measurement that clusters around an average (heights, scores, errors)?</td><td>Normal</td></tr>
     </tbody>
   </table></div>
-  <div class="callout tip"><b>The 68-95-99.7 rule:</b> for a Normal distribution, about 68% of values fall within 1 standard deviation of the mean, 95% within 2, and 99.7% within 3. With exam scores averaging 70 and σ = 10, about 95% of students score between 50 and 90 (70 − 2 × 10 and 70 + 2 × 10). The Normal shows up so often because adding up many small, independent effects tends to produce a bell shape.</div>
+  <div class="callout tip"><b>The 68-95-99.7 rule:</b> for a Normal distribution, about 68% of values fall within 1 standard deviation of the mean, 95% within 2, and 99.7% within 3. With exam scores averaging 70 and σ = 10, about 95% of students score between 50 and 90 (70 − 2 × 10 and 70 + 2 × 10). The Normal shows up so often because adding up many small, independent effects tends to produce a bell shape: the <b>Central Limit Theorem</b>, explained just below.</div>
+
+  <h3>Why bell shapes are everywhere: the Central Limit Theorem</h3>
+  <div class="callout"><b>The question:</b> why do so many things, like heights, exam scores and measurement errors, follow a bell shape? And does tossing a coin many times really give a Normal distribution? Think about it for a moment, then try the two demos below.</div>
+  <p>Start with what one experiment gives. Toss a coin 100 times and count the heads: you get <b>one number</b>, like 53. One number has no shape. A shape only appears when we ask a different question:</p>
+  <div class="callout tip"><b>If I repeated the 100-toss experiment many times, how often would I see each number of heads?</b></div>
+  <p>Demo 1 answers this question by actually repeating the experiment. Demo 2 then explains <i>why</i> the answer looks the way it does, by listing every possible result for 1, 2, 3, 4 and 5 tosses, then 10 and finally 100.</p>
+
+  <p><b>Demo 1: repeat the experiment.</b> Press <b>Run once</b>. The demo tosses a coin 100 times (drawn as 100 small squares, blue = heads, grey = tails), counts the heads, and drops <b>one block</b> above that number in the chart. So each block is one whole experiment of 100 tosses, not one toss. Press it a few times, then press <b>Run 1,000 times</b> and watch the blocks pile up.</p>
+  <div class="w-clr">
+  <div class="grid2">
+    <div class="card">
+      <div class="controls">
+        <button class="cr-go" data-n="1">Run once</button>
+        <button class="cr-go" data-n="10">Run 10 times</button>
+        <button class="cr-go" data-n="1000">Run 1,000 times</button>
+        <button class="secondary cr-reset">Reset</button>
+      </div>
+      <div class="viz" style="min-height:340px"><span class="caption cr-cap">Repeat the experiment · each block = one experiment of 100 tosses</span><div class="cr-plot"></div></div>
+      <div class="status"></div>
+    </div>
+    <div class="code"></div>
+  </div>
+  </div>
+
+  <p><b>Demo 2: why the middle wins.</b> Each toss has 2 possible results, so n tosses have 2 × 2 × … × 2 = 2<sup>n</sup> possible results (sequences of H and T), and with a fair coin every sequence is equally likely. In the demo, each possible sequence is a <b>tile</b> made of small squares (blue = heads, grey = tails), stacked above its number of heads. A taller stack means more sequences with that number of heads, so a bigger chance. Press <b>Next</b>, <b>Back</b> or <b>Reset</b> to move through the steps.</p>
+  <div class="w-clt">
+  <div class="grid2">
+    <div class="card">
+      <div class="controls">
+        <button class="secondary cl-back">◀ Back</button>
+        <button class="cl-next">Next ▶</button>
+        <button class="secondary cl-reset">Reset</button>
+      </div>
+      <div class="viz" style="min-height:320px"><span class="caption cl-cap"></span><div class="cl-plot"></div></div>
+      <div class="status"></div>
+    </div>
+    <div class="code"></div>
+  </div>
+  </div>
+  <p>The two demos tell one story from two sides. There are far more sequences that land near the middle, so when you repeat the experiment, results near the middle come up far more often, and the pile of results takes a bell shape. Notice that the number of heads is a <b>sum</b>: each toss adds 1 (heads) or 0 (tails).</p>
+  <p>This is the <b>Central Limit Theorem</b> (CLT): the sum, or the average, of many independent random values tends to follow a Normal distribution, whatever the shape of each single value. A single toss is just 0 or 1, nothing like a bell, yet the total of many tosses is close to one. Two cautions:</p>
+  <ul>
+    <li>It is an <b>approximation</b> that gets better as more values are added up: 2 tosses are far from a bell, 100 tosses are very close.</li>
+    <li>It needs <b>more values when each one is lopsided</b>, like the biased coin in the last steps of demo 2. A common rule of thumb: expect at least about 10 heads and 10 tails.</li>
+  </ul>
+  <p>So "tossing a coin many times gives a Normal distribution" is true only approximately, and only for the <b>total</b> (or the average) number of heads when the experiment is repeated, never for a single toss. The same idea explains the examples in the question: a person's height is the result of many genes and life factors adding up, a measurement error is the sum of many tiny disturbances, and an exam score is the sum of many questions. That's why the Normal shows up so often.</p>
+<script>
+(() => {
+  /* Demo 1: repeat the 100-toss experiment and pile one block per experiment on its number of heads */
+  const root = document.querySelector("#dist .w-clr");
+  const $ = s => root.querySelector(s);
+  const cp = DS.code($(".code"), `import random
+counts = {}                           # how often each number of heads appeared
+for run in range(1000):               # repeat the whole experiment
+    tosses = [random.choice("HT") for i in range(100)]   # one experiment: 100 tosses
+    heads = tosses.count("H")         # its result is ONE number, e.g. 53
+    counts[heads] = counts.get(heads, 0) + 1   # one more block above that number`, "repeat.py");
+  const N = 100, LO = 30, HI = 70;
+  const comb = (n, k) => { let r = 1; for (let i = 1; i <= k; i++) r = r * (n - k + i) / i; return r; };
+  const pmf = k => comb(N, k) / 2 ** N;
+  let R, runs, counts, last;
+  const say = h => ($(".status").innerHTML = h);
+  function reset() {
+    R = KIT.rng(11); runs = 0; counts = {}; last = null; cp.hl();
+    draw();
+    say("Press <b>Run once</b>: it tosses a coin 100 times, counts the heads, and adds one block above that number.");
+  }
+  function experiment() {
+    const t = []; for (let i = 0; i < N; i++) t.push(R() < 0.5 ? 1 : 0);
+    const h = t.reduce((a, b) => a + b, 0);
+    counts[h] = (counts[h] || 0) + 1; runs++; last = { t, h };
+  }
+  function draw() {
+    let g = `<svg class="plot" viewBox="0 0 520 330" role="img" aria-label="The last 100 tosses as squares, and a pile of blocks: one block per experiment above its number of heads">`;
+    // the last experiment's 100 tosses: 4 rows of 25 squares
+    const sq = 14, gap = 3, x0 = (520 - 25 * (sq + gap) + gap) / 2, y0 = 26;
+    g += `<text class="lbl" x="${x0}" y="16" style="font-weight:700">${last ? `Experiment ${runs.toLocaleString()}: ${last.h} heads (blue) and ${N - last.h} tails (grey)` : "The 100 tosses of the latest experiment appear here"}</text>`;
+    for (let i = 0; i < N; i++) {
+      const on = last && last.t[i], x = x0 + (i % 25) * (sq + gap), y = y0 + Math.floor(i / 25) * (sq + gap);
+      g += `<rect x="${x}" y="${y}" width="${sq}" height="${sq}" rx="2" fill="${last ? (on ? "var(--s1)" : "color-mix(in srgb, var(--muted) 35%, var(--surface))") : "none"}" stroke="${last ? "none" : "var(--border)"}"/>`;
+    }
+    // the pile: one block per experiment
+    const X0 = 40, X1 = 500, Y0 = 290, Y1 = 118, slot = (X1 - X0) / (HI - LO + 1);
+    const X = k => X0 + (k - LO + 0.5) * slot;
+    const showBell = runs >= 100;
+    let top = 0; for (let k = LO; k <= HI; k++) top = Math.max(top, counts[k] || 0);
+    const ymax = Math.max(top, showBell ? runs * pmf(50) : 0, 6) * 1.08;
+    const Y = v => Y0 - (v / ymax) * (Y0 - Y1);
+    g += `<line x1="${X0}" y1="${Y0}" x2="${X1}" y2="${Y0}" stroke="var(--muted)" stroke-width="1.5"/>`;
+    const w = slot * 0.8, blocks = ymax <= 16;
+    for (let k = LO; k <= HI; k++) {
+      const c = counts[k] || 0;
+      if (!c) continue;
+      if (blocks) {
+        for (let b = 0; b < c; b++) {
+          const isLast = last && k === last.h && b === c - 1;
+          g += `<rect x="${X(k) - w / 2}" y="${Y(b + 1) + 1}" width="${w}" height="${Y(b) - Y(b + 1) - 2}" rx="1.5" fill="${isLast ? "var(--s4)" : "color-mix(in srgb, var(--s1) 55%, var(--surface))"}" stroke="${isLast ? "var(--s4)" : "var(--s1)"}"/>`;
+        }
+      } else {
+        g += `<rect x="${X(k) - w / 2}" y="${Y(c)}" width="${w}" height="${Y0 - Y(c)}" fill="color-mix(in srgb, var(--s1) 55%, var(--surface))" stroke="var(--s1)" stroke-width="${slot > 8 ? 1 : 0}"/>`;
+        if (last && k === last.h) g += `<rect x="${X(k) - w / 2}" y="${Y(c)}" width="${w}" height="${Math.min(6, Y0 - Y(c))}" fill="var(--s4)"/>`;
+      }
+    }
+    if (showBell) {
+      let d = ""; for (let x = LO - 0.5; x <= HI + 0.5; x += 0.25) {
+        const v = runs * Math.exp(-((x - 50) ** 2) / 50) / (5 * Math.sqrt(2 * Math.PI));
+        d += (d ? "L" : "M") + (X0 + (x - LO + 0.5) * slot).toFixed(1) + "," + Y(v).toFixed(1);
+      }
+      g += `<path d="${d}" fill="none" stroke="var(--hot)" stroke-width="2.5"/>`;
+    }
+    for (let k = LO; k <= HI; k += 5) g += `<text class="lbl" x="${X(k)}" y="${Y0 + 16}" text-anchor="middle">${k}</text>`;
+    g += `<text class="lbl" x="${(X0 + X1) / 2}" y="${Y0 + 34}" text-anchor="middle">number of heads in one experiment of 100 tosses</text>`;
+    g += `<text class="lbl" x="${X1}" y="${Y1 - 6}" text-anchor="end" style="font-weight:700">experiments run: ${runs.toLocaleString()}</text>`;
+    $(".cr-plot").innerHTML = g + "</svg>";
+  }
+  async function go(n) {
+    cp.hl(4, 5);
+    if (n === 1) { experiment(); draw(); }
+    else {
+      const chunk = n === 10 ? 1 : 20;
+      for (let i = 0; i < n; i += chunk) {
+        for (let j = 0; j < chunk; j++) experiment();
+        draw(); await DS.wait(n === 10 ? 0.2 : 0.05);
+      }
+    }
+    cp.hl(...(n === 1 ? [4, 5, 6] : [3, 4, 5, 6]));
+    let mid = 0; for (let k = 45; k <= 55; k++) mid += counts[k] || 0;
+    const pct = (100 * mid / runs).toFixed(0);
+    if (runs === 1) say(`Experiment 1 gave <b>${last.h} heads</b>. One experiment gives one number, so there is one block, above ${last.h}. Press <b>Run once</b> a few more times.`);
+    else if (runs < 100) say(`<b>${runs}</b> experiments so far, and the latest gave <b>${last.h} heads</b> (the amber block). Each block is one whole experiment of 100 tosses. The blocks gather around 50; results like 35 or 65 are rare. Now try <b>Run 1,000 times</b>.`);
+    else say(`<b>${runs.toLocaleString()}</b> experiments. The pile has a bell shape: this is the answer to "if I repeated the 100-toss experiment many times, how often would I see each number of heads?" Between 45 and 55 heads came up in <b>${pct}%</b> of the experiments. The orange curve is a Normal bell with mean 100 × ½ = 50 and standard deviation √(100 × ½ × ½) = 5, scaled to ${runs.toLocaleString()} experiments; the pile follows it closely. Demo 2 below shows why.`);
+  }
+  root.querySelectorAll(".cr-go").forEach(b => (b.onclick = () => DS.run(root, () => go(+b.dataset.n))));
+  $(".cr-reset").onclick = () => { if (!root.dataset.busy) reset(); };
+  reset();
+})();
+(() => {
+  /* Demo 2: list every result for 1-5 tosses as tiles stacked by number of heads, then bars for 10 and 100 tosses */
+  const root = document.querySelector("#dist .w-clt");
+  const $ = s => root.querySelector(s);
+  const cp = DS.code($(".code"), `from itertools import product
+from math import comb, exp, pi, sqrt
+results = list(product("HT", repeat=n))     # every possible sequence: 2**n of them
+ways = [comb(n, k) for k in range(n + 1)]   # how many sequences have k heads
+chance = [w / 2**n for w in ways]           # fair coin: every sequence equally likely
+# biased coin with P(heads) = p:  chance[k] = comb(n, k) * p**k * (1 - p)**(n - k)
+mean, sd = n * p, sqrt(n * p * (1 - p))     # centre and width of the bell
+def bell(x):                                # the Normal curve with that mean and sd
+    return exp(-(x - mean)**2 / (2 * sd**2)) / (sd * sqrt(2 * pi))`, "count_ways.py");
+  const STEPS = [
+    { n: 1, p: 0.5, lines: [3], head: "One toss.",
+      text: "2 possible results: T (0 heads) or H (1 head). Each result is one tile, placed above its number of heads. One tile each, so the chances are equal: 1/2 and 1/2. Nothing like a bell." },
+    { n: 2, p: 0.5, lines: [3, 4], head: "Two tosses.",
+      text: "2 × 2 = 4 possible sequences, all equally likely: TT, HT, TH, HH. Stacked by number of heads: 0 heads in 1 way (TT), 1 head in 2 ways (HT, TH), 2 heads in 1 way (HH). So 1 head has chance 2/4, twice the chance of 0 heads or 2 heads (1/4 each). The middle already wins, because it can happen in more ways." },
+    { n: 3, p: 0.5, lines: [3, 4, 5], head: "Three tosses.",
+      text: "2 × 2 × 2 = 8 sequences. Ways to get 0, 1, 2, 3 heads: 1, 3, 3, 1. For example, exactly 1 head can be HTT, THT or TTH: 3 ways, so its chance is 3/8, while all heads (HHH) has only 1 way, chance 1/8." },
+    { n: 4, p: 0.5, lines: [3, 4, 5], head: "Four tosses.",
+      text: "16 sequences. Ways to get 0 to 4 heads: 1, 4, 6, 4, 1. The middle (2 heads) has 6 ways, chance 6/16 = 37.5%, while all heads or all tails has just 1 way each, 1/16 = 6.25%." },
+    { n: 5, p: 0.5, lines: [3, 4, 5], head: "Five tosses.",
+      text: "32 sequences. Ways to get 0 to 5 heads: 1, 5, 10, 10, 5, 1. The stacks rise in the middle and fall off on both sides: the shape of a bell is starting to appear." },
+    { n: 10, p: 0.5, lines: [4, 5, 7, 8, 9], head: "Ten tosses.",
+      text: "2<sup>10</sup> = 1,024 sequences: too many tiles to draw, so each bar now shows how many sequences have that number of heads (written on top). 5 heads can happen in 252 ways, chance 252/1,024 ≈ 25%; 0 heads in just 1 way, chance 1/1,024. The orange curve is a Normal bell with the same mean, 10 × ½ = 5, and the same standard deviation, √(10 × ½ × ½) ≈ 1.58 (the Binomial's spread). It already fits the bars well." },
+    { n: 100, p: 0.5, lines: [5, 7, 8, 9], head: "A hundred tosses.",
+      text: "About 1.27 × 10<sup>30</sup> sequences. About 1.01 × 10<sup>29</sup> of them have exactly 50 heads, so its chance is about 8%; 0 heads has 1 way, about 1 in 10<sup>30</sup>. The bars now show these chances (the counts are too big to write). Mean 50, standard deviation √(100 × ½ × ½) = 5: the bars and the bell are almost the same, and 45 to 55 heads has a chance of about 73%. This is exactly the pile demo 1 built by repeating the experiment. (Only 30 to 70 heads are shown; the rest have chances too small to see.)" },
+    { n: 10, p: 0.1, lines: [6, 7], head: "One caution: a biased coin, 10 tosses.",
+      text: "Now heads comes up only 1 time in 10 (P(heads) = 0.1), so the sequences are no longer equally likely and the bars show chances. The mean is 10 × 0.1 = 1 head, and the bars are lopsided: piled up near 0 with a long tail to the right. Not a bell yet, because we expect only 1 head." },
+    { n: 100, p: 0.1, lines: [6, 7], head: "A biased coin, 100 tosses.",
+      text: "With 100 tosses we expect 10 heads (and 90 tails), and the bars are back to a bell around 10, with standard deviation √(100 × 0.1 × 0.9) = 3. The bell appears for any coin, but a lopsided one needs more tosses. (Only 0 to 22 heads are shown.)" },
+  ];
+  const comb = (n, k) => { let r = 1; for (let i = 1; i <= k; i++) r = r * (n - k + i) / i; return r; };
+  const seqs = n => { const out = []; for (let m = 0; m < 2 ** n; m++) { const t = []; for (let i = n - 1; i >= 0; i--) t.push((m >> i) & 1); out.push(t); } return out; };
+  let step = 0;
+  function tiles(n) {
+    const X0 = 20, X1 = 500, Y0 = 262, Y1 = 34, slot = (X1 - X0) / (n + 1);
+    const X = k => X0 + (k + 0.5) * slot;
+    const max = comb(n, Math.floor(n / 2));
+    const sq = Math.min(28, (slot - 14) / n - 2), tw = n * (sq + 2) + 4;
+    const th = Math.min(sq + 8, (Y0 - Y1) / max);
+    const stack = Array(n + 1).fill(0);
+    let g = `<svg class="plot" viewBox="0 0 520 300" role="img" aria-label="All ${2 ** n} sequences of ${n} tosses as tiles, stacked by number of heads">`;
+    g += `<line x1="${X0}" y1="${Y0}" x2="${X1}" y2="${Y0}" stroke="var(--muted)" stroke-width="1.5"/>`;
+    seqs(n).forEach(t => {
+      const k = t.reduce((a, b) => a + b, 0), b = stack[k]++;
+      const x = X(k) - tw / 2, y = Y0 - (b + 1) * th + 1, h = th - 2;
+      g += `<rect x="${x}" y="${y}" width="${tw}" height="${h}" rx="3" fill="var(--surface)" stroke="var(--border)"/>`;
+      t.forEach((v, i) => {
+        const sx = x + 3 + i * (sq + 2), sy = y + (h - Math.min(sq, h - 4)) / 2, ss = Math.min(sq, h - 4);
+        g += `<rect x="${sx}" y="${sy}" width="${ss}" height="${ss}" rx="1.5" fill="${v ? "var(--s1)" : "color-mix(in srgb, var(--muted) 35%, var(--surface))"}"/>`;
+        if (ss >= 13) g += `<text x="${sx + ss / 2}" y="${sy + ss / 2 + 4}" text-anchor="middle" style="font:700 11px var(--mono);fill:${v ? "#fff" : "var(--text)"}">${v ? "H" : "T"}</text>`;
+      });
+    });
+    for (let k = 0; k <= n; k++) {
+      g += `<text class="lbl" x="${X(k)}" y="${Y0 - stack[k] * th - 6}" text-anchor="middle" style="font-weight:700">${stack[k]} way${stack[k] > 1 ? "s" : ""}</text>`;
+      g += `<text class="lbl" x="${X(k)}" y="${Y0 + 16}" text-anchor="middle">${k}</text>`;
+    }
+    g += `<text class="lbl" x="${(X0 + X1) / 2}" y="${Y0 + 34}" text-anchor="middle">number of heads in ${n} toss${n > 1 ? "es" : ""} · ${2 ** n} sequences in all</text>`;
+    return g + "</svg>";
+  }
+  function bars(n, p) {
+    const mean = n * p, sd = Math.sqrt(n * p * (1 - p));
+    const lo = n <= 10 ? 0 : Math.max(0, Math.floor(mean - 4 * sd)), hi = n <= 10 ? n : Math.min(n, Math.ceil(mean + 4 * sd));
+    const ks = []; for (let k = lo; k <= hi; k++) ks.push(k);
+    const pm = ks.map(k => comb(n, k) * p ** k * (1 - p) ** (n - k));
+    const bell = x => Math.exp(-((x - mean) ** 2) / (2 * sd * sd)) / (sd * Math.sqrt(2 * Math.PI));
+    const X0 = 40, X1 = 500, Y0 = 262, Y1 = 40, slot = (X1 - X0) / ks.length;
+    const ymax = Math.max(...pm, bell(mean)) * 1.12;
+    const X = k => X0 + (k - lo + 0.5) * slot, Y = v => Y0 - (v / ymax) * (Y0 - Y1);
+    let g = `<svg class="plot" viewBox="0 0 520 300" role="img" aria-label="Bar chart of the number of heads in ${n} tosses, with a Normal bell curve on top">`;
+    g += `<line x1="${X0}" y1="${Y0}" x2="${X1}" y2="${Y0}" stroke="var(--muted)" stroke-width="1.5"/>`;
+    pm.forEach((v, i) => { const k = ks[i], w = Math.max(1.5, slot * 0.78); g += `<rect x="${X(k) - w / 2}" y="${Y(v)}" width="${w}" height="${Y0 - Y(v)}" fill="color-mix(in srgb, var(--s1) 55%, var(--surface))" stroke="var(--s1)" stroke-width="${slot > 8 ? 1 : 0}"/>`; });
+    if (n === 10 && p === 0.5) ks.forEach(k => { g += `<text class="lbl" x="${X(k)}" y="${Y(pm[k - lo]) - 5}" text-anchor="middle" style="font-weight:700">${comb(n, k)}</text>`; });
+    let d = ""; for (let x = lo - 0.5; x <= hi + 0.5; x += (hi - lo + 1) / 160) { const y = Y(bell(x)); if (y < Y1 - 4) continue; d += (d ? "L" : "M") + (X0 + (x - lo + 0.5) * slot).toFixed(1) + "," + y.toFixed(1); }
+    g += `<path d="${d}" fill="none" stroke="var(--hot)" stroke-width="2.5"/>`;
+    const every = ks.length <= 12 ? 1 : ks.length <= 30 ? 5 : 10;
+    ks.forEach(k => { if (k % every === 0) g += `<text class="lbl" x="${X(k)}" y="${Y0 + 16}" text-anchor="middle">${k}</text>`; });
+    g += `<text class="lbl" x="${(X0 + X1) / 2}" y="${Y0 + 34}" text-anchor="middle">number of heads in ${n} tosses</text>`;
+    g += `<text class="lbl" x="${X1}" y="${Y1 - 22}" text-anchor="end" style="font-weight:700">mean ${+mean.toFixed(2)} · standard deviation ${sd.toFixed(2)}</text>`;
+    return g + "</svg>";
+  }
+  function show(i) {
+    step = Math.max(0, Math.min(STEPS.length - 1, i));
+    const st = STEPS[step], { n, p } = st;
+    $(".cl-plot").innerHTML = n <= 5 ? tiles(n) : bars(n, p);
+    $(".cl-cap").textContent = n <= 5 ? `${n} toss${n > 1 ? "es" : ""} of a fair coin · each tile = one possible sequence (blue = heads, grey = tails)`
+      : n === 10 && p === 0.5 ? "10 tosses of a fair coin · bar = number of sequences with that many heads · orange = Normal bell"
+      : `${n} tosses of a ${p === 0.5 ? "fair coin" : "biased coin, P(heads) = 0.1"} · bar = chance of each number of heads · orange = Normal bell`;
+    cp.hl(...st.lines);
+    $(".status").innerHTML = `<b>Step ${step + 1} of ${STEPS.length} · ${st.head}</b> ${st.text}`;
+    $(".cl-back").disabled = step === 0; $(".cl-next").disabled = step === STEPS.length - 1;
+  }
+  $(".cl-next").onclick = () => show(step + 1);
+  $(".cl-back").onclick = () => show(step - 1);
+  $(".cl-reset").onclick = () => show(0);
+  show(0);
+})();
+</script>
 
   <h3>Where it shows up</h3>
   <ul>
@@ -2501,8 +2737,8 @@ within_2sd = 0.95              # 95% between ${70 - 2 * s} and ${70 + 2 * s}` },
   document.head.append(DS.el("style", {}, "#dist [aria-pressed=\"true\"] { background: var(--surface-2); border-color: var(--accent); box-shadow: inset 0 -2px 0 var(--accent); }"));
 
   DS.quiz(document.querySelector("#dist .quizbox"), [
-    { q: "A help desk gets 6 calls per hour on average. Which distribution fits the number of calls in the next hour?", options: ["Normal", "Poisson", "Uniform", "Bernoulli"], answer: 1,
-      why: "Poisson models how many events happen in a fixed time when they occur at an average rate." },
+    { q: "Why is the number of heads in 100 tosses of a fair coin close to a bell shape?", options: ["Because each single toss is bell-shaped", "Because it is a sum of many independent 0/1 results, so the Central Limit Theorem applies", "Because coins are always biased", "It isn't: the chart is flat"], answer: 1,
+      why: "Each toss is just 0 or 1, but the total of many independent tosses is approximately Normal: that is the Central Limit Theorem." },
     { q: "You toss a coin 20 times and count the heads. Which distribution is this?", options: ["Binomial", "Exponential", "Geometric", "Uniform"], answer: 0,
       why: "Binomial counts the successes in a fixed number of independent yes/no trials." },
     { q: "Exam scores follow a Normal distribution with mean 70 and standard deviation 10. About what share score between 60 and 80?", options: ["50%", "68%", "95%", "99.7%"], answer: 1,
@@ -2829,6 +3065,7 @@ r = st.correlation(ice_cream, drownings)   # strongly positive...
     ["Distributions", "#dist", "Poisson", "how many events in a fixed time or space"],
     ["Distributions", "#dist", "Uniform, Exponential", "every value in a range equally likely; waiting time until the next event"],
     ["Distributions", "#dist", "Normal", "the bell curve, set by its mean μ and standard deviation σ"],
+    ["Distributions", "#dist", "Central Limit Theorem", "the sum or average of many independent random values is approximately Normal"],
     ["Two variables", "#twovar", "Joint distribution", "the chance of each pair of values of two variables"],
     ["Two variables", "#twovar", "Sum rule (marginalization)", "P(X) = Σ over Y of P(X, Y): add a row of the joint table; the totals are marginal probabilities"],
     ["Two variables", "#twovar", "Product rule", "P(X, Y) = P(Y | X) × P(X); the multiplication rule, and with the sum rule, the source of Bayes' theorem"],

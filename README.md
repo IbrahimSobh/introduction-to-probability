@@ -46,7 +46,7 @@ It isn't aimed at readers looking for proofs, measure theory, calculus-based der
 **Part C · Random variables**
 
 7. **Random variables**: discrete vs. continuous, PMF, PDF and CDF, expected value, variance and standard deviation
-8. **Common distributions**: Bernoulli, Binomial, Geometric, Poisson, Uniform, Exponential and Normal (with the 68-95-99.7 rule), and how to choose the right one
+8. **Common distributions**: Bernoulli, Binomial, Geometric, Poisson, Uniform, Exponential and Normal (with the 68-95-99.7 rule), why bell shapes are everywhere (the Central Limit Theorem: repeat a 100-toss experiment 1,000 times, then count every possible result for 1, 2, 3, … 100 tosses), and how to choose the right one
 9. **More than one variable**: joint tables, the sum rule (marginalization) and product rule, covariance and correlation, and why correlation is not causation
 
 ## What each lesson gives you
@@ -62,16 +62,16 @@ It isn't aimed at readers looking for proofs, measure theory, calculus-based der
 
 ## How long it takes
 
-About 3½ hours if you're new to the topic, or about 1¾ hours if you already know some maths or statistics.
+About 3½ hours if you're new to the topic, or about 2 hours if you already know some maths or statistics.
 
 | Part | New to the topic | Already know some maths |
 |---|---|---|
 | Part A: 4 lessons | 3 × 15 + 20 min = 65 min | 3 × 8 + 11 min = 35 min |
 | Part B: 2 lessons | 33 + 25 min = 58 min | 17 + 13 min = 30 min |
-| Part C: 3 lessons | 3 × 20 min = 60 min | 3 × 10 min = 30 min |
+| Part C: 3 lessons | 2 × 20 + 30 min = 70 min | 2 × 10 + 15 min = 35 min |
 | Glossary and formulas review | 10 min | 5 min |
 | Final quiz and certificate | 15 min | 10 min |
-| **Total** | **208 min ≈ 3½ hours** | **110 min ≈ 1¾ hours** |
+| **Total** | **218 min ≈ 3½ hours** | **115 min ≈ 2 hours** |
 
 ## Final quiz and certificate
 
