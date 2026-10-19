@@ -51,12 +51,12 @@ It isn't aimed at readers looking for proofs, measure theory, calculus-based der
 
 ## What each lesson gives you
 
-- **A clear explanation** of the main idea, with an everyday analogy, simple diagrams and comparison tables. Every formula comes with a worked example in real numbers.
+- **A clear explanation** of the main idea, with an everyday analogy, simple diagrams and comparison tables. Every formula comes with a worked example in real numbers, and a formula strip above each demo shows the rule behind its numbers, filled in with the current values as you click.
 - **Interactive demos** you drive yourself: flip 1,000 coins, light up a Venn diagram, grow a counting tree, explore a deck of cards, zoom into 100 emails, test 1,000 people for a disease, play a dice game, explore seven distributions, and reveal the hidden cause behind a correlation.
 - **Short Python sketches** beside each demo, with the step being run highlighted, so you see the same calculation as code (you don't need to run them).
 - **A quiz in every lesson** (27 questions in total), plus a glossary and formula sheet to revise from.
 
-**Example: the law of large numbers.** Flip a coin 10 times and the share of heads jumps around; flip it 1,000 times and the line settles right on 50% (here 50.6%), while the bars count heads and tails and the matching line of the simulation code lights up.
+**Example: the law of large numbers.** Flip a coin 10 times and the share of heads jumps around; flip it 1,000 times and the line settles right on 50% (here 50.6%), while the formula strip above it works out the share (511 ÷ 1,010 = 50.6%), the bars count heads and tails, and the matching line of the simulation code lights up.
 
 [![Law of large numbers lesson: bars for 511 heads and 499 tails, a line chart of the share of heads settling at 50% over 1,010 flips, next to the coin-flip Python code with the print line highlighted](images/law-of-large-numbers-lesson.png)](https://ibrahimsobh.github.io/introduction-to-probability/#why)
 

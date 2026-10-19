@@ -164,6 +164,11 @@ input:focus-visible, button:focus-visible, select:focus-visible { outline: 2px s
 }
 .viz svg { display: block; max-width: 100%; }
 .viz .caption { display: block; margin: 0 0 8px; font-size: .75rem; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+.fstrip { font: 600 .84rem/1.5 var(--mono); background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 6px; padding: 6px 10px; margin: 0 0 10px; color: var(--text); }
+.fstrip span { display: inline-block; margin-right: 16px; white-space: nowrap; }
+.fstrip span:last-child { margin-right: 0; }
+@media (max-width: 560px) { .fstrip { font-size: .78rem; overflow-wrap: anywhere; } .fstrip span { white-space: normal; display: block; margin-right: 0; } }
+.caption .nt { text-transform: none; letter-spacing: 0; font-family: var(--mono); }
 .node {
   display: inline-flex; align-items: center; justify-content: center;
   min-width: 46px; height: 46px; padding: 0 8px; border-radius: 9px;
@@ -736,6 +741,7 @@ const KIT = (() => {
         <button class="secondary ln-reset">Reset</button>
       </div>
       <div class="viz" style="min-height:300px"><span class="caption ln-cap">Coin flips</span>
+        <div class="fstrip ln-fs"></div>
         <div class="ln-bars" style="padding-top:22px"></div>
         <div class="ln-line"></div>
       </div>
@@ -801,6 +807,8 @@ print(share)                            # close to 1/6 = 0.167`,
   function draw(last) {
     const f = faces(), n = results.length;
     const counts = f.map(x => results.filter(r => r === x).length);
+    const k = counts[f.indexOf(watch())], what = mode === "coin" ? ["heads", "flips", "P(heads) = 1/2 = 50%"] : ["sixes", "rolls", "P(six) = 1/6 ≈ 16.7%"];
+    $(".ln-fs").innerHTML = `<span>share of ${what[0]} = ${what[0]} ÷ ${what[1]}</span>${n ? `<span>= ${k.toLocaleString()} ÷ ${n.toLocaleString()} = ${(k / n * 100).toFixed(1)}%</span>` : ""}<span>→ ${what[2]}</span>`;
     const bars = $(".ln-bars"); bars.innerHTML = "";
     const W = 520, H = 150, bw = Math.min(70, (W - 40) / f.length - 12);
     const s = DS.svg("svg", { viewBox: `0 0 ${W} ${H}`, class: "plot", role: "img", "aria-label": "Counts of each result" });
@@ -907,7 +915,7 @@ print(share)                            # close to 1/6 = 0.167`,
         <button class="vn-op" data-o="inter">A ∩ B</button>
         <button class="vn-op" data-o="comp">Aᶜ</button>
       </div>
-      <div class="viz" style="min-height:300px"><span class="caption vn-cap"></span><div class="vn-plot" style="padding-top:18px"></div></div>
+      <div class="viz" style="min-height:300px"><span class="caption vn-cap"></span><div class="fstrip vn-fs"></div><div class="vn-plot" style="padding-top:18px"></div></div>
       <div class="status"></div>
     </div>
     <div class="code"></div>
@@ -968,6 +976,19 @@ A & B                        # intersection: set(), empty
 omega - A                    # complement: {1, 3, 5}`, lines: { A: 2, B: 3, union: 4, inter: 5, comp: 6 },
     },
   };
+  // Formula strip per example: [unit, Ω, in A, in B, in both, A name, B name]
+  const CNT = { die: ["outcomes", 6, 3, 3, 2, "A", "B"], students: ["students", 30, 18, 12, 7, "M", "P"], excl: ["outcomes", 6, 3, 3, 0, "A", "B"] };
+  function strip() {
+    const [u, n, a, b, both, A, B] = CNT[ex];
+    const f = {
+      A: `${u} in ${A} = ${a} of ${n}`,
+      B: `${u} in ${B} = ${b} of ${n}`,
+      union: [`${u} in ${A} ∪ ${B} = in ${A} + in ${B} − in both`, `= ${a} + ${b} − ${both} = ${a + b - both}`],
+      inter: `${u} in ${A} ∩ ${B} = in both = ${both}${both ? "" : " (mutually exclusive)"}`,
+      comp: [`${u} in ${A}ᶜ = in Ω − in ${A}`, `= ${n} − ${a} = ${n - a}`],
+    };
+    $(".vn-fs").innerHTML = op ? [].concat(f[op]).map(x => `<span>${x}</span>`).join("") : `<span>${A} ∪ ${B}: in ${A} + in ${B} − in both</span><span>${A}ᶜ: in Ω − in ${A}</span>`;
+  }
   let ex = "die", op = null, cp;
   const say = h => ($(".status").innerHTML = h);
   function inRegion(x, y, e) {
@@ -978,6 +999,7 @@ omega - A                    # complement: {1, 3, 5}`, lines: { A: 2, B: 3, unio
   function draw() {
     const e = EX[ex], box = $(".vn-plot"); box.innerHTML = "";
     $(".vn-cap").textContent = e.cap;
+    strip();
     const s = DS.svg("svg", { viewBox: "0 0 520 290", class: "plot", role: "img", "aria-label": "Venn diagram of events A and B" });
     const uid = "vn" + ex;
     const circ = (c, extra = {}) => DS.svg("circle", { cx: c[0], cy: c[1], r: e.r, ...extra });
@@ -1097,7 +1119,7 @@ omega - A                    # complement: {1, 3, 5}`, lines: { A: 2, B: 3, unio
         <button class="ct-step">Step</button>
         <button class="secondary ct-reset">Reset</button>
       </div>
-      <div class="viz" style="min-height:300px"><span class="caption ct-cap"></span><div class="ct-plot" style="padding-top:22px"></div></div>
+      <div class="viz" style="min-height:300px"><span class="caption ct-cap"></span><div class="fstrip ct-fs"></div><div class="ct-plot" style="padding-top:22px"></div></div>
       <div class="status"></div>
     </div>
     <div class="code"></div>
@@ -1167,11 +1189,24 @@ comb(5, 3)             # order doesn't: 60 / 3! = 10 teams`, "counting.py");
       box.append(grid);
     }
   }
+  function strip() {
+    const span = a => a.map(x => `<span>${x}</span>`).join("");
+    $(".ct-fs").innerHTML = mode === "outfit"
+      ? span([["outfits = shirts × trousers × shoes", "outfits = 3", "outfits = 3 × 2 = 6", "outfits = 3 × 2 × 2 = 12"][step]])
+      : span([
+          ["permutations = 5 × 4 × 3", "combinations = permutations ÷ 3!"],
+          ["permutations = 5 × 4 × 3", "combinations = permutations ÷ 3!"],
+          ["permutations = 5 × 4 × 3 = 60", "combinations = permutations ÷ 3!"],
+          ["permutations = 60", "3! = 3 × 2 × 1 = 6", "combinations = 60 ÷ 3!"],
+          ["permutations = 60", "3! = 6", "combinations = 60 ÷ 6 = 10"],
+        ][step]);
+  }
   function reset() {
     step = 0;
     $(".ct-cap").textContent = mode === "outfit" ? "3 shirts × 2 trousers × 2 shoes" : "Choose 3 people from 5";
     if (mode === "outfit") { drawTree(0); cp.clear(); say("Press <b>Step</b> to choose a shirt, then trousers, then shoes, or <b>Run</b> to watch the whole tree grow."); }
     else { drawTeam(1); cp.clear(); say("Five people, A to E. How many ways can we pick 3 of them? Press <b>Step</b>."); }
+    strip();
   }
   async function next() {
     if (step >= STEPS[mode]) reset();
@@ -1186,6 +1221,7 @@ comb(5, 3)             # order doesn't: 60 / 3! = 10 teams`, "counting.py");
       if (step === 3) { drawTeam(3); cp.hl(4); say("For a team, ABC, ACB, BAC, BCA, CAB and CBA are the <b>same 3 people</b>. 3 people can be ordered in 3 × 2 × 1 = 3! = <b>6</b> ways, so each team appears 6 times here (same colour)."); }
       if (step === 4) { drawTeam(4); cp.hl(6); say("Each team was counted 6 times, so the number of teams is 60 ÷ 6 = <b>10</b>. These are <b>combinations</b>: order doesn't matter."); }
     }
+    strip();
     await DS.wait(0.4);
   }
   async function runAll() { reset(); await DS.wait(0.5); for (let i = 0; i < STEPS[mode]; i++) { await next(); await DS.wait(1.4); } }
@@ -1252,7 +1288,7 @@ comb(5, 3)             # order doesn't: 60 / 3! = 10 teams`, "counting.py");
         <button class="sp-next">Next ▶</button>
         <button class="secondary sp-reset">Reset</button>
       </div>
-      <div class="viz" style="min-height:320px"><span class="caption">A spinner with 4 equal sections</span><div class="sp-plot" style="padding-top:22px"></div></div>
+      <div class="viz" style="min-height:320px"><span class="caption">A spinner with 4 equal sections</span><div class="fstrip sp-fs"></div><div class="sp-plot" style="padding-top:22px"></div></div>
       <div class="status"></div>
     </div>
     <div class="code"></div>
@@ -1280,6 +1316,14 @@ p({1}) + p({3})                         # 1/4 + 1/4 = 1/2 = p({1, 3})`, "spinner
     { head: "Add the probabilities.", lines: [6], view: { one: true, three: true, needle: 3 }, cap: "1 or 3: 2 of 4 sections = 1/2",
       text: "The two sections share nothing, so nothing is counted twice and we can simply add: P(1 or 3) = P(1) + P(3) = 1/4 + 1/4 = 2/4 = 1/2. In the picture, the blue and green sections together cover half of the spinner." },
   ];
+  // formula strip for each step
+  const FS = [
+    ["P(A or B) = P(A) + P(B), when A ∩ B = ∅"],
+    ["P(A) = P(1) = 1/4"],
+    ["P(A) = 1/4", "P(B) = P(3) = 1/4"],
+    ["A ∩ B = {1} ∩ {3} = ∅", "P(A and B) = 0"],
+    ["P(A or B) = P(A) + P(B) = 1/4 + 1/4 = 1/2"],
+  ];
   const CX = 260, CY = 165, R = 130;
   // section centre angles (degrees, SVG coordinates: 0 = right, 90 = down)
   const ANG = { 1: 225, 2: 315, 3: 135, 4: 45 };
@@ -1305,6 +1349,7 @@ p({1}) + p({3})                         # 1/4 + 1/4 = 1/2 = p({1, 3})`, "spinner
     step = Math.max(0, Math.min(STEPS.length - 1, i));
     const st = STEPS[step];
     draw(); cp.hl(...st.lines);
+    $(".sp-fs").innerHTML = FS[step].map(f => `<span>${f}</span>`).join("");
     $(".status").innerHTML = `<b>Step ${step + 1} of ${STEPS.length} · ${st.head}</b> ${st.text}`;
     $(".sp-back").disabled = step === 0; $(".sp-next").disabled = step === STEPS.length - 1;
   }
@@ -1374,7 +1419,7 @@ p({1}) + p({3})                         # 1/4 + 1/4 = 1/2 = p({1, 3})`, "spinner
         <button class="cd-ev" data-e="or">Heart or face card</button>
         <button class="cd-ev" data-e="not">Not a heart</button>
       </div>
-      <div class="viz" style="min-height:190px"><span class="caption">A standard deck · 52 equally likely cards</span><div class="cd-deck" style="padding-top:26px"></div></div>
+      <div class="viz" style="min-height:190px"><span class="caption">A standard deck · 52 equally likely cards</span><div class="fstrip cd-fs"></div><div class="cd-deck" style="padding-top:26px"></div></div>
       <div class="status"></div>
     </div>
     <div class="code"></div>
@@ -1457,8 +1502,17 @@ p_not = 1 - len(hearts) / 52                     # 39/52`, "cards.py");
     box.append(grid);
   }
   const paint = (c, col, strong) => { c.el.style.background = col ? `color-mix(in srgb, ${col} ${strong ? 45 : 28}%, var(--surface))` : "var(--surface)"; c.el.style.borderColor = col || "var(--border)"; c.el.style.opacity = col ? 1 : 0.45; };
+  const FS = {
+    start: ["P(A) = cards lit ÷ 52"],
+    heart: ["P(heart) = cards lit ÷ 52 = 13/52 = 1/4"],
+    face: ["P(face) = cards lit ÷ 52 = 12/52 ≈ 0.23"],
+    or: ["P(A ∪ B) = P(A) + P(B) − P(A ∩ B)", "= 13/52 + 12/52 − 3/52 = 22/52 ≈ 0.42"],
+    not: ["P(Aᶜ) = 1 − P(A)", "= 1 − 13/52 = 39/52 = 3/4"],
+  };
+  const strip = e => ($(".cd-fs").innerHTML = FS[e].map(f => `<span>${f}</span>`).join(""));
   async function show(e) {
     deck.forEach(c => paint(c, null));
+    strip(e);
     if (e === "heart") { cp.hl(3); deck.filter(isHeart).forEach(c => paint(c, "var(--s1)")); say("<b>13</b> hearts out of 52 cards: P(heart) = 13/52 = <b>1/4</b>."); }
     if (e === "face") { cp.hl(4); deck.filter(isFace).forEach(c => paint(c, "var(--s3)")); say("<b>12</b> face cards (J, Q, K in four suits): P(face) = 12/52 ≈ <b>0.23</b>."); }
     if (e === "or") {
@@ -1470,7 +1524,7 @@ p_not = 1 - len(hearts) / 52                     # 39/52`, "cards.py");
     if (e === "not") { cp.hl(7); deck.filter(c => !isHeart(c)).forEach(c => paint(c, "var(--s4)")); say("Not a heart: 1 − 13/52 = <b>39/52 = 3/4</b>. It's often easier to count what you <i>don't</i> want."); }
   }
   root.querySelectorAll(".cd-ev").forEach(b => (b.onclick = () => DS.run(root, () => show(b.dataset.e))));
-  drawDeck(); say("Pick an event to light up its cards. Every card is equally likely, so P = cards lit ÷ 52.");
+  drawDeck(); strip("start"); say("Pick an event to light up its cards. Every card is equally likely, so P = cards lit ÷ 52.");
 
   // at least one six
   const six = document.querySelector("#rules .w-six"), s$ = s => six.querySelector(s);
@@ -1514,7 +1568,7 @@ p_not = 1 - len(hearts) / 52                     # 39/52`, "cards.py");
         <button class="gv-next">Next ▶</button>
         <button class="secondary gv-reset">Reset</button>
       </div>
-      <div class="viz" style="min-height:290px"><span class="caption">One die roll · Ω = {1, 2, 3, 4, 5, 6}</span><div class="gv-plot" style="padding-top:22px"></div></div>
+      <div class="viz" style="min-height:290px"><span class="caption">One die roll · Ω = {1, 2, 3, 4, 5, 6}</span><div class="fstrip gv-fs"></div><div class="gv-plot" style="padding-top:22px"></div></div>
       <div class="status"></div>
     </div>
     <div class="code"></div>
@@ -1544,6 +1598,14 @@ len(B) / len(omega) * p_A_given_B     # 3/6 × 2/3 = 2/6`, "conditional.py");
     { head: "Turn it around: the multiplication rule.", lines: [7], view: { both: true, tintB: true },
       text: "Multiply both sides by P(B): P(A ∩ B) = P(B) × P(A | B) = 3/6 × 2/3 = 2/6 ✓, the same as step 2. In words: the chance of landing in B, times the chance of being in A once you're in B." },
   ];
+  // formula strip for each step
+  const FS = [
+    ["P(A | B) = P(A ∩ B) ÷ P(B)", "P(B) = 3/6"],
+    ["P(A ∩ B) = 2/6", "P(B) = 3/6"],
+    ["P(A | B) = in A and B ÷ in B = 2/3"],
+    ["P(A | B) = P(A ∩ B) ÷ P(B) = 2/6 ÷ 3/6 = 2/3"],
+    ["P(A ∩ B) = P(B) × P(A | B) = 3/6 × 2/3 = 2/6"],
+  ];
   const CA = [205, 150], CB = [315, 150], R = 92;
   const ITEMS = [["2", 160, 150], ["4", 260, 125], ["6", 260, 178], ["5", 362, 150], ["1", 50, 70], ["3", 470, 250]];
   const inB = (x, y) => Math.hypot(x - CB[0], y - CB[1]) < R;
@@ -1572,6 +1634,7 @@ len(B) / len(omega) * p_A_given_B     # 3/6 × 2/3 = 2/6`, "conditional.py");
     step = Math.max(0, Math.min(STEPS.length - 1, i));
     const st = STEPS[step];
     draw(); cp.hl(...st.lines);
+    $(".gv-fs").innerHTML = FS[step].map(f => `<span>${f}</span>`).join("");
     $(".status").innerHTML = `<b>Step ${step + 1} of ${STEPS.length} · ${st.head}</b> ${st.text}`;
     $(".gv-back").disabled = step === 0; $(".gv-next").disabled = step === STEPS.length - 1;
   }
@@ -1593,7 +1656,7 @@ len(B) / len(omega) * p_A_given_B     # 3/6 × 2/3 = 2/6`, "conditional.py");
         <button class="cn-v" data-v="spam">Given it's spam</button>
         <button class="cn-v" data-v="ind">Independent?</button>
       </div>
-      <div class="viz" style="min-height:300px"><span class="caption">100 emails · orange = spam · ★ = contains "free"</span><div class="cn-grid" style="padding-top:26px"></div></div>
+      <div class="viz" style="min-height:300px"><span class="caption">100 emails · orange = spam · ★ = contains "free"</span><div class="fstrip cn-fs"></div><div class="cn-grid" style="padding-top:26px"></div></div>
       <div class="status"></div>
     </div>
     <div class="code"></div>
@@ -1624,7 +1687,7 @@ len(B) / len(omega) * p_A_given_B     # 3/6 × 2/3 = 2/6`, "conditional.py");
         <button class="tr-next">Next ▶</button>
         <button class="secondary tr-reset">Reset</button>
       </div>
-      <div class="viz" style="min-height:380px"><span class="caption">A box of 3 red and 5 blue balls · two draws</span><div class="tr-plot" style="padding-top:22px"></div></div>
+      <div class="viz" style="min-height:380px"><span class="caption">A box of 3 red and 5 blue balls · two draws</span><div class="fstrip tr-fs"></div><div class="tr-plot" style="padding-top:22px"></div></div>
       <div class="status"></div>
     </div>
     <div class="code"></div>
@@ -1658,6 +1721,16 @@ p_A * p_B_given_A                     # 15/56: multiply along the path
       text: "Each path is one possible result of the two draws: red-red 3/8 × 2/7 = 6/56, red-blue 3/8 × 5/7 = 15/56, blue-red 5/8 × 3/7 = 15/56, blue-blue 5/8 × 4/7 = 20/56. Together they cover every possibility: 6 + 15 + 15 + 20 = 56, so 56/56 = 1 ✓." },
     { head: "Compare: with replacement.", line: 7, view: { box2: "with", hl2: "B", tree: 5 },
       text: "If the first ball is put back, the box is 3 red and 5 blue again, so P(B | A) = 5/8, the same as P(B): the first draw has no effect on the second. Then P(A and B) = 3/8 × 5/8 = 15/64, a little less than 15/56." },
+  ];
+  // formula strip for each step
+  const FS = [
+    ["P(A and B) = P(A) × P(B | A)"],
+    ["P(A) = red ÷ balls = 3/8"],
+    ["P(A) = 3/8", "box now: 2 red + 5 blue = 7 balls"],
+    ["P(A) = 3/8", "P(B | A) = blue ÷ balls left = 5/7"],
+    ["P(A and B) = P(A) × P(B | A) = 3/8 × 5/7 = 15/56"],
+    ["all paths: 6/56 + 15/56 + 15/56 + 20/56 = 56/56 = 1"],
+    ["put back: P(B | A) = P(B) = 5/8", "P(A and B) = 3/8 × 5/8 = 15/64"],
   ];
   const RED = "var(--bad)", BLUE = "var(--s1)", HOT = "var(--hot)";
   let step = 0;
@@ -1716,6 +1789,7 @@ p_A * p_B_given_A                     # 15/56: multiply along the path
     step = Math.max(0, Math.min(STEPS.length - 1, i));
     const st = STEPS[step];
     draw(); cp.hl(st.line);
+    $(".tr-fs").innerHTML = FS[step].map(f => `<span>${f}</span>`).join("");
     $(".status").innerHTML = `<b>Step ${step + 1} of ${STEPS.length} · ${st.head}</b> ${st.text}`;
     $(".tr-back").disabled = step === 0; $(".tr-next").disabled = step === STEPS.length - 1;
   }
@@ -1738,7 +1812,7 @@ p_A * p_B_given_A                     # 15/56: multiply along the path
         <button class="ip-next">Next ▶</button>
         <button class="secondary ip-reset">Reset</button>
       </div>
-      <div class="viz" style="min-height:400px"><span class="caption">A coin toss and a die roll</span><div class="ip-plot" style="padding-top:22px"></div></div>
+      <div class="viz" style="min-height:400px"><span class="caption">A coin toss and a die roll</span><div class="fstrip ip-fs"></div><div class="ip-plot" style="padding-top:22px"></div></div>
       <div class="status"></div>
     </div>
     <div class="code"></div>
@@ -1769,6 +1843,14 @@ len([g for g in heads if g[1] % 2 == 0]) / len(heads)   # 3/6 = 1/2 = P(B)
       text: "Half of the grid is heads, and half of that half is even, so a quarter of the grid is both: P(heads and even) = P(A) × P(B) = 1/2 × 1/2 = 1/4. Counting check: H2, H4 and H6 are 3 of the 12 cells, and 3/12 = 1/4 ✓." },
   ];
   const HEADER = `<g transform="translate(70,62)"><circle r="42" fill="color-mix(in srgb, var(--s4) 45%, var(--surface))" stroke="var(--s4)" stroke-width="3"/><line x1="0" y1="-42" x2="0" y2="42" stroke="var(--s4)" stroke-width="2"/><text x="-19" y="9" text-anchor="middle" style="font:700 24px var(--sans);fill:var(--text)">H</text><text x="19" y="9" text-anchor="middle" style="font:700 24px var(--sans);fill:var(--text)">T</text></g><text x="148" y="72" text-anchor="middle" style="font:700 28px var(--sans);fill:var(--text)">×</text><g transform="translate(225,62)"><polygon points="0.0,-46.0 40.0,-24.0 0.0,-2.0 -40.0,-24.0" fill="var(--surface)" stroke="var(--text-2)" stroke-width="2"/><polygon points="-40.0,-24.0 0.0,-2.0 0.0,44.0 -40.0,22.0" fill="var(--surface-2)" stroke="var(--text-2)" stroke-width="2"/><polygon points="40.0,-24.0 0.0,-2.0 0.0,44.0 40.0,22.0" fill="color-mix(in srgb, var(--text) 12%, var(--surface-2))" stroke="var(--text-2)" stroke-width="2"/><ellipse cx="0" cy="-24.0" rx="7.0" ry="4.5" fill="var(--bad)"/><circle cx="-29.0" cy="-4.0" r="4.0" fill="var(--text)"/><circle cx="-11.0" cy="21.0" r="4.0" fill="var(--text)"/><circle cx="11.0" cy="-1.0" r="4.0" fill="var(--text)"/><circle cx="20.0" cy="11.0" r="4.0" fill="var(--text)"/><circle cx="29.0" cy="23.0" r="4.0" fill="var(--text)"/></g>`;
+  // formula strip for each step
+  const FS = [
+    ["independent: P(A and B) = P(A) × P(B)", "results = 2 × 6 = 12"],
+    ["P(A) = 6/12 = 1/2"],
+    ["P(A) = 1/2", "P(B) = 6/12 = 1/2"],
+    ["P(B | A) = 3/6 = 1/2 = P(B) → independent"],
+    ["P(A and B) = P(A) × P(B) = 1/2 × 1/2 = 1/4"],
+  ];
   const X0 = 100, Y0 = 190, W = 70, H = 70;
   const tint = (c, p) => `color-mix(in srgb, ${c} ${p}%, var(--surface))`;
   let step = 0;
@@ -1803,6 +1885,7 @@ len([g for g in heads if g[1] % 2 == 0]) / len(heads)   # 3/6 = 1/2 = P(B)
     step = Math.max(0, Math.min(STEPS.length - 1, i));
     const st = STEPS[step];
     draw(); cp.hl(...st.lines);
+    $(".ip-fs").innerHTML = FS[step].map(f => `<span>${f}</span>`).join("");
     $(".status").innerHTML = `<b>Step ${step + 1} of ${STEPS.length} · ${st.head}</b> ${st.text}`;
     $(".ip-back").disabled = step === 0; $(".ip-next").disabled = step === STEPS.length - 1;
   }
@@ -1863,7 +1946,16 @@ p_both = p_spam * p_free_given_spam       # multiplication rule: 0.24`, "spam.py
   });
   $(".cn-grid").append(grid);
   const focus = f => mails.forEach(m => { const on = f(m); m.el.style.opacity = on ? 1 : 0.12; m.el.style.transform = on ? "scale(1)" : "scale(.8)"; });
+  const FS = {
+    start: ["P(A | B) = in A and B ÷ in B"],
+    all: ["P(spam) = spam ÷ all emails = 30 ÷ 100 = 0.30"],
+    free: ["P(spam | free) = spam and free ÷ free = 24 ÷ 31 ≈ 0.77"],
+    spam: ["P(free | spam) = spam and free ÷ spam = 24 ÷ 30 = 0.80"],
+    ind: ["independent only if P(spam | free) = P(spam)", "0.77 ≠ 0.30 → not independent"],
+  };
+  const strip = v => ($(".cn-fs").innerHTML = FS[v].map(f => `<span>${f}</span>`).join(""));
   async function show(v) {
+    strip(v);
     if (v === "all") { focus(() => true); cp.hl(3); say("Of all <b>100</b> emails, <b>30</b> are spam: P(spam) = 30/100 = <b>0.30</b>."); }
     if (v === "free") {
       focus(m => m.free); cp.hl(4); await DS.wait(0.5);
@@ -1879,7 +1971,7 @@ p_both = p_spam * p_free_given_spam       # multiplication rule: 0.24`, "spam.py
     }
   }
   root.querySelectorAll(".cn-v").forEach(b => (b.onclick = () => DS.run(root, () => show(b.dataset.v))));
-  say("Press a button to zoom in on part of the emails.");
+  strip("start"); say("Press a button to zoom in on part of the emails.");
 
   // gambler's fallacy
   const gf = document.querySelector("#conditional .w-gf"), g$ = s => gf.querySelector(s);
@@ -1933,7 +2025,7 @@ p_both = p_spam * p_free_given_spam       # multiplication rule: 0.24`, "spam.py
         <button class="sl-next">Next ▶</button>
         <button class="secondary sl-reset">Reset</button>
       </div>
-      <div class="viz" style="min-height:420px"><span class="caption">One die roll · B = even · slices A₁, A₂, A₃</span><div class="sl-plot" style="padding-top:22px"></div></div>
+      <div class="viz" style="min-height:420px"><span class="caption">One die roll · B = even · slices A₁, A₂, A₃</span><div class="fstrip sl-fs"></div><div class="sl-plot" style="padding-top:22px"></div></div>
       <div class="status"></div>
     </div>
     <div class="code"></div>
@@ -1961,6 +2053,14 @@ sum(p(A) * s for A, s in zip(slices, shares)) # 0 + 2/6 + 1/6 = 3/6`, "total_pro
       text: "By the multiplication rule from lesson 5, P(B ∩ Aᵢ) = P(Aᵢ) × P(B | Aᵢ). P(B | Aᵢ) is the share of slice Aᵢ that is even: 0 of 1, 2 of 3, 1 of 2. In the bottom picture, each column is as wide as P(Aᵢ) and its dark part is as tall as P(B | Aᵢ), so each dark area is one piece: 1/6 × 0 = 0, 3/6 × 2/3 = 2/6, 2/6 × 1/2 = 1/6." },
     { head: "The law of total probability.", lines: [7], view: { slices: true, pieces: true, area: true, total: true },
       text: "P(B) = P(B | A₁) × P(A₁) + P(B | A₂) × P(A₂) + P(B | A₃) × P(A₃) = 0 + 2/6 + 1/6 = 3/6: the total dark area. It's also a <b>weighted average</b> of the shares 0, 2/3 and 1/2: an average where bigger slices count more, because each share is multiplied by its slice's size." },
+  ];
+  // formula strip for each step
+  const FS = [
+    ["P(B) = Σᵢ P(B | Aᵢ) × P(Aᵢ)", "directly: P(B) = 3/6"],
+    ["P(A₁) + P(A₂) + P(A₃) = 1/6 + 3/6 + 2/6 = 1"],
+    ["P(B) = 0/6 + 2/6 + 1/6 = 3/6"],
+    ["P(B ∩ Aᵢ) = P(B | Aᵢ) × P(Aᵢ)", "0 × 1/6 = 0 · 2/3 × 3/6 = 2/6 · 1/2 × 2/6 = 1/6"],
+    ["P(B) = Σᵢ P(B | Aᵢ) × P(Aᵢ) = 0 + 2/6 + 1/6 = 3/6"],
   ];
   const X0 = 20, W = 480, COLS = [
     { sub: "₁", name: "A₁ = {1}", w: 1 / 6, share: 0, shareTxt: "0", c: "var(--s2)", area: "0", pA: "1/6" },
@@ -2011,6 +2111,7 @@ sum(p(A) * s for A, s in zip(slices, shares)) # 0 + 2/6 + 1/6 = 3/6`, "total_pro
     step = Math.max(0, Math.min(STEPS.length - 1, i));
     const st = STEPS[step];
     draw(); cp.hl(...st.lines);
+    $(".sl-fs").innerHTML = FS[step].map(f => `<span>${f}</span>`).join("");
     $(".status").innerHTML = `<b>Step ${step + 1} of ${STEPS.length} · ${st.head}</b> ${st.text}`;
     $(".sl-back").disabled = step === 0; $(".sl-next").disabled = step === STEPS.length - 1;
   }
@@ -2088,7 +2189,7 @@ sum(p(A) * s for A, s in zip(slices, shares)) # 0 + 2/6 + 1/6 = 3/6`, "total_pro
         <button class="by-step">Step</button>
         <button class="secondary by-reset">Reset</button>
       </div>
-      <div class="viz" style="min-height:250px"><span class="caption">1,000 people · ● sick · ■ tested positive</span><div class="by-grid" style="padding-top:26px"></div></div>
+      <div class="viz" style="min-height:250px"><span class="caption">1,000 people · ● sick · ■ tested positive</span><div class="fstrip by-fs"></div><div class="by-grid" style="padding-top:26px"></div></div>
       <div class="status"></div>
     </div>
     <div class="code"></div>
@@ -2152,11 +2253,22 @@ p_sick_given_pos = true_pos / positives   # Bayes: 9 / 98 = 9%`, "medical_test.p
     const p = s.pos ? s.tp / s.pos : 0;
     return `Zoom into everyone who tested positive: <b>${s.pos}</b> people, of whom only <b>${s.tp}</b> are sick. P(sick | positive) = ${s.tp} ÷ ${s.pos} ≈ <b>${pct(p)}</b>.`;
   }
+  function strip() {
+    const s = N, n = v => v.toLocaleString();
+    const parts = [
+      `sick = 1,000 × ${+(s.prev * 100).toFixed(1)}% = ${n(s.sick)}`,
+      `true positives = ${n(s.sick)} × ${Math.round(s.sens * 100)}% = ${n(s.tp)}`,
+      `false alarms = ${n(1000 - s.sick)} × ${Math.round(s.fp * 100)}% = ${n(s.fpos)}`,
+      "P(sick | positive)", "= true positives ÷ all positives",
+      `= ${n(s.tp)} ÷ (${n(s.tp)} + ${n(s.fpos)}) ≈ ${pct(s.pos ? s.tp / s.pos : 0)}`,
+    ];
+    $(".by-fs").innerHTML = (step ? parts.slice(0, step === 4 ? 6 : step) : ["P(sick | positive)", "= true positives ÷ all positives"]).map(f => `<span${f.startsWith("P(") ? ' style="display:block;margin-right:0"' : ""}>${f}</span>`).join("");
+  }
   const LINES = [null, 2, 3, 4, [5, 6]];
-  async function next() { if (step >= 4) step = 0; step++; paint(); cp.hl(...[].concat(LINES[step])); say(msg()); await DS.wait(0.3); }
-  async function runAll() { step = 0; paint(); cp.clear(); say(msg()); await DS.wait(0.6); for (let i = 0; i < 4; i++) { await next(); await DS.wait(1.5); } }
-  function reset() { step = 0; numbers(); paint(); cp.clear(); say(msg()); }
-  root.querySelectorAll("input[type=range]").forEach(r => r.addEventListener("input", () => { numbers(); paint(); say(msg()); }));
+  async function next() { if (step >= 4) step = 0; step++; paint(); strip(); cp.hl(...[].concat(LINES[step])); say(msg()); await DS.wait(0.3); }
+  async function runAll() { step = 0; paint(); strip(); cp.clear(); say(msg()); await DS.wait(0.6); for (let i = 0; i < 4; i++) { await next(); await DS.wait(1.5); } }
+  function reset() { step = 0; numbers(); paint(); strip(); cp.clear(); say(msg()); }
+  root.querySelectorAll("input[type=range]").forEach(r => r.addEventListener("input", () => { numbers(); paint(); strip(); say(msg()); }));
   $(".by-run").onclick = () => DS.run(root, runAll);
   $(".by-step").onclick = () => DS.run(root, next);
   $(".by-reset").onclick = () => { if (!root.dataset.busy) reset(); };
@@ -2218,6 +2330,7 @@ p_sick_given_pos = true_pos / positives   # Bayes: 9 / 98 = 9%`, "medical_test.p
         <button class="secondary gm-reset">Reset</button>
       </div>
       <div class="viz" style="min-height:330px"><span class="caption gm-cap"></span>
+        <div class="fstrip gm-fs"></div>
         <div class="gm-bars" style="padding-top:20px"></div>
         <div class="gm-line"></div>
       </div>
@@ -2300,7 +2413,15 @@ print(sum(games) / len(games))       # average: close to 0.33`, "dice_game.py");
       P.g.append(DS.svg("path", { class: "fit", d }));
     }
   }
-  function reset() { R = KIT.rng(8); games = []; avg = []; drawBars(); drawLine(); cp.hl(1, 2); say("The PMF shows each value's chance. Press <b>Play</b> to see the average winnings settle."); }
+  function strip() {
+    const n = games.length, tot = games.reduce((a, b) => a + b, 0);
+    const first = view === "pmf" ? ["E[X] = Σ value × probability", "= −1 × 3/6 + 1 × 2/6 + 3 × 1/6 = 2/6 ≈ 0.33"]
+      : ["CDF = P(X ≤ x)", "3/6 · 3/6 + 2/6 = 5/6 · 5/6 + 1/6 = 6/6"];
+    const neg = s => s.replace("-", "−");
+    const second = ["average so far = winnings ÷ games"].concat(n ? [`= ${neg(tot.toLocaleString())} ÷ ${n.toLocaleString()} = ${neg((tot / n).toFixed(2))}`] : []);
+    $(".gm-fs").innerHTML = first.concat(second).map(f => `<span>${f}</span>`).join("");
+  }
+  function reset() { R = KIT.rng(8); games = []; avg = []; drawBars(); drawLine(); strip(); cp.hl(1, 2); say("The PMF shows each value's chance. Press <b>Play</b> to see the average winnings settle."); }
   async function play(n) {
     cp.hl(6, 7);
     const chunk = n === 1 ? 1 : n === 100 ? 5 : 25;
@@ -2310,11 +2431,12 @@ print(sum(games) / len(games))       # average: close to 0.33`, "dice_game.py");
       drawLine(); if (n > 1) await DS.wait(0.06);
     }
     const a = avg[avg.length - 1];
+    strip();
     say(n === 1 ? `Rolled a <b>${last[0]}</b>: ${last[1] > 0 ? "won " + last[1] + (last[1] > 1 ? " points" : " point") : "lost 1 point"}. Average after ${games.length} game${games.length > 1 ? "s" : ""}: <b>${a.toFixed(2)}</b> points.`
       : `After <b>${games.length.toLocaleString()}</b> games the average is <b>${a.toFixed(2)}</b> points per game, close to E[X] = 0.33. Single games swing by about σ = 1.49 points.`);
   }
   root.querySelectorAll(".gm-view").forEach(b => (b.onclick = () => {
-    view = b.dataset.v; root.querySelectorAll(".gm-view").forEach(x => x.setAttribute("aria-pressed", String(x === b))); drawBars();
+    view = b.dataset.v; root.querySelectorAll(".gm-view").forEach(x => x.setAttribute("aria-pressed", String(x === b))); drawBars(); strip();
     cp.hl(2);
     say(view === "pmf" ? "PMF: the chance of each value. The bars add up to 1." : "CDF: the chance of that value <b>or less</b>. It climbs to 1 at the largest value (3 points).");
   }));
@@ -2356,7 +2478,7 @@ print(sum(games) / len(games))       # average: close to 0.33`, "dice_game.py");
     <div class="card">
       <div class="controls ds-scen"></div>
       <div class="controls"><label class="inl ds-lab"><span class="ds-pname"></span> <input type="range" class="ds-p" style="width:170px;vertical-align:middle"> <b class="ds-pv" style="font-family:var(--mono)"></b></label></div>
-      <div class="viz" style="min-height:260px"><span class="caption ds-cap"></span><div class="ds-plot" style="padding-top:22px"></div></div>
+      <div class="viz" style="min-height:260px"><span class="caption ds-cap"></span><div class="fstrip ds-fs"></div><div class="ds-plot" style="padding-top:22px"></div></div>
       <div class="status"></div>
     </div>
     <div class="code"></div>
@@ -2408,7 +2530,7 @@ print(sum(games) / len(games))       # average: close to 0.33`, "dice_game.py");
         <button class="cr-go" data-n="1000">1,000 experiments</button>
         <button class="secondary cr-reset">Reset</button>
       </div>
-      <div class="viz" style="min-height:340px"><span class="caption cr-cap">Repeat the experiment · each block = one experiment of 100 tosses</span><div class="cr-plot"></div></div>
+      <div class="viz" style="min-height:340px"><span class="caption cr-cap">Repeat the experiment · each block = one experiment of 100 tosses</span><div class="fstrip cr-fs"></div><div class="cr-plot"></div></div>
       <div class="status"></div>
     </div>
     <div class="code"></div>
@@ -2424,7 +2546,7 @@ print(sum(games) / len(games))       # average: close to 0.33`, "dice_game.py");
         <button class="cl-next">Next ▶</button>
         <button class="secondary cl-reset">Reset</button>
       </div>
-      <div class="viz" style="min-height:320px"><span class="caption cl-cap"></span><div class="cl-plot"></div></div>
+      <div class="viz" style="min-height:320px"><span class="caption cl-cap"></span><div class="fstrip cl-fs"></div><div class="cl-plot"></div></div>
       <div class="status"></div>
     </div>
     <div class="code"></div>
@@ -2505,6 +2627,11 @@ for run in range(1000):               # repeat the whole experiment
     g += `<text class="lbl" x="${(X0 + X1) / 2}" y="${Y0 + 34}" text-anchor="middle">number of heads in one experiment of 100 tosses</text>`;
     g += `<text class="lbl" x="${X1}" y="${Y1 - 6}" text-anchor="end" style="font-weight:700">experiments run: ${runs.toLocaleString()} (100 tosses each)</text>`;
     $(".cr-plot").innerHTML = g + "</svg>";
+    let near = 0; for (let k = 40; k <= 60; k++) near += counts[k] || 0;
+    $(".cr-fs").innerHTML = `<span>heads = sum of 100 tosses (1 or 0)${last ? ` = ${last.h}` : ""}</span>`
+      + `<span>average = 100 × ½ = 50 · σ = √(100 × ½ × ½) = 5</span>`
+      + `<span>rule: about 95% within 50 ± 2σ = 40 to 60</span>`
+      + (runs ? `<span>here: ${near.toLocaleString()} ÷ ${runs.toLocaleString()} = ${(near / runs * 100).toFixed(1)}%</span>` : "");
   }
   async function go(n) {
     cp.hl(4, 5);
@@ -2610,9 +2737,26 @@ def bell(x):                                # the Normal curve with that mean an
     g += `<text class="lbl" x="${X1}" y="${Y1 - 22}" text-anchor="end" style="font-weight:700">mean ${+mean.toFixed(2)} · standard deviation ${sd.toFixed(2)}</text>`;
     return g + "</svg>";
   }
+  // formula strip: count the sequences and the ways (lesson 3), then P = ways ÷ sequences (lesson 4)
+  const SUP = { 1: "¹", 2: "²", 3: "³", 4: "⁴", 5: "⁵", 10: "¹⁰", 100: "¹⁰⁰" };
+  function strip(n, p) {
+    const sd = Math.sqrt(n * p * (1 - p)), r = v => +v.toFixed(2);
+    let parts;
+    if (p !== 0.5) parts = [`average = n × p = ${n} × ${p} = ${r(n * p)}`].concat(n === 100 ? ["σ = √(n × p × (1 − p))", `= √(${n} × ${p} × ${r(1 - p)}) = ${r(sd)}`] : ["sequences no longer equally likely"]);
+    else if (n === 100) parts = ["sequences = 2¹⁰⁰ ≈ 1.27 × 10³⁰", "P(50 heads) = ways ÷ sequences", "≈ 1.01 × 10²⁹ ÷ 1.27 × 10³⁰ ≈ 8%", "average = 100 × ½ = 50 · σ = √(100 × ½ × ½) = 5"];
+    else {
+      const k = Math.floor(n / 2), ways = comb(n, k), all = 2 ** n;
+      parts = [`sequences = 2${SUP[n]} = ${all.toLocaleString()}`,
+        `ways to get ${k} head${k === 1 ? "" : "s"} = choose ${k} of ${n} toss${n > 1 ? "es" : ""} = ${ways}`,
+        `P(${k} head${k === 1 ? "" : "s"}) = ways ÷ sequences = ${ways} ÷ ${all.toLocaleString()}${n === 10 ? " ≈ 25%" : ""}`];
+      if (n === 10) parts.push("average = 10 × ½ = 5 · σ = √(10 × ½ × ½) ≈ 1.58");
+    }
+    $(".cl-fs").innerHTML = parts.map(f => `<span>${f}</span>`).join("");
+  }
   function show(i) {
     step = Math.max(0, Math.min(STEPS.length - 1, i));
     const st = STEPS[step], { n, p } = st;
+    strip(n, p);
     $(".cl-plot").innerHTML = n <= 5 ? tiles(n) : bars(n, p);
     $(".cl-cap").textContent = n <= 5 ? `${n} toss${n > 1 ? "es" : ""} of a fair coin · each tile = one possible sequence (blue = heads, grey = tails)`
       : n === 10 && p === 0.5 ? "10 tosses of a fair coin · bar = number of sequences with that many heads · orange = Normal bell"
@@ -2698,11 +2842,22 @@ def pdf(x): return exp(-((x - mu) / sigma)**2 / 2) / (sigma * sqrt(2 * pi))
 within_1sd = 0.68              # 68% between ${70 - s} and ${70 + s}
 within_2sd = 0.95              # 95% between ${70 - 2 * s} and ${70 + 2 * s}` },
   };
+  // formula strip: each distribution's average (as in the table below the demo), with the slider's value
+  const AVG = {
+    bern: p => `average = p = ${p.toFixed(2)}`,
+    binom: p => `average = n × p = 10 × ${p.toFixed(2)} = ${(10 * p).toFixed(1)}`,
+    geom: p => `average = 1 ÷ p = 1 ÷ ${p.toFixed(2)} = ${(1 / p).toFixed(1)} rolls`,
+    pois: l => `average = λ = ${l.toFixed(1)} calls`,
+    unif: b => `average = (a + b) ÷ 2 = (0 + ${b}) ÷ 2 = ${(b / 2).toFixed(1)} minutes`,
+    expo: m => `average = the average wait = ${m.toFixed(1)} minutes`,
+    norm: () => "average = μ = 70",
+  };
   let cur = "binom", cp;
   Object.entries(D).forEach(([k, d]) => $(".ds-scen").append(DS.el("button", { class: "secondary always ds-b", "data-d": k, "aria-pressed": String(k === cur), onclick: () => pick(k) }, d.btn)));
   function draw() {
     const d = D[cur], v = +$(".ds-p").value, box = $(".ds-plot"); box.innerHTML = "";
     $(".ds-pv").textContent = d.fmt(v);
+    $(".ds-fs").innerHTML = `<span>${AVG[cur](v)}</span>`;
     $(".ds-cap").textContent = `${d.name} · ${d.type === "d" ? "discrete: bars are probabilities" : "continuous: probability = area"}`;
     if (d.type === "d") {
       const xs = d.xs(), ps = xs.map(k => d.pmf(k, v)), yMax = Math.max(0.1, Math.ceil(Math.max(...ps) * 10) / 10);
@@ -2879,7 +3034,7 @@ within_2sd = 0.95              # 95% between ${70 - 2 * s} and ${70 + 2 * s}` },
         <button class="secondary always cr-ds" data-d="ice" aria-pressed="false">🍦 Ice cream vs drownings</button>
       </div>
       <div class="controls cr-ctl"></div>
-      <div class="viz" style="min-height:290px"><span class="caption cr-cap"></span><div class="cr-plot" style="padding-top:20px"></div>
+      <div class="viz" style="min-height:290px"><span class="caption cr-cap"></span><div class="fstrip cr-fs"></div><div class="cr-plot" style="padding-top:20px"></div>
         <div class="meter"><span style="width:110px">correlation r</span><div class="bar" style="position:relative"><i class="cr-bar"></i></div><b class="cr-r">—</b></div>
       </div>
       <div class="status"></div>
@@ -2950,6 +3105,8 @@ r = st.correlation(ice_cream, drownings)   # strongly positive...
     $(".cr-r").textContent = r.toFixed(2);
     const bar = $(".cr-bar"); bar.style.marginLeft = r >= 0 ? "50%" : (50 + r * 50) + "%"; bar.style.width = Math.abs(r) * 50 + "%";
     bar.className = "cr-bar " + (r >= 0 ? "ok" : "hot");
+    const sx = Math.sqrt(cov(d.xs, d.xs)), sy = Math.sqrt(cov(d.ys, d.ys)), m = v => v.toFixed(Math.abs(v) < 10 ? 2 : 1).replace("-", "−");
+    $(".cr-fs").innerHTML = `<span>r = Cov(X, Y) ÷ (σ<sub>X</sub> × σ<sub>Y</sub>)</span><span>= ${m(c)} ÷ (${m(sx)} × ${m(sy)}) = ${m(r)}</span>`;
     return { r, c };
   }
   function describe(r) {
