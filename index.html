@@ -2398,14 +2398,14 @@ print(sum(games) / len(games))       # average: close to 0.33`, "dice_game.py");
   <div class="callout tip"><b>If I repeated the 100-toss experiment many times, how often would I see each number of heads?</b></div>
   <p>Demo 1 answers this question by actually repeating the experiment. Demo 2 then explains <i>why</i> the answer looks the way it does, by listing every possible result for 1, 2, 3, 4 and 5 tosses, then 10 and finally 100.</p>
 
-  <p><b>Demo 1: repeat the experiment.</b> Press <b>Run once</b>. The demo tosses a coin 100 times (drawn as 100 small squares, blue = heads, grey = tails), counts the heads, and drops <b>one block</b> above that number in the chart. So each block is one whole experiment of 100 tosses, not one toss. Press it a few times, then press <b>Run 1,000 times</b> and watch the blocks pile up.</p>
+  <p><b>Demo 1: repeat the experiment.</b> Press <b>1 experiment (100 tosses)</b>. One press is not one toss: the demo tosses a coin 100 times (drawn as 100 small squares, blue = heads, grey = tails), counts the heads, and drops <b>one block</b> above that number in the chart. So each block is one whole experiment of 100 tosses, not one toss. Press it a few times, then press <b>1,000 experiments</b> and watch the blocks pile up.</p>
   <div class="w-clr">
   <div class="grid2">
     <div class="card">
       <div class="controls">
-        <button class="cr-go" data-n="1">Run once</button>
-        <button class="cr-go" data-n="10">Run 10 times</button>
-        <button class="cr-go" data-n="1000">Run 1,000 times</button>
+        <button class="cr-go" data-n="1">1 experiment (100 tosses)</button>
+        <button class="cr-go" data-n="10">10 experiments</button>
+        <button class="cr-go" data-n="1000">1,000 experiments</button>
         <button class="secondary cr-reset">Reset</button>
       </div>
       <div class="viz" style="min-height:340px"><span class="caption cr-cap">Repeat the experiment · each block = one experiment of 100 tosses</span><div class="cr-plot"></div></div>
@@ -2456,7 +2456,7 @@ for run in range(1000):               # repeat the whole experiment
   function reset() {
     R = KIT.rng(11); runs = 0; counts = {}; last = null; cp.hl();
     draw();
-    say("Press <b>Run once</b>: it tosses a coin 100 times, counts the heads, and adds one block above that number.");
+    say("Press <b>1 experiment (100 tosses)</b>: one press tosses a coin 100 times, counts the heads, and adds one block above that number.");
   }
   function experiment() {
     const t = []; for (let i = 0; i < N; i++) t.push(R() < 0.5 ? 1 : 0);
@@ -2467,7 +2467,7 @@ for run in range(1000):               # repeat the whole experiment
     let g = `<svg class="plot" viewBox="0 0 520 330" role="img" aria-label="The last 100 tosses as squares, and a pile of blocks: one block per experiment above its number of heads">`;
     // the last experiment's 100 tosses: 4 rows of 25 squares
     const sq = 14, gap = 3, x0 = (520 - 25 * (sq + gap) + gap) / 2, y0 = 26;
-    g += `<text class="lbl" x="${x0}" y="16" style="font-weight:700">${last ? `Experiment ${runs.toLocaleString()}: ${last.h} heads (blue) and ${N - last.h} tails (grey)` : "The 100 tosses of the latest experiment appear here"}</text>`;
+    g += `<text class="lbl" x="${x0}" y="16" style="font-weight:700">${last ? `Experiment ${runs.toLocaleString()} = 100 tosses: ${last.h} heads (blue), ${N - last.h} tails (grey)` : "The 100 tosses of the latest experiment appear here"}</text>`;
     for (let i = 0; i < N; i++) {
       const on = last && last.t[i], x = x0 + (i % 25) * (sq + gap), y = y0 + Math.floor(i / 25) * (sq + gap);
       g += `<rect x="${x}" y="${y}" width="${sq}" height="${sq}" rx="2" fill="${last ? (on ? "var(--s1)" : "color-mix(in srgb, var(--muted) 35%, var(--surface))") : "none"}" stroke="${last ? "none" : "var(--border)"}"/>`;
@@ -2503,7 +2503,7 @@ for run in range(1000):               # repeat the whole experiment
     }
     for (let k = LO; k <= HI; k += 5) g += `<text class="lbl" x="${X(k)}" y="${Y0 + 16}" text-anchor="middle">${k}</text>`;
     g += `<text class="lbl" x="${(X0 + X1) / 2}" y="${Y0 + 34}" text-anchor="middle">number of heads in one experiment of 100 tosses</text>`;
-    g += `<text class="lbl" x="${X1}" y="${Y1 - 6}" text-anchor="end" style="font-weight:700">experiments run: ${runs.toLocaleString()}</text>`;
+    g += `<text class="lbl" x="${X1}" y="${Y1 - 6}" text-anchor="end" style="font-weight:700">experiments run: ${runs.toLocaleString()} (100 tosses each)</text>`;
     $(".cr-plot").innerHTML = g + "</svg>";
   }
   async function go(n) {
@@ -2519,8 +2519,8 @@ for run in range(1000):               # repeat the whole experiment
     cp.hl(...(n === 1 ? [4, 5, 6] : [3, 4, 5, 6]));
     let mid = 0; for (let k = 45; k <= 55; k++) mid += counts[k] || 0;
     const pct = (100 * mid / runs).toFixed(0);
-    if (runs === 1) say(`Experiment 1 gave <b>${last.h} heads</b>. One experiment gives one number, so there is one block, above ${last.h}. Press <b>Run once</b> a few more times.`);
-    else if (runs < 100) say(`<b>${runs}</b> experiments so far, and the latest gave <b>${last.h} heads</b> (the amber block). Each block is one whole experiment of 100 tosses. The blocks gather around 50; results like 35 or 65 are rare. Now try <b>Run 1,000 times</b>.`);
+    if (runs === 1) say(`Experiment 1 gave <b>${last.h} heads</b>. One experiment gives one number, so there is one block, above ${last.h}. Press <b>1 experiment (100 tosses)</b> a few more times.`);
+    else if (runs < 100) say(`<b>${runs}</b> experiments so far, and the latest gave <b>${last.h} heads</b> (the amber block). Each block is one whole experiment of 100 tosses. The blocks gather around 50; results like 35 or 65 are rare. Now try <b>1,000 experiments</b>.`);
     else say(`<b>${runs.toLocaleString()}</b> experiments. The pile has a bell shape: this is the answer to "if I repeated the 100-toss experiment many times, how often would I see each number of heads?" Between 45 and 55 heads came up in <b>${pct}%</b> of the experiments. The orange curve is a Normal bell with mean 100 × ½ = 50 and standard deviation √(100 × ½ × ½) = 5, scaled to ${runs.toLocaleString()} experiments; the pile follows it closely. Demo 2 below shows why.`);
   }
   root.querySelectorAll(".cr-go").forEach(b => (b.onclick = () => DS.run(root, () => go(+b.dataset.n))));
