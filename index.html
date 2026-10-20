@@ -2197,11 +2197,78 @@ sum(p(A) * s for A, s in zip(slices, shares)) # 0 + 2/6 + 1/6 = 3/6`, "total_pro
   </div>
   <div class="callout warn"><b>Base rates matter:</b> when a condition is rare, most positive results are false alarms, even with a good test, simply because there are so many more healthy people to make mistakes on. Raise "how common" to 10% and the same positive test means about a 53% chance: 100 people are sick and 90 of them test positive; 9% of the 900 healthy ≈ 81 false alarms; 90 ÷ (90 + 81) = 90 ÷ 171 ≈ 53%. Always ask how common the thing was to begin with: the <b>base rate</b>.</div>
 
+  <h3>Two ways to read probability: frequentist vs Bayesian</h3>
+  <p>Imagine you receive a coin and want to know whether it is fair. You toss it 10 times and get <b>7 heads</b>: an observed frequency of 70%. What is the coin's true probability of landing heads? There are two classic ways to answer, and they use the same data but read the problem differently.</p>
+  <div style="overflow-x:auto"><table class="cx">
+    <thead><tr><th>The frequentist says</th><th>The Bayesian says</th></tr></thead>
+    <tbody>
+      <tr><td>"The true probability is a fixed but unknown number. Let's estimate it from the data."</td><td>"Before tossing the coin, I have some initial uncertainty about its fairness. Let me combine that prior belief with the evidence."</td></tr>
+    </tbody>
+  </table></div>
+
+  <p><b>1. The frequentist estimate.</b> The simplest estimate is the observed share: <b>heads ÷ tosses = 7 ÷ 10 = 70%</b>. It is the best guess from the data, not proof that the true probability is 70%: with only 10 tosses it is quite uncertain, and 10 more tosses could give a different share.</p>
+  <p><b>2. The Bayesian estimate, updated toss by toss.</b> Before the first toss the Bayesian has no preference: every probability from 0% to 100% is equally believable. This is called a <b>uniform prior</b>, and its average is 50%. With this prior there is a simple rule for the updated estimate (the average of the updated belief, the <b>posterior</b>):</p>
+  <p style="text-align:center"><b>Bayesian estimate = (heads + 1) ÷ (tosses + 2)</b></p>
+  <p>It is as if the Bayesian started with one imaginary head and one imaginary tail, then added each real toss. Here is every update, next to the frequentist share:</p>
+  <div style="overflow-x:auto"><table class="cx">
+    <thead><tr><th>Toss</th><th>Result</th><th>Heads so far</th><th>Frequentist: heads ÷ tosses</th><th>Bayesian: (heads + 1) ÷ (tosses + 2)</th></tr></thead>
+    <tbody>
+      <tr><td>before</td><td>–</td><td>0</td><td>–</td><td>1 ÷ 2 = 50%</td></tr>
+      <tr><td>1</td><td>H</td><td>1</td><td>1 ÷ 1 = 100%</td><td>2 ÷ 3 = 66.7%</td></tr>
+      <tr><td>2</td><td>H</td><td>2</td><td>2 ÷ 2 = 100%</td><td>3 ÷ 4 = 75%</td></tr>
+      <tr><td>3</td><td>T</td><td>2</td><td>2 ÷ 3 = 66.7%</td><td>3 ÷ 5 = 60%</td></tr>
+      <tr><td>4</td><td>H</td><td>3</td><td>3 ÷ 4 = 75%</td><td>4 ÷ 6 = 66.7%</td></tr>
+      <tr><td>5</td><td>H</td><td>4</td><td>4 ÷ 5 = 80%</td><td>5 ÷ 7 = 71.4%</td></tr>
+      <tr><td>6</td><td>T</td><td>4</td><td>4 ÷ 6 = 66.7%</td><td>5 ÷ 8 = 62.5%</td></tr>
+      <tr><td>7</td><td>H</td><td>5</td><td>5 ÷ 7 = 71.4%</td><td>6 ÷ 9 = 66.7%</td></tr>
+      <tr><td>8</td><td>H</td><td>6</td><td>6 ÷ 8 = 75%</td><td>7 ÷ 10 = 70%</td></tr>
+      <tr><td>9</td><td>T</td><td>6</td><td>6 ÷ 9 = 66.7%</td><td>7 ÷ 11 = 63.6%</td></tr>
+      <tr><td><b>10</b></td><td>H</td><td><b>7</b></td><td><b>7 ÷ 10 = 70%</b></td><td><b>8 ÷ 12 = 66.7%</b></td></tr>
+    </tbody>
+  </table></div>
+  <figure style="margin:12px 0;overflow-x:auto">
+    <svg class="plot" viewBox="0 0 720 300" role="img" aria-label="Both estimates over 10 tosses: the frequentist share jumps to 100% after the first heads and ends at 70%; the Bayesian estimate starts at 50%, moves more gently and ends at 66.7%" style="max-width:720px;min-width:600px;margin:0 auto">
+      <g style="font-family:var(--sans)">
+        <line x1="60" y1="40" x2="580" y2="40" style="stroke:var(--border)"/><line x1="60" y1="150" x2="580" y2="150" style="stroke:var(--border);stroke-dasharray:4 4"/>
+        <line x1="60" y1="260" x2="590" y2="260" style="stroke:var(--muted);stroke-width:1.5"/><line x1="60" y1="260" x2="60" y2="30" style="stroke:var(--muted);stroke-width:1.5"/>
+        <g style="font:12px var(--sans);fill:var(--text-2)" text-anchor="end"><text x="52" y="44">100%</text><text x="52" y="154">50%</text><text x="52" y="264">0%</text></g>
+        <g style="font:12px var(--sans);fill:var(--text-2)" text-anchor="middle"><text x="60" y="278">0</text><text x="112" y="278">1</text><text x="164" y="278">2</text><text x="216" y="278">3</text><text x="268" y="278">4</text><text x="320" y="278">5</text><text x="372" y="278">6</text><text x="424" y="278">7</text><text x="476" y="278">8</text><text x="528" y="278">9</text><text x="580" y="278">10</text></g>
+        <g style="font:700 12px var(--mono);fill:var(--text)" text-anchor="middle"><text x="112" y="294">H</text><text x="164" y="294">H</text><text x="216" y="294">T</text><text x="268" y="294">H</text><text x="320" y="294">H</text><text x="372" y="294">T</text><text x="424" y="294">H</text><text x="476" y="294">H</text><text x="528" y="294">T</text><text x="580" y="294">H</text></g>
+        <polyline points="112,40 164,40 216,113.3 268,95 320,84 372,113.3 424,102.9 476,95 528,113.3 580,106" style="fill:none;stroke:var(--hot);stroke-width:3"/>
+        <polyline points="60,150 112,113.3 164,95 216,128 268,113.3 320,102.9 372,122.5 424,113.3 476,106 528,120.1 580,113.3" style="fill:none;stroke:var(--s1);stroke-width:3"/>
+        <g style="fill:var(--hot)"><circle cx="112" cy="40" r="5"/><circle cx="164" cy="40" r="5"/><circle cx="216" cy="113.3" r="5"/><circle cx="268" cy="95" r="5"/><circle cx="320" cy="84" r="5"/><circle cx="372" cy="113.3" r="5"/><circle cx="424" cy="102.9" r="5"/><circle cx="476" cy="95" r="5"/><circle cx="528" cy="113.3" r="5"/><circle cx="580" cy="106" r="5"/></g>
+        <g style="fill:var(--s1)"><circle cx="60" cy="150" r="5"/><circle cx="112" cy="113.3" r="5"/><circle cx="164" cy="95" r="5"/><circle cx="216" cy="128" r="5"/><circle cx="268" cy="113.3" r="5"/><circle cx="320" cy="102.9" r="5"/><circle cx="372" cy="122.5" r="5"/><circle cx="424" cy="113.3" r="5"/><circle cx="476" cy="106" r="5"/><circle cx="528" cy="120.1" r="5"/><circle cx="580" cy="113.3" r="5"/></g>
+        <text x="594" y="100" style="font:700 13px var(--sans);fill:var(--hot)">Frequentist 70%</text>
+        <text x="594" y="126" style="font:700 13px var(--sans);fill:var(--s1)">Bayesian 66.7%</text>
+        <text x="120" y="30" style="font:12px var(--sans);fill:var(--hot)">1 head in 1 toss: "100%"</text>
+        <text x="68" y="170" style="font:12px var(--sans);fill:var(--s1)">prior: 50%</text>
+        <text x="320" y="214" text-anchor="middle" style="font:12px var(--sans);fill:var(--text-2)">toss number and result · orange = heads ÷ tosses · blue = (heads + 1) ÷ (tosses + 2)</text>
+      </g>
+    </svg>
+  </figure>
+  <p>After 10 tosses the Bayesian estimate is <b>8 ÷ 12 = 66.7%</b>, not 70%. The prior is centred on 50%, so it pulls the estimate a little toward 50%; the evidence still clearly favours heads. Notice too how the two react early on: after a single head the frequentist share is already 100%, while the Bayesian moves only to 66.7%. The prior keeps a few tosses from causing an extreme answer.</p>
+  <p class="small" style="color:var(--text-2)">In statistics books this uniform prior is written Beta(1, 1), and after 7 heads and 3 tails the posterior is Beta(1 + 7, 1 + 3) = Beta(8, 4), whose average is 8 ÷ (8 + 4) = 0.667: the same rule as above.</p>
+
+  <p><b>3. Compare the two.</b></p>
+  <div style="overflow-x:auto"><table class="cx">
+    <thead><tr><th>Question</th><th>Frequentist</th><th>Bayesian</th></tr></thead>
+    <tbody>
+      <tr><td><b>What is the estimate?</b></td><td>70% = 7 ÷ 10</td><td>66.7% = (7 + 1) ÷ (10 + 2)</td></tr>
+      <tr><td><b>Uses the observed data?</b></td><td>yes</td><td>yes</td></tr>
+      <tr><td><b>Uses a prior?</b></td><td>no</td><td>yes: here, no preference (uniform)</td></tr>
+      <tr><td><b>How is uncertainty expressed?</b></td><td>for example, a confidence interval</td><td>the whole posterior distribution, for example a credible interval</td></tr>
+    </tbody>
+  </table></div>
+
+  <p><b>4. What happens with 1,000 tosses?</b> Suppose the coin now lands heads 700 times in 1,000 tosses. Frequentist: 700 ÷ 1,000 = <b>70%</b>. Bayesian, with the same prior: 701 ÷ 1,002 ≈ <b>70.0%</b>. The two are now almost identical: with lots of evidence, the prior's one imaginary head and tail hardly matter.</p>
+  <div class="callout tip"><b>The key idea.</b> Frequentist: estimate the unknown probability from the observed data. Bayesian: start from a prior belief and update it with every piece of evidence; with little data the prior matters, with lots of data the evidence decides. The smoke alarm and the medical test above worked the same way: the base rate was the prior.</div>
+
   <h3>Where it shows up</h3>
   <ul>
     <li>Medical screening: why a positive result is usually followed by a second, more accurate test.</li>
     <li>Spam filters: the chance an email is spam, given the words it contains (a classic use of Bayes).</li>
     <li>Quality control and fraud detection: which machine, account or process is the likely cause of a problem.</li>
+    <li>Science and data: research papers and A/B tests usually report frequentist confidence intervals and tests, while Bayesian updating is used when prior knowledge matters or data is scarce.</li>
   </ul>
   <div class="quizbox"></div>
 </section>
@@ -3213,6 +3280,8 @@ r = st.correlation(ice_cream, drownings)   # strongly positive...
     ["Conditional", "#bayes", "Law of total probability", "add up the chance of B over every separate way it can happen"],
     ["Conditional", "#bayes", "Bayes' theorem", "turns P(evidence | cause) into P(cause | evidence)"],
     ["Conditional", "#bayes", "Base rate", "how common something is before any evidence"],
+    ["Conditional", "#bayes", "Prior / posterior", "your belief before the evidence / your updated belief after it (with a uniform prior, a coin's estimate is (heads + 1) ÷ (tosses + 2))"],
+    ["Conditional", "#bayes", "Frequentist vs Bayesian", "probability as a long-run frequency (an unknown value is fixed) vs as a degree of belief updated by evidence"],
     ["Random variables", "#rv", "Random variable", "a number that depends on a random outcome"],
     ["Random variables", "#rv", "Discrete / continuous", "separate values you can list / any value in a range"],
     ["Random variables", "#rv", "PMF / PDF / CDF", "chance of each value / density curve (area = probability) / chance of x or less"],

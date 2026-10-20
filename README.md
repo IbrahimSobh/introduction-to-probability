@@ -14,11 +14,11 @@ A **self-paced online course, completely free**, that teaches how to think clear
 
 ## 🎞️ Presenting it? Use the slides: [ibrahimsobh.github.io/introduction-to-probability/slides.html](https://ibrahimsobh.github.io/introduction-to-probability/slides.html)
 
-**22 ready-to-present slides** that follow the course: one key message and a clear diagram per topic, with 🗣️ speaker notes. Made for teachers, trainers and anyone giving a talk on probability.
+**24 ready-to-present slides** that follow the course: one key message and a clear diagram per topic, with 🗣️ speaker notes. Made for teachers, trainers and anyone giving a talk on probability.
 
 ⌨️ **←** / **→** move · **N** speaker notes · **T** light or dark · **F** full screen · 🖨️ **Ctrl + P** save as PDF
 
-📄 **[Download the slides as PDF](https://ibrahimsobh.github.io/introduction-to-probability/introduction-to-probability-slides.pdf)** (22 pages, one slide per page, clickable links)
+📄 **[Download the slides as PDF](https://ibrahimsobh.github.io/introduction-to-probability/introduction-to-probability-slides.pdf)** (24 pages, one slide per page, clickable links)
 
 [![Slide 13 of the Introduction to Probability slides: Bayes, always ask for the base rate, with 1,000 people as small squares where 9 sick people and 89 healthy people test positive, so only 9 of the 98 positives are sick, about 9%, and the key insight that when the cause is rare most positive results are false alarms](images/slides-preview.png)](https://ibrahimsobh.github.io/introduction-to-probability/slides.html)
 
@@ -51,7 +51,7 @@ It isn't aimed at readers looking for proofs, measure theory, calculus-based der
 **Part B · Updating with information**
 
 5. **Conditional probability and independence**: P(A | B) as "zooming in", why the formula works (a step-by-step die demo), the multiplication (product) rule as a tree diagram (two draws with and without replacement), independent events (a coin and die grid), and the gambler's fallacy
-6. **Total probability and Bayes' theorem**: slicing the sample space into pieces (a step-by-step die demo), reasoning backwards from evidence, a medical test on 1,000 people, and why base rates matter
+6. **Total probability and Bayes' theorem**: slicing the sample space into pieces (a step-by-step die demo), reasoning backwards from evidence, a medical test on 1,000 people, why base rates matter, and two ways to read probability: frequentist vs Bayesian, with 7 heads in 10 tosses estimated both ways and the Bayesian estimate updated toss by toss
 
 **Part C · Random variables**
 

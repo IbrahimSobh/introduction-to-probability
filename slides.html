@@ -347,6 +347,54 @@ body.notes #notes { display: block; }
   <div class="notes-src">Counts of people are the easiest way to use Bayes. The alarm is reliable, but fires are rare and burnt toast is common, so most beeps come from toast; a 6% chance of fire is still serious, so you always check. This is why a positive screening result is usually followed by a second, more accurate test.</div>
 </section>
 
+<!-- 11b -->
+<section class="slide" data-k="Lesson 6 · Bayes' theorem">
+  <h2>Frequentist vs Bayesian: 7 heads in 10 tosses</h2>
+  <div class="cols r2">
+    <div class="txt"><ul>
+      <li><b>Frequentist:</b> "The true probability is a fixed but unknown number. Let's estimate it from the data." → 7 ÷ 10 = <b>70%</b></li>
+      <li><b>Bayesian:</b> "I start with some uncertainty and combine that prior belief with the evidence." With no preference (a uniform prior, 50%): <b class="m">(heads + 1) ÷ (tosses + 2)</b> = 8 ÷ 12 = <b>66.7%</b>, updated after every toss</li>
+    </ul></div>
+    <div class="dg">
+      <svg viewBox="0 0 720 300" role="img" aria-label="Both estimates over 10 tosses: the frequentist share jumps to 100% after the first heads and ends at 70%; the Bayesian estimate starts at 50%, moves more gently and ends at 66.7%">
+        <g style="font-family:var(--sans)">
+          <line x1="60" y1="40" x2="580" y2="40" style="stroke:var(--border)"/><line x1="60" y1="150" x2="580" y2="150" style="stroke:var(--border);stroke-dasharray:4 4"/>
+          <line x1="60" y1="260" x2="590" y2="260" style="stroke:var(--muted);stroke-width:1.5"/><line x1="60" y1="260" x2="60" y2="30" style="stroke:var(--muted);stroke-width:1.5"/>
+          <g style="font:13px var(--sans);fill:var(--text-2)" text-anchor="end"><text x="52" y="44">100%</text><text x="52" y="154">50%</text><text x="52" y="264">0%</text></g>
+          <g style="font:13px var(--sans);fill:var(--text-2)" text-anchor="middle"><text x="60" y="279">0</text><text x="112" y="279">1</text><text x="164" y="279">2</text><text x="216" y="279">3</text><text x="268" y="279">4</text><text x="320" y="279">5</text><text x="372" y="279">6</text><text x="424" y="279">7</text><text x="476" y="279">8</text><text x="528" y="279">9</text><text x="580" y="279">10</text></g>
+          <g style="font:700 13px var(--mono);fill:var(--text)" text-anchor="middle"><text x="112" y="296">H</text><text x="164" y="296">H</text><text x="216" y="296">T</text><text x="268" y="296">H</text><text x="320" y="296">H</text><text x="372" y="296">T</text><text x="424" y="296">H</text><text x="476" y="296">H</text><text x="528" y="296">T</text><text x="580" y="296">H</text></g>
+          <polyline points="112,40 164,40 216,113.3 268,95 320,84 372,113.3 424,102.9 476,95 528,113.3 580,106" style="fill:none;stroke:var(--hot);stroke-width:3.5"/>
+          <polyline points="60,150 112,113.3 164,95 216,128 268,113.3 320,102.9 372,122.5 424,113.3 476,106 528,120.1 580,113.3" style="fill:none;stroke:var(--s1);stroke-width:3.5"/>
+          <g style="fill:var(--hot)"><circle cx="112" cy="40" r="6"/><circle cx="164" cy="40" r="6"/><circle cx="216" cy="113.3" r="6"/><circle cx="268" cy="95" r="6"/><circle cx="320" cy="84" r="6"/><circle cx="372" cy="113.3" r="6"/><circle cx="424" cy="102.9" r="6"/><circle cx="476" cy="95" r="6"/><circle cx="528" cy="113.3" r="6"/><circle cx="580" cy="106" r="6"/></g>
+          <g style="fill:var(--s1)"><circle cx="60" cy="150" r="6"/><circle cx="112" cy="113.3" r="6"/><circle cx="164" cy="95" r="6"/><circle cx="216" cy="128" r="6"/><circle cx="268" cy="113.3" r="6"/><circle cx="320" cy="102.9" r="6"/><circle cx="372" cy="122.5" r="6"/><circle cx="424" cy="113.3" r="6"/><circle cx="476" cy="106" r="6"/><circle cx="528" cy="120.1" r="6"/><circle cx="580" cy="113.3" r="6"/></g>
+          <text x="594" y="100" style="font:700 15px var(--sans);fill:var(--hot)">Frequentist</text><text x="594" y="118" style="font:700 15px var(--sans);fill:var(--hot)">70%</text>
+          <text x="594" y="140" style="font:700 15px var(--sans);fill:var(--s1)">Bayesian</text><text x="594" y="158" style="font:700 15px var(--sans);fill:var(--s1)">66.7%</text>
+          <text x="120" y="30" style="font:13px var(--sans);fill:var(--hot)">1 head in 1 toss: "100%"</text>
+          <text x="68" y="172" style="font:13px var(--sans);fill:var(--s1)">prior: 50%</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+  <div class="insight">Frequentist: estimate the probability from the data. Bayesian: start from a prior and update it with every toss.</div>
+  <div class="notes-src">Same 10 tosses, H H T H H T H H T H. After one head the frequentist share is already 100%, while the Bayesian moves only to 66.7%: the prior keeps a few tosses from causing an extreme answer. The Bayesian estimate after each toss: 50%, 66.7%, 75%, 60%, 66.7%, 71.4%, 62.5%, 66.7%, 70%, 63.6%, 66.7%. The rule (heads + 1) ÷ (tosses + 2) is like starting with one imaginary head and one imaginary tail. In statistics books the uniform prior is Beta(1, 1) and the posterior after 7 heads and 3 tails is Beta(8, 4), with average 8 ÷ 12 = 0.667. The prior is centred on 50%, so it pulls the estimate a little toward 50%.</div>
+</section>
+
+<!-- 11c -->
+<section class="slide" data-k="Lesson 6 · Bayes' theorem">
+  <h2>With more data, the two agree</h2>
+  <div class="txt" style="flex:1;display:flex;flex-direction:column;justify-content:center">
+    <table class="tb" style="font-size:19px">
+      <tr><th>Question</th><th>Frequentist</th><th>Bayesian</th></tr>
+      <tr><td>Estimate after 10 tosses (7 heads)</td><td>7 ÷ 10 = <b>70%</b></td><td>8 ÷ 12 = <b>66.7%</b></td></tr>
+      <tr><td>Uses a prior?</td><td>no</td><td>yes: here, no preference (uniform)</td></tr>
+      <tr><td>How is uncertainty expressed?</td><td>for example, a confidence interval</td><td>the whole posterior distribution, for example a credible interval</td></tr>
+      <tr><td>After 1,000 tosses (700 heads)</td><td>700 ÷ 1,000 = <b>70%</b></td><td>701 ÷ 1,002 ≈ <b>70.0%</b></td></tr>
+    </table>
+  </div>
+  <div class="insight">With little data the prior matters; with lots of data the evidence decides, and the two answers meet.</div>
+  <div class="notes-src">Both use the observed data; they differ in what a probability means. The frequentist estimate is the best guess from the data, not proof: with only 10 tosses it is quite uncertain. The Bayesian answer is a whole updated belief. The smoke alarm and the medical test on the previous slides worked the same way: the base rate was the prior. Research papers and A/B tests usually report frequentist confidence intervals; Bayesian updating is used when prior knowledge matters or data is scarce.</div>
+</section>
+
 <!-- Part C -->
 <section class="slide divider b" data-k="">
   <div class="big" style="color:var(--ok)">Part C</div>
@@ -463,7 +511,7 @@ body.notes #notes { display: block; }
     <li>Overlaps: P(A ∪ B) = P(A) + P(B) − P(A ∩ B).</li>
     <li>"At least one" = 1 − P(none).</li>
     <li>Conditioning zooms in, and P(A | B) ≠ P(B | A).</li>
-    <li>Bayes: always ask for the base rate.</li>
+    <li>Bayes: always ask for the base rate; a Bayesian updates a prior with every new piece of evidence.</li>
     <li>The expected value is the long-run average.</li>
     <li>Sums of many small effects make a bell (CLT).</li>
     <li>Correlation is not causation.</li>
