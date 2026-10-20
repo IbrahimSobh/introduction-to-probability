@@ -2369,18 +2369,59 @@ sum(p(A) * s for A, s in zip(slices, shares)) # 0 + 2/6 + 1/6 = 3/6`, "total_pro
   <p>After 10 tosses the Bayesian estimate is <b>8 ÷ 12 = 66.7%</b>, not 70%. The prior is centred on 50%, so it pulls the estimate a little toward 50%; the evidence still clearly favours heads. Notice too how the two react early on: after a single head the frequentist share is already 100%, while the Bayesian moves only to 66.7%. The prior keeps a few tosses from causing an extreme answer.</p>
   <p class="small" style="color:var(--text-2)">In statistics books this uniform prior is written Beta(1, 1), and after 7 heads and 3 tails the posterior is Beta(1 + 7, 1 + 3) = Beta(8, 4), whose average is 8 ÷ (8 + 4) = 0.667: the same rule as above.</p>
 
-  <p><b>3. Compare the two.</b></p>
+  <p><b>3. Another coin: a bent coin, 9 heads in 10.</b> Now take a coin that is visibly bent. You toss it 10 times and get H H H H T H H H H H: <b>9 heads</b>. Frequentist: 9 ÷ 10 = <b>90%</b>. Bayesian, with the same uniform prior: (9 + 1) ÷ (10 + 2) = 10 ÷ 12 = <b>83.3%</b>. Here is every update:</p>
+  <div style="overflow-x:auto"><table class="cx">
+    <thead><tr><th>Toss</th><th>Result</th><th>Heads so far</th><th>Frequentist: heads ÷ tosses</th><th>Bayesian: (heads + 1) ÷ (tosses + 2)</th></tr></thead>
+    <tbody>
+      <tr><td>before</td><td>–</td><td>0</td><td>–</td><td>1 ÷ 2 = 50%</td></tr>
+      <tr><td>1</td><td>H</td><td>1</td><td>1 ÷ 1 = 100%</td><td>2 ÷ 3 = 66.7%</td></tr>
+      <tr><td>2</td><td>H</td><td>2</td><td>2 ÷ 2 = 100%</td><td>3 ÷ 4 = 75%</td></tr>
+      <tr><td>3</td><td>H</td><td>3</td><td>3 ÷ 3 = 100%</td><td>4 ÷ 5 = 80%</td></tr>
+      <tr><td>4</td><td>H</td><td>4</td><td>4 ÷ 4 = 100%</td><td>5 ÷ 6 = 83.3%</td></tr>
+      <tr><td>5</td><td>T</td><td>4</td><td>4 ÷ 5 = 80%</td><td>5 ÷ 7 = 71.4%</td></tr>
+      <tr><td>6</td><td>H</td><td>5</td><td>5 ÷ 6 = 83.3%</td><td>6 ÷ 8 = 75%</td></tr>
+      <tr><td>7</td><td>H</td><td>6</td><td>6 ÷ 7 = 85.7%</td><td>7 ÷ 9 = 77.8%</td></tr>
+      <tr><td>8</td><td>H</td><td>7</td><td>7 ÷ 8 = 87.5%</td><td>8 ÷ 10 = 80%</td></tr>
+      <tr><td>9</td><td>H</td><td>8</td><td>8 ÷ 9 = 88.9%</td><td>9 ÷ 11 = 81.8%</td></tr>
+      <tr><td><b>10</b></td><td>H</td><td><b>9</b></td><td><b>9 ÷ 10 = 90%</b></td><td><b>10 ÷ 12 = 83.3%</b></td></tr>
+    </tbody>
+  </table></div>
+  <figure style="margin:12px 0;overflow-x:auto">
+    <svg class="plot" viewBox="0 0 720 300" role="img" aria-label="The bent coin over 10 tosses: the frequentist share stays at 100% for the first four heads, drops to 80% after the tail and ends at 90%; the Bayesian estimate starts at 50%, climbs more gently and ends at 83.3%" style="max-width:720px;min-width:600px;margin:0 auto">
+      <g style="font-family:var(--sans)">
+        <line x1="60" y1="40" x2="580" y2="40" style="stroke:var(--border)"/><line x1="60" y1="150" x2="580" y2="150" style="stroke:var(--border);stroke-dasharray:4 4"/>
+        <line x1="60" y1="260" x2="590" y2="260" style="stroke:var(--muted);stroke-width:1.5"/><line x1="60" y1="260" x2="60" y2="30" style="stroke:var(--muted);stroke-width:1.5"/>
+        <g style="font:12px var(--sans);fill:var(--text-2)" text-anchor="end"><text x="52" y="44">100%</text><text x="52" y="154">50%</text><text x="52" y="264">0%</text></g>
+        <g style="font:12px var(--sans);fill:var(--text-2)" text-anchor="middle"><text x="60" y="278">0</text><text x="112" y="278">1</text><text x="164" y="278">2</text><text x="216" y="278">3</text><text x="268" y="278">4</text><text x="320" y="278">5</text><text x="372" y="278">6</text><text x="424" y="278">7</text><text x="476" y="278">8</text><text x="528" y="278">9</text><text x="580" y="278">10</text></g>
+        <g style="font:700 12px var(--mono);fill:var(--text)" text-anchor="middle"><text x="112" y="294">H</text><text x="164" y="294">H</text><text x="216" y="294">H</text><text x="268" y="294">H</text><text x="320" y="294">T</text><text x="372" y="294">H</text><text x="424" y="294">H</text><text x="476" y="294">H</text><text x="528" y="294">H</text><text x="580" y="294">H</text></g>
+        <polyline points="112,40 164,40 216,40 268,40 320,84 372,76.7 424,71.4 476,67.5 528,64.4 580,62" style="fill:none;stroke:var(--hot);stroke-width:3"/>
+        <polyline points="60,150 112,113.3 164,95 216,84 268,76.7 320,102.9 372,95 424,88.9 476,84 528,80 580,76.7" style="fill:none;stroke:var(--s1);stroke-width:3"/>
+        <g style="fill:var(--hot)"><circle cx="112" cy="40" r="5"/><circle cx="164" cy="40" r="5"/><circle cx="216" cy="40" r="5"/><circle cx="268" cy="40" r="5"/><circle cx="320" cy="84" r="5"/><circle cx="372" cy="76.7" r="5"/><circle cx="424" cy="71.4" r="5"/><circle cx="476" cy="67.5" r="5"/><circle cx="528" cy="64.4" r="5"/><circle cx="580" cy="62" r="5"/></g>
+        <g style="fill:var(--s1)"><circle cx="60" cy="150" r="5"/><circle cx="112" cy="113.3" r="5"/><circle cx="164" cy="95" r="5"/><circle cx="216" cy="84" r="5"/><circle cx="268" cy="76.7" r="5"/><circle cx="320" cy="102.9" r="5"/><circle cx="372" cy="95" r="5"/><circle cx="424" cy="88.9" r="5"/><circle cx="476" cy="84" r="5"/><circle cx="528" cy="80" r="5"/><circle cx="580" cy="76.7" r="5"/></g>
+        <text x="594" y="60" style="font:700 13px var(--sans);fill:var(--hot)">Frequentist 90%</text>
+        <text x="594" y="88" style="font:700 13px var(--sans);fill:var(--s1)">Bayesian 83.3%</text>
+        <text x="112" y="28" style="font:12px var(--sans);fill:var(--hot)">4 heads in 4 tosses: "100%, tails is impossible"</text>
+        <text x="68" y="170" style="font:12px var(--sans);fill:var(--s1)">prior: 50%</text>
+        <text x="320" y="214" text-anchor="middle" style="font:12px var(--sans);fill:var(--text-2)">toss number and result · orange = heads ÷ tosses · blue = (heads + 1) ÷ (tosses + 2)</text>
+      </g>
+    </svg>
+  </figure>
+  <p>Look at the first four tosses. After 4 heads in a row the frequentist share is <b>100%</b>: taken literally, the coin can never land tails. The Bayesian says 5 ÷ 6 ≈ <b>83%</b>: probably biased toward heads, but tails is still possible. The fifth toss is a tail, so the 100% was too extreme. Notice also that the further the data is from 50%, the more the prior pulls: here the gap is 90% − 83.3% = <b>6.7 points</b>, compared with 70% − 66.7% = 3.3 points for the first coin.</p>
+  <p class="small" style="color:var(--text-2)">In statistics books: after 9 heads and 1 tail the posterior is Beta(1 + 9, 1 + 1) = Beta(10, 2), whose average is 10 ÷ 12 = 0.833.</p>
+
+  <p><b>4. Compare the two.</b></p>
   <div style="overflow-x:auto"><table class="cx">
     <thead><tr><th>Question</th><th>Frequentist</th><th>Bayesian</th></tr></thead>
     <tbody>
-      <tr><td><b>What is the estimate?</b></td><td>70% = 7 ÷ 10</td><td>66.7% = (7 + 1) ÷ (10 + 2)</td></tr>
+      <tr><td><b>Estimate, first coin (7 heads in 10)</b></td><td>70% = 7 ÷ 10</td><td>66.7% = (7 + 1) ÷ (10 + 2)</td></tr>
+      <tr><td><b>Estimate, bent coin (9 heads in 10)</b></td><td>90% = 9 ÷ 10</td><td>83.3% = (9 + 1) ÷ (10 + 2)</td></tr>
       <tr><td><b>Uses the observed data?</b></td><td>yes</td><td>yes</td></tr>
       <tr><td><b>Uses a prior?</b></td><td>no</td><td>yes: here, no preference (uniform)</td></tr>
       <tr><td><b>How is uncertainty expressed?</b></td><td>for example, a confidence interval</td><td>the whole posterior distribution, for example a credible interval</td></tr>
     </tbody>
   </table></div>
 
-  <p><b>4. What happens with 1,000 tosses?</b> Suppose the coin now lands heads 700 times in 1,000 tosses. Frequentist: 700 ÷ 1,000 = <b>70%</b>. Bayesian, with the same prior: 701 ÷ 1,002 ≈ <b>70.0%</b>. The two are now almost identical: with lots of evidence, the prior's one imaginary head and tail hardly matter.</p>
+  <p><b>5. What happens with 1,000 tosses?</b> Suppose the first coin lands heads 700 times in 1,000 tosses. Frequentist: 700 ÷ 1,000 = <b>70%</b>. Bayesian, with the same prior: 701 ÷ 1,002 ≈ <b>70.0%</b>. For the bent coin, 900 heads in 1,000: 900 ÷ 1,000 = <b>90%</b> and 901 ÷ 1,002 ≈ <b>89.9%</b>. The two are now almost identical: with lots of evidence, the prior's one imaginary head and tail hardly matter.</p>
   <div class="callout tip"><b>The key idea.</b> Frequentist: estimate the unknown probability from the observed data. Bayesian: start from a prior belief and update it with every piece of evidence; with little data the prior matters, with lots of data the evidence decides. The smoke alarm and the medical test above worked the same way: the base rate was the prior.</div>
 
   <h3>Where it shows up</h3>
