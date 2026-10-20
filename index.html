@@ -3138,13 +3138,13 @@ within_2sd = 0.95              # 95% between ${70 - 2 * s} and ${70 + 2 * s}` },
   <p>Think of two dancers. If one steps forward whenever the other does, they move together (positive correlation). If one steps back whenever the other steps forward, they move in opposite directions (negative). If they ignore each other, there's no pattern.</p>
 
   <h3>Joint and marginal: the basic idea</h3>
-  <p>Take 100 students and sort them two ways at once: by hours of study per week and by their mark. Each cell counts the students with that <b>pair</b> of values. The whole grid is the <b>joint distribution</b>: it says how the two variables come <i>together</i>. Darker cells hold more students; most sit near the diagonal, because more study tends to go with better marks.</p>
+  <p>Take 100 students and sort them two ways at once: by hours of study per week and by their grade. Each cell counts the students with that <b>pair</b> of values. The whole grid is the <b>joint distribution</b>: it says how the two variables come <i>together</i>. Darker cells hold more students; most sit near the diagonal, because more study tends to go with better grades.</p>
   <figure style="margin:12px 0;overflow-x:auto">
-<svg class="plot" viewBox="0 0 720 440" role="img" aria-label="A 4 by 4 grid of 100 students by hours of study and mark. Row totals 18, 27, 30, 25 are drawn as bars on the right: the marginal distribution of hours. Column totals 17, 27, 32, 24 are drawn as bars below: the marginal distribution of marks." style="max-width:720px;min-width:600px;margin:0 auto">
+<svg class="plot" viewBox="0 0 720 440" role="img" aria-label="A 4 by 4 grid of 100 students by hours of study and grade. Row totals 18, 27, 30, 25 are drawn as bars on the right: the marginal distribution of hours. Column totals 17, 27, 32, 24 are drawn as bars below: the marginal distribution of grades." style="max-width:720px;min-width:600px;margin:0 auto">
 <g style="font-family:var(--sans)">
 <text x="138" y="26" text-anchor="end" style="font:700 14px var(--sans);fill:var(--s1)">joint distribution</text>
 <text x="138" y="44" text-anchor="end" style="font:12px var(--sans);fill:var(--text-2)">one cell per pair</text>
-<text x="310" y="26" text-anchor="middle" style="font:700 13px var(--sans);fill:var(--text)">mark</text>
+<text x="310" y="26" text-anchor="middle" style="font:700 13px var(--sans);fill:var(--text)">grade</text>
 <text x="190.0" y="52" text-anchor="middle" style="font:700 13px var(--sans);fill:var(--text)">D</text>
 <text x="270.0" y="52" text-anchor="middle" style="font:700 13px var(--sans);fill:var(--text)">C</text>
 <text x="350.0" y="52" text-anchor="middle" style="font:700 13px var(--sans);fill:var(--text)">B</text>
@@ -3196,7 +3196,7 @@ within_2sd = 0.95              # 95% between ${70 - 2 * s} and ${70 + 2 * s}` },
 <text x="618" y="217" style="font:700 14px var(--mono);fill:var(--text)">30</text>
 <rect x="492" y="254" width="100" height="36" rx="3" style="fill:var(--hot)"/>
 <text x="598" y="277" style="font:700 14px var(--mono);fill:var(--text)">25</text>
-<text x="138" y="344" text-anchor="end" style="font:700 14px var(--sans);fill:var(--violet)">marginal: marks</text>
+<text x="138" y="344" text-anchor="end" style="font:700 14px var(--sans);fill:var(--violet)">marginal: grades</text>
 <text x="138" y="362" text-anchor="end" style="font:12px var(--sans);fill:var(--text-2)">add each column ↓</text>
 <rect x="168" y="314" width="44" height="51" rx="3" style="fill:var(--violet)"/>
 <text x="190" y="381" text-anchor="middle" style="font:700 14px var(--mono);fill:var(--text)">17</text>
@@ -3209,10 +3209,10 @@ within_2sd = 0.95              # 95% between ${70 - 2 * s} and ${70 + 2 * s}` },
 <text x="492" y="344" style="font:700 14px var(--mono);fill:var(--text)">total: 100</text>
 </g></svg>
   </figure>
-  <p>Now <b>add up</b> along the grid. Add each row and you get the hours of all 100 students, whatever their mark (the bars on the right). Add each column and you get their marks, whatever their hours (the bars below). Each result is one variable on its own, called a <b>marginal distribution</b>, because the totals sit in the margins of the table. Adding up to get them is called <b>marginalization</b>: you "add out" the variable you don't care about.</p>
+  <p>Now <b>add up</b> along the grid. Add each row and you get the hours of all 100 students, whatever their grade (the bars on the right). Add each column and you get their grades, whatever their hours (the bars below). Each result is one variable on its own, called a <b>marginal distribution</b>, because the totals sit in the margins of the table. Adding up to get them is called <b>marginalization</b>: you "add out" the variable you don't care about.</p>
   <p>The same grid in 3D makes it easy to picture: each cell becomes a stack of students. Push every stack against a back wall and the heights pile up into the totals: the marginals are the joint distribution seen from the side.</p>
   <figure style="margin:12px 0;overflow-x:auto">
-<svg class="plot" viewBox="0 0 720 450" role="img" aria-label="The same grid in 3D: each cell is a stack whose height is its number of students. Pushed against the back walls, the stacks give the row totals (hours) on the left wall and the column totals (marks) on the right wall." style="max-width:720px;min-width:600px;margin:0 auto">
+<svg class="plot" viewBox="0 0 720 450" role="img" aria-label="The same grid in 3D: each cell is a stack whose height is its number of students. Pushed against the back walls, the stacks give the row totals (hours) on the left wall and the column totals (grades) on the right wall." style="max-width:720px;min-width:600px;margin:0 auto">
 <g style="font-family:var(--sans)">
 <polygon points="360.0,175.0 176.0,275.0 176.0,145.0 360.0,45.0" style="fill:var(--surface-2);stroke:var(--border)"/>
 <polygon points="360.0,175.0 544.0,275.0 544.0,145.0 360.0,45.0" style="fill:var(--surface-2);stroke:var(--border)"/>
@@ -3295,10 +3295,10 @@ within_2sd = 0.95              # 95% between ${70 - 2 * s} and ${70 + 2 * s}` },
 <text x="224.9" y="331.2" text-anchor="end" style="font:700 13px var(--sans);fill:var(--text)">C</text>
 <text x="270.9" y="356.2" text-anchor="end" style="font:700 13px var(--sans);fill:var(--text)">B</text>
 <text x="316.9" y="381.2" text-anchor="end" style="font:700 13px var(--sans);fill:var(--text)">A</text>
-<text x="196.6" y="365.5" text-anchor="end" style="font:700 13px var(--sans);fill:var(--text)">mark</text>
+<text x="196.6" y="365.5" text-anchor="end" style="font:700 13px var(--sans);fill:var(--text)">grade</text>
 <text x="40" y="40" style="font:700 14px var(--sans);fill:var(--hot)">marginal: hours</text>
 <text x="40" y="58" style="font:12px var(--sans);fill:var(--text-2)">each row pushed onto the left wall</text>
-<text x="680" y="40" text-anchor="end" style="font:700 14px var(--sans);fill:var(--violet)">marginal: marks</text>
+<text x="680" y="40" text-anchor="end" style="font:700 14px var(--sans);fill:var(--violet)">marginal: grades</text>
 <text x="680" y="58" text-anchor="end" style="font:12px var(--sans);fill:var(--text-2)">each column pushed onto the right wall</text>
 <text x="680" y="418" text-anchor="end" style="font:700 14px var(--sans);fill:var(--s1)">joint distribution</text>
 <text x="680" y="436" text-anchor="end" style="font:12px var(--sans);fill:var(--text-2)">stack height = number of students</text>
@@ -3315,7 +3315,7 @@ within_2sd = 0.95              # 95% between ${70 - 2 * s} and ${70 + 2 * s}` },
     </tbody>
   </table></div>
   <p>Students who studied 9+ hours got an A twice as often as students overall: 0.48 against 0.24. The marginal in Bayes' theorem (lesson 6) is exactly such a total: the evidence added up over every possible cause.</p>
-  <div class="callout tip"><b>With measurements instead of groups.</b> When the values can be anything, like exact hours and exact scores, the grid becomes a cloud of dots (the scatter plot later in this lesson) and the bars on the edges become smooth curves. The idea is the same: the joint distribution is the whole picture, and each marginal is that picture added up onto one edge.</div>
+  <div class="callout tip"><b>With measurements instead of groups.</b> When the values can be anything, like exact hours and grades out of 100, the grid becomes a cloud of dots (the scatter plot later in this lesson) and the bars on the edges become smooth curves. The idea is the same: the joint distribution is the whole picture, and each marginal is that picture added up onto one edge.</div>
 
   <h3>A joint table with probabilities</h3>
   <p>A joint table can hold probabilities instead of counts: each cell is a joint probability, and all the cells add up to 1. Here: weather and ice cream sales on a random summer day.</p>
