@@ -1597,7 +1597,7 @@ p_not = 1 - len(hearts) / 52                     # 39/52`, "cards.py");
   <p>The chance that a random person is wearing a coat might be 30%. But if you know it's snowing outside, the chance is much higher. The extra information doesn't change the people; it changes which group you're looking at.</p>
 
   <h3>Why P(A | B) = P(A ∩ B) ÷ P(B)</h3>
-  <div class="callout"><b>The question:</b> why is <b>P(A | B) = P(A ∩ B) ÷ P(B)</b>, and so <b>P(A ∩ B) = P(A | B) × P(B)</b>? Think about it for a moment, then step through the demo below: five small steps on a single die roll answer it.</div>
+  <div class="callout"><b>The question:</b> why is <b>P(A | B) = P(A ∩ B) ÷ P(B)</b>, and so <b>P(A ∩ B) = P(B) × P(A | B)</b>? Think about it for a moment, then step through the demo below: five small steps on a single die roll answer it.</div>
   <p>Start with the die from lesson 2: one roll, with A = "even" = {2, 4, 6} and B = "greater than 3" = {4, 5, 6}. The demo below works out P(A | B) one step at a time. Press <b>Next</b> to go forward, <b>Back</b> to go back a step, and <b>Reset</b> to start again. In the picture, the blue circle is A, the green circle is B, the purple region is where they overlap (A ∩ B), and outcomes that are ruled out fade.</p>
   <div class="w-given">
   <div class="grid2">
@@ -2061,7 +2061,7 @@ p_both = p_spam * p_free_given_spam       # multiplication rule: 0.24`, "spam.py
     </ol></div>
 
   <h3>The law of total probability</h3>
-  <div class="callout"><b>The question:</b> why is <b>P(B) = Σᵢ P(B ∩ Aᵢ) = Σᵢ P(B | Aᵢ) × P(Aᵢ)</b>? Here B is an event, A₁, A₂, … are slices that split the sample space (explained just below), and Σᵢ means "add up over every slice i". Think about it for a moment, then step through the demo below: five small steps on a single die roll answer it.</div>
+  <div class="callout"><b>The question:</b> why is <b>P(B) = Σᵢ P(B ∩ Aᵢ) = Σᵢ P(Aᵢ) × P(B | Aᵢ)</b>? Here B is an event, A₁, A₂, … are slices that split the sample space (explained just below), and Σᵢ means "add up over every slice i". Think about it for a moment, then step through the demo below: five small steps on a single die roll answer it.</div>
   <p>The idea: <b>slice the sample space into pieces, find how much of the event sits in each piece, then add the pieces up</b>. It helps when an event is hard to count directly but easy to count inside each piece. We'll see it first on the die from lesson 2, then use it on a real example.</p>
   <p>The slices must form a <b>partition</b>. Like the slices of a cake, they don't overlap (every outcome is in exactly one slice), and together they cover everything (nothing is left out). Here the event is B = "the roll is even" = {2, 4, 6}, and the slices are A₁ = {1}, A₂ = {2, 3, 4} and A₃ = {5, 6}; the small numbers just number the slices. In the demo, the blue outline is B, and the orange, green and pink strips are the three slices. Press <b>Next</b>, <b>Back</b> or <b>Reset</b> to move through the steps.</p>
   <div class="w-slices">
@@ -2099,15 +2099,15 @@ sum(p(A) * s for A, s in zip(slices, shares)) # 0 + 2/6 + 1/6 = 3/6`, "total_pro
     { head: "Each piece = slice size × share of the slice.", lines: [6], view: { slices: true, pieces: true, area: true },
       text: "By the multiplication rule from lesson 5, P(B ∩ Aᵢ) = P(Aᵢ) × P(B | Aᵢ). P(B | Aᵢ) is the share of slice Aᵢ that is even: 0 of 1, 2 of 3, 1 of 2. In the bottom picture, each column is as wide as P(Aᵢ) and its dark part is as tall as P(B | Aᵢ), so each dark area is one piece: 1/6 × 0 = 0, 3/6 × 2/3 = 2/6, 2/6 × 1/2 = 1/6." },
     { head: "The law of total probability.", lines: [7], view: { slices: true, pieces: true, area: true, total: true },
-      text: "P(B) = P(B | A₁) × P(A₁) + P(B | A₂) × P(A₂) + P(B | A₃) × P(A₃) = 0 + 2/6 + 1/6 = 3/6: the total dark area. It's also a <b>weighted average</b> of the shares 0, 2/3 and 1/2: an average where bigger slices count more, because each share is multiplied by its slice's size." },
+      text: "P(B) = P(A₁) × P(B | A₁) + P(A₂) × P(B | A₂) + P(A₃) × P(B | A₃) = 0 + 2/6 + 1/6 = 3/6: the total dark area. It's also a <b>weighted average</b> of the shares 0, 2/3 and 1/2: an average where bigger slices count more, because each share is multiplied by its slice's size." },
   ];
   // formula strip for each step
   const FS = [
-    ["P(B) = Σᵢ P(B | Aᵢ) × P(Aᵢ)", "directly: P(B) = 3/6"],
+    ["P(B) = Σᵢ P(Aᵢ) × P(B | Aᵢ)", "directly: P(B) = 3/6"],
     ["P(A₁) + P(A₂) + P(A₃) = 1/6 + 3/6 + 2/6 = 1"],
     ["P(B) = 0/6 + 2/6 + 1/6 = 3/6"],
-    ["P(B ∩ Aᵢ) = P(B | Aᵢ) × P(Aᵢ)", "0 × 1/6 = 0 · 2/3 × 3/6 = 2/6 · 1/2 × 2/6 = 1/6"],
-    ["P(B) = Σᵢ P(B | Aᵢ) × P(Aᵢ) = 0 + 2/6 + 1/6 = 3/6"],
+    ["P(B ∩ Aᵢ) = P(Aᵢ) × P(B | Aᵢ)", "1/6 × 0 = 0 · 3/6 × 2/3 = 2/6 · 2/6 × 1/2 = 1/6"],
+    ["P(B) = Σᵢ P(Aᵢ) × P(B | Aᵢ) = 0 + 2/6 + 1/6 = 3/6"],
   ];
   const X0 = 20, W = 480, COLS = [
     { sub: "₁", name: "A₁ = {1}", w: 1 / 6, share: 0, shareTxt: "0", c: "var(--s2)", area: "0", pA: "1/6" },
@@ -2181,7 +2181,7 @@ sum(p(A) * s for A, s in zip(slices, shares)) # 0 + 2/6 + 1/6 = 3/6`, "total_pro
     <li>P(beep ∩ toast) = P(toast) × P(beep | toast) = 0.10 × 0.30 = 0.030</li>
   </ul>
   <p>Adding the two ways gives P(beep) = 0.002 + 0.030 = <b>0.032</b>, the same as counting. The table below shows the same steps.</p>
-  <p>In general: if something can happen in several separate ways, its total probability is the sum over those ways: <b>P(B) = P(B | A₁) × P(A₁) + P(B | A₂) × P(A₂) + …</b>. Here B is the event we care about (a beep), and A₁, A₂, … are the separate situations it can come from (a fire, burnt toast, a quiet evening). The small numbers just number them. They must be mutually exclusive and cover every case; a situation that never causes B, like a quiet evening, simply adds 0.</p>
+  <p>In general: if something can happen in several separate ways, its total probability is the sum over those ways: <b>P(B) = P(A₁) × P(B | A₁) + P(A₂) × P(B | A₂) + …</b>. Here B is the event we care about (a beep), and A₁, A₂, … are the separate situations it can come from (a fire, burnt toast, a quiet evening). The small numbers just number them. They must be mutually exclusive and cover every case; a situation that never causes B, like a quiet evening, simply adds 0.</p>
   <div style="overflow-x:auto"><table class="cx">
     <thead><tr><th>Smoke alarm</th><th>How often: P(situation)</th><th>Beep chance: P(beep | situation)</th><th>Beeps: P(situation) × P(beep | situation)</th></tr></thead>
     <tbody>
@@ -2338,7 +2338,7 @@ sum(p(A) * s for A, s in zip(slices, shares)) # 0 + 2/6 + 1/6 = 3/6`, "total_pro
   <p><b>1. The frequentist estimate.</b> The simplest estimate is the observed share: <b>heads ÷ tosses = 7 ÷ 10 = 70%</b>. It is the best guess from the data, not proof that the true probability is 70%: with only 10 tosses it is quite uncertain, and 10 more tosses could give a different share.</p>
   <p><b>2. The Bayesian estimate, updated toss by toss.</b> Before the first toss the Bayesian has no preference: every probability from 0% to 100% is equally believable. This is called a <b>uniform prior</b>, and its average is 50%. With this prior there is a simple rule for the updated estimate (the average of the updated belief, the <b>posterior</b>):</p>
   <p style="text-align:center"><b>Bayesian estimate = (heads + 1) ÷ (tosses + 2)</b></p>
-  <p>It is as if the Bayesian started with one imaginary head and one imaginary tail, then added each real toss. Here is every update, next to the frequentist share:</p>
+  <p>It is as if the Bayesian started with one imaginary head and one imaginary tail, then added each real toss. (The rule itself comes from maths beyond this course, so we take it as given; the note below the chart gives its name in statistics books.) Here is every update, next to the frequentist share:</p>
   <div style="overflow-x:auto"><table class="cx">
     <thead><tr><th>Toss</th><th>Result</th><th>Heads so far</th><th>Frequentist: heads ÷ tosses</th><th>Bayesian: (heads + 1) ÷ (tosses + 2)</th></tr></thead>
     <tbody>
@@ -2597,6 +2597,7 @@ p_sick_given_pos = true_pos / positives   # Bayes: 9 / 98 = 9%`, "medical_test.p
 
   <h3>Continuous variables: probability is area</h3>
   <p>For a continuous variable, like how long you wait for a call, the chance of any exact value (exactly 3.000… minutes) is 0. Instead we ask about ranges, and the probability is the <b>area under the PDF curve</b> over that range. The total area under the curve is 1.</p>
+  <p>A case you can check by hand: a bus comes every 10 minutes and you arrive at a random moment, so any wait from 0 to 10 minutes is equally likely. The PDF is a flat line at height 1/10, so the total area is 10 × 1/10 = 1. The chance of waiting between 2 and 5 minutes is the rectangle over that range: 3 minutes wide and 1/10 tall, so 3 × 1/10 = <b>0.3</b>. When the curve isn't flat, as in the picture below, the area is harder to work out by hand, so the demo computes it.</p>
   <div class="card" style="margin:12px 0"><div class="rv-pdf"></div><div class="status" style="margin-top:4px">Waiting time for the next call, averaging 5 minutes. The shaded area is P(wait between 2 and 5 minutes) ≈ <b>0.30</b> (the demo computes this area for you).</div></div>
 
   <h3>Where it shows up</h3>
@@ -3344,7 +3345,7 @@ within_2sd = 0.95              # 95% between ${70 - 2 * s} and ${70 + 2 * s}` },
     <thead><tr><th>Rule</th><th>Formula</th><th>In words</th><th>With the table</th></tr></thead>
     <tbody>
       <tr><td><b>Sum rule</b> (marginalization)</td><td>P(X) = Σ<sub>Y</sub> P(X, Y)</td><td>add a row (or column) of the joint table to get one variable on its own</td><td>P(sunny) = P(sunny, high) + P(sunny, low) = 0.45 + 0.15 = <b>0.60</b></td></tr>
-      <tr><td><b>Product rule</b></td><td>P(X, Y) = P(Y | X) × P(X)</td><td>a joint chance = conditional chance × chance of the condition</td><td>first P(high | sunny) = P(sunny, high) ÷ P(sunny) = 0.45 ÷ (0.45 + 0.15) = 0.45 ÷ 0.60 = 0.75; then P(sunny, high) = P(sunny) × P(high | sunny) = 0.60 × 0.75 = <b>0.45</b></td></tr>
+      <tr><td><b>Product rule</b></td><td>P(X, Y) = P(X) × P(Y | X)</td><td>a joint chance = chance of the condition × conditional chance</td><td>first P(high | sunny) = P(sunny, high) ÷ P(sunny) = 0.45 ÷ (0.45 + 0.15) = 0.45 ÷ 0.60 = 0.75; then P(sunny, high) = P(sunny) × P(high | sunny) = 0.60 × 0.75 = <b>0.45</b></td></tr>
     </tbody>
   </table></div>
   <p>The same two rules as pictures. The whole box is all days, with area 1, and the area of each region equals its probability. In the first picture the box is split by the dashed line into two columns, one per sales level. Each column's width is its chance, from the bottom row of the table: high sales 0.55, low sales 0.45. Inside each column, the top piece is the sunny days and the bottom piece the rainy days, so the four pieces are the four cells of the table: 0.45 and 0.10 in the high-sales column (0.45 + 0.10 = 0.55), 0.15 and 0.30 in the low-sales column (0.15 + 0.30 = 0.45).</p>
@@ -3402,7 +3403,7 @@ within_2sd = 0.95              # 95% between ${70 - 2 * s} and ${70 + 2 * s}` },
   </figure>
   <p>Here we read 0.75 from the table, so step 3 only takes us back to 0.45: a check that the rule works. The product rule is most useful the other way round, when you don't have the whole table: if a forecast says P(sunny) = 0.60 and past experience says sales are high on 75% of sunny days, the rule gives P(sunny and high) = 0.60 × 0.75 = 0.45 straight away.</p>
   <p>As in the grid of students, the totals at the edge of the table are the <b>marginal</b> probabilities, and the sum rule is marginalization. You've met both rules already: the product rule is the multiplication rule for probabilities from lesson 5, and the law of total probability in lesson 6 is the sum rule combined with the product rule.</p>
-  <div class="callout tip"><b>Bayes' theorem from the two rules:</b> write the product rule both ways, P(X, Y) = P(Y | X) × P(X) = P(X | Y) × P(Y), and divide by P(Y): <b>P(X | Y) = P(Y | X) × P(X) ÷ P(Y)</b>, where P(Y) comes from the sum rule. With the table: P(sunny | high) = P(high | sunny) × P(sunny) ÷ P(high) = 0.75 × 0.60 ÷ 0.55 ≈ <b>0.82</b>. Here P(high) = P(sunny, high) + P(rainy, high) = 0.45 + 0.10 = 0.55 is the sum rule again, this time down the high-sales column. In the first picture: the high-sales column has area 0.55, and its sunny piece is 0.45, so 0.45 ÷ 0.55 ≈ 0.82. On a high-sales day, it was probably sunny.</div>
+  <div class="callout tip"><b>Bayes' theorem from the two rules:</b> write the product rule both ways, P(X, Y) = P(X) × P(Y | X) = P(Y) × P(X | Y), and divide by P(Y): <b>P(X | Y) = P(X) × P(Y | X) ÷ P(Y)</b>, where P(Y) comes from the sum rule. With the table: P(sunny | high) = P(sunny) × P(high | sunny) ÷ P(high) = 0.60 × 0.75 ÷ 0.55 ≈ <b>0.82</b>. Here P(high) = P(sunny, high) + P(rainy, high) = 0.45 + 0.10 = 0.55 is the sum rule again, this time down the high-sales column. In the first picture: the high-sales column has area 0.55, and its sunny piece is 0.45, so 0.45 ÷ 0.55 ≈ 0.82. On a high-sales day, it was probably sunny.</div>
 
   <h3>Covariance and correlation</h3>
   <p>A joint table works when each variable has only a few values, like sunny or rainy. For numbers that can take many values, like hours of study and exam grades, we draw a <b>scatter plot</b> instead: each dot is one student, placed across by their study hours and up by their grade. The question is the same as before: when one number is high, does the other tend to be high too?</p>
@@ -3590,8 +3591,8 @@ r = st.correlation(ice_cream, drownings)   # strongly positive...
       <tr><td><b>P(A ∩ B) = P(A) × P(B | A)</b></td><td>"and", one step after another: multiply along a tree path</td><td>red then blue: 3/8 × 5/7 = 15/56</td></tr>
       <tr><td><b>P(A ∩ B) = P(A) × P(B)</b></td><td>"and" for independent events</td><td>heads and even: ½ × ½ = ¼</td></tr>
       <tr><td><b>P(X) = Σ<sub>Y</sub> P(X, Y)</b></td><td>sum rule (marginalization)</td><td>P(sunny) = 0.45 + 0.15 = 0.60</td></tr>
-      <tr><td><b>P(X, Y) = P(Y | X) × P(X)</b></td><td>product rule</td><td>P(sunny, high) = 0.75 × 0.60 = 0.45</td></tr>
-      <tr><td><b>P(B) = Σ P(B | Aᵢ) × P(Aᵢ)</b></td><td>law of total probability</td><td>P(beep) = 0.002 × 1 + 0.10 × 0.30 = 0.032</td></tr>
+      <tr><td><b>P(X, Y) = P(X) × P(Y | X)</b></td><td>product rule</td><td>P(sunny, high) = 0.60 × 0.75 = 0.45</td></tr>
+      <tr><td><b>P(B) = Σ P(Aᵢ) × P(B | Aᵢ)</b></td><td>law of total probability</td><td>P(beep) = 0.002 × 1 + 0.10 × 0.30 = 0.032</td></tr>
       <tr><td><b>P(A | B) = P(A) × P(B | A) ÷ P(B)</b></td><td>Bayes' theorem: posterior = prior × likelihood ÷ marginal</td><td>P(sick | positive) ≈ 9 ÷ 98 ≈ 9%</td></tr>
       <tr><td><b>E[X] = Σ x × P(X = x)</b></td><td>expected value: the long-run average</td><td>dice game: 0.33 points</td></tr>
       <tr><td><b>Var(X) = Σ (x − E[X])² × P(X = x)</b>, <b>σ = √Var(X)</b></td><td>spread around the average</td><td>dice game: σ ≈ 1.49 points</td></tr>
@@ -3650,7 +3651,7 @@ r = st.correlation(ice_cream, drownings)   # strongly positive...
     ["Two variables", "#twovar", "Joint distribution", "the chance of each pair of values of two variables: the whole joint table"],
     ["Two variables", "#twovar", "Marginal distribution", "one variable on its own, found by adding up the joint table along a row or column (marginalization)"],
     ["Two variables", "#twovar", "Sum rule (marginalization)", "P(X) = Σ over Y of P(X, Y): add a row of the joint table; the totals are marginal probabilities"],
-    ["Two variables", "#twovar", "Product rule", "P(X, Y) = P(Y | X) × P(X); the multiplication rule, and with the sum rule, the source of Bayes' theorem"],
+    ["Two variables", "#twovar", "Product rule", "P(X, Y) = P(X) × P(Y | X); the multiplication rule, and with the sum rule, the source of Bayes' theorem"],
     ["Two variables", "#twovar", "Covariance / correlation r", "direction / direction and strength (from −1 to +1) of a relationship"],
     ["Two variables", "#twovar", "Confounder", "a hidden third factor that drives two variables, creating correlation without causation"],
   ];
