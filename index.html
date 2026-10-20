@@ -302,6 +302,45 @@ label.inl { font-size: .85rem; color: var(--text-2); display: inline-flex; align
 .tb-line.on { background: var(--code-hl); box-shadow: inset 3px 0 0 var(--hot); }
 .tb-line:active { transform: none; }
 @media (max-width: 560px) { .viz { min-height: 0 !important; } }
+/* Bayes' theorem: the four named parts */
+:root { --bz-post: #c2187a; --bz-prior: #0b8599; --bz-like: #1e8a3c; --bz-marg: #2b4fc9; }
+:root[data-theme="dark"] { --bz-post: #f06fb4; --bz-prior: #3cc6da; --bz-like: #55c977; --bz-marg: #8aa6ff; }
+.bz-post { --c: var(--bz-post); } .bz-prior { --c: var(--bz-prior); } .bz-like { --c: var(--bz-like); } .bz-marg { --c: var(--bz-marg); }
+.bz-c { color: var(--c); font-weight: 700; }
+.bz-eq { display: flex; align-items: center; justify-content: center; gap: 14px; margin: 18px 0 8px; padding: 20px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; }
+.bz-t { border: 3px solid var(--c); border-radius: 8px; padding: 6px 14px 5px; text-align: center; background: color-mix(in srgb, var(--c) 8%, transparent); }
+.bz-f { display: block; font: italic 30px Georgia, "Times New Roman", serif; color: var(--text); white-space: nowrap; }
+.bz-n { display: block; font: 700 13px var(--sans); color: var(--c); text-transform: uppercase; letter-spacing: .05em; }
+.bz-op { font: 30px Georgia, "Times New Roman", serif; color: var(--text); }
+.bz-frac { display: flex; flex-direction: column; align-items: stretch; gap: 6px; }
+.bz-bar { height: 2px; background: var(--text); }
+.bz-words { text-align: center; font-size: 1.05em; margin: 4px 0 18px; }
+.bz-loop { display: grid; grid-template-columns: 1fr auto 1.4fr auto 1fr; align-items: center; gap: 8px; margin: 18px 0 0; text-align: center; }
+.bz-loop .bz-t { padding: 10px 8px; }
+.bz-loop .bz-v { display: block; font-size: .9em; color: var(--text-2); margin-top: 2px; }
+.bz-ev { border: 2px solid var(--border); border-radius: 8px; padding: 10px 8px; background: var(--surface); }
+.bz-arr { font-size: 22px; color: var(--muted); }
+.bz-back { margin: 0 calc(10% - 4px) 18px; border: 2px dashed var(--muted); border-top: none; border-radius: 0 0 12px 12px; height: 20px; position: relative; }
+.bz-back span { position: absolute; left: 50%; top: 100%; transform: translate(-50%, -50%); background: var(--bg); padding: 0 8px; font-size: .92em; color: var(--text-2); white-space: nowrap; }
+.bz-back::before { content: "▲"; position: absolute; left: -8px; top: -14px; font-size: 12px; color: var(--muted); }
+.bz-chain { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px 4px; margin: 16px 0; }
+.bz-node { border: 2px solid var(--bz-prior); border-radius: 8px; padding: 6px 10px; text-align: center; background: var(--surface); min-width: 96px; }
+.bz-node b { display: block; font: 700 20px var(--mono); }
+.bz-node small { display: block; font-size: 12px; color: var(--text-2); }
+.bz-step { text-align: center; font-size: 13px; color: var(--text-2); padding: 0 2px; }
+.bz-step b { display: block; font: 700 15px var(--mono); color: var(--text); }
+@media (max-width: 600px) {
+  .bz-eq { gap: 6px; padding: 14px 6px; }
+  .bz-t { padding: 4px 7px 3px; border-width: 2px; }
+  .bz-f, .bz-op { font-size: 19px; }
+  .bz-n { font-size: 10.5px; letter-spacing: .02em; }
+  .bz-loop { grid-template-columns: 1fr; gap: 4px; }
+  .bz-loop .bz-arr { transform: rotate(90deg); }
+  .bz-back { display: none; }
+  .bz-node { min-width: 0; padding: 5px 8px; }
+}
+.bz-loop-m { display: none; }
+@media (max-width: 600px) { .bz-loop-m { display: block; text-align: center; margin: 6px 0 18px; font-size: .92em; color: var(--text-2); } }
 </style>
 </head>
 <body>
@@ -2159,14 +2198,47 @@ sum(p(A) * s for A, s in zip(slices, shares)) # 0 + 2/6 + 1/6 = 3/6`, "total_pro
       <tr><td><b>Medical test</b> (demo below)</td><td>the person has the disease</td><td>the test is positive</td><td>P(positive | disease): how often the test finds it</td><td>P(disease | positive)</td></tr>
     </tbody>
   </table></div>
-  <p>The formula is <b>P(A | B) = P(B | A) × P(A) ÷ P(B)</b>. In words: how likely the evidence is if the cause is true, times how common the cause was before we saw any evidence, divided by how common the evidence is overall.</p>
-  <p>For the smoke alarm: the alarm beeps; how likely is a real fire? Here A = "there is a fire" and B = "the alarm beeps", and the three numbers come from the total probability example above:</p>
-  <ul>
-    <li>P(B | A) = P(beep | fire) = 1: if there's a fire, the alarm always beeps.</li>
-    <li>P(A) = P(fire) = 0.002: how common fires are before we hear anything (the <b>base rate</b>).</li>
-    <li>P(B) = P(beep) = 0.032: how often the alarm beeps overall, from the law of total probability.</li>
-  </ul>
-  <p>So P(fire | beep) = 1 × 0.002 ÷ 0.032 ≈ <b>0.06 = 6%</b>. Check it with the counts: of the 32 beeps, only 2 were a fire, and 2 ÷ 32 ≈ 6%. The formula and the counting give the same answer.</p>
+  <p>The formula has <b>four parts</b>, and each part has a name. You'll meet these four names everywhere in statistics and AI:</p>
+  <div class="bz-eq" role="img" aria-label="P(A given B), the posterior, equals P(A), the prior, times P(B given A), the likelihood, divided by P(B), the marginal">
+    <div class="bz-t bz-post"><span class="bz-f">P(A | B)</span><span class="bz-n">posterior</span></div>
+    <span class="bz-op">=</span>
+    <div class="bz-t bz-prior"><span class="bz-f">P(A)</span><span class="bz-n">prior</span></div>
+    <span class="bz-op">×</span>
+    <div class="bz-frac">
+      <div class="bz-t bz-like"><span class="bz-f">P(B | A)</span><span class="bz-n">likelihood</span></div>
+      <div class="bz-bar"></div>
+      <div class="bz-t bz-marg"><span class="bz-f">P(B)</span><span class="bz-n">marginal</span></div>
+    </div>
+  </div>
+  <p class="bz-words">In words: <b><span class="bz-c bz-post">posterior</span> = <span class="bz-c bz-prior">prior</span> × <span class="bz-c bz-like">likelihood</span> ÷ <span class="bz-c bz-marg">marginal</span></b></p>
+  <div style="overflow-x:auto"><table class="cx">
+    <thead><tr><th>Part</th><th>Written</th><th>What it means</th><th>The question it answers</th></tr></thead>
+    <tbody>
+      <tr><td><span class="bz-c bz-post">Posterior</span></td><td>P(A | B)</td><td>the updated probability of A, <b>after</b> the evidence is considered</td><td>"Now that I've seen B, how likely is A?"</td></tr>
+      <tr><td><span class="bz-c bz-prior">Prior</span></td><td>P(A)</td><td>the probability of A <b>before</b> the evidence is considered</td><td>"Before seeing anything, how likely is A?"</td></tr>
+      <tr><td><span class="bz-c bz-like">Likelihood</span></td><td>P(B | A)</td><td>the probability of the evidence, <b>given</b> that A is true</td><td>"If A were true, how likely would I be to see B?"</td></tr>
+      <tr><td><span class="bz-c bz-marg">Marginal</span></td><td>P(B)</td><td>the probability of the evidence <b>under any circumstance</b>, whether A is true or not</td><td>"How likely is B overall?"</td></tr>
+    </tbody>
+  </table></div>
+  <p>You get the marginal from the law of total probability above: add up every way the evidence can happen. (It's called "marginal" because in a table of all the cases it's a total written in the margin; you'll see this in lesson 9.)</p>
+  <div class="callout"><b>How to read it.</b> The fraction <span class="bz-c bz-like">likelihood</span> ÷ <span class="bz-c bz-marg">marginal</span> compares "how likely is the evidence if A is true?" with "how likely is the evidence anyway?".
+    <ul style="margin:6px 0 0">
+      <li>More than 1: the evidence is more likely when A is true, so the posterior is <b>bigger</b> than the prior. The evidence supports A.</li>
+      <li>Less than 1: the evidence is less likely when A is true, so the posterior is <b>smaller</b> than the prior.</li>
+      <li>Exactly 1: the evidence tells you nothing about A, and the posterior equals the prior.</li>
+    </ul>
+  </div>
+  <p>For the smoke alarm: the alarm beeps; how likely is a real fire? Here A = "there is a fire" and B = "the alarm beeps". The numbers come from the total probability example above:</p>
+  <div style="overflow-x:auto"><table class="cx">
+    <thead><tr><th>Part</th><th>For the smoke alarm</th><th>Value</th></tr></thead>
+    <tbody>
+      <tr><td><span class="bz-c bz-prior">Prior</span> P(A)</td><td>P(fire): how common fires are before we hear anything (the <b>base rate</b>)</td><td>0.002</td></tr>
+      <tr><td><span class="bz-c bz-like">Likelihood</span> P(B | A)</td><td>P(beep | fire): if there's a fire, the alarm always beeps</td><td>1</td></tr>
+      <tr><td><span class="bz-c bz-marg">Marginal</span> P(B)</td><td>P(beep): how often the alarm beeps overall, for a fire or for toast</td><td>0.032</td></tr>
+      <tr><td><span class="bz-c bz-post">Posterior</span> P(A | B)</td><td>P(fire | beep): what we want to know</td><td>0.002 × 1 ÷ 0.032 ≈ <b>0.06 = 6%</b></td></tr>
+    </tbody>
+  </table></div>
+  <p>The fraction <span class="bz-c bz-like">likelihood</span> ÷ <span class="bz-c bz-marg">marginal</span> = 1 ÷ 0.032 ≈ 31: a beep is about 31 times more likely when there's a fire than on an average evening. So the beep multiplies our belief in a fire by about 31, from a <span class="bz-c bz-prior">prior</span> of 0.2% to a <span class="bz-c bz-post">posterior</span> of about 6%. Check it with the counts: of the 32 beeps, only 2 were a fire, and 2 ÷ 32 ≈ 6%. The formula and the counting give the same answer.</p>
   <div class="callout tip"><b>Why so low?</b> The alarm is reliable, but fires are rare and burnt toast is common, so most beeps come from toast. That's the base rate at work. It doesn't mean you can ignore the alarm: a 6% chance of a fire is serious, so you always check.</div>
   <p>The easiest way to use Bayes is with counts of people instead of percentages. Take a medical test for a disease. A test result is <b>positive</b> when the test says "you have it", and <b>negative</b> when it says "you don't". Tests make mistakes both ways. The demo has three sliders:</p>
   <ul>
@@ -2196,6 +2268,54 @@ sum(p(A) * s for A, s in zip(slices, shares)) # 0 + 2/6 + 1/6 = 3/6`, "total_pro
   </div>
   </div>
   <div class="callout warn"><b>Base rates matter:</b> when a condition is rare, most positive results are false alarms, even with a good test, simply because there are so many more healthy people to make mistakes on. Raise "how common" to 10% and the same positive test means about a 53% chance: 100 people are sick and 90 of them test positive; 9% of the 900 healthy ≈ 81 false alarms; 90 ÷ (90 + 81) = 90 ÷ 171 ≈ 53%. Always ask how common the thing was to begin with: the <b>base rate</b>.</div>
+
+  <h3>The posterior becomes the next prior: a coin story</h3>
+  <p>Bayes' theorem isn't used just once. Each time new evidence arrives, the posterior you just worked out becomes the prior for the next piece of evidence. Belief is updated step by step:</p>
+  <div class="bz-loop" aria-hidden="true">
+    <div class="bz-t bz-prior"><span class="bz-n">prior</span><span class="bz-v">what I believe now</span></div>
+    <span class="bz-arr">→</span>
+    <div class="bz-ev"><b>new evidence</b><span class="bz-v">× <span class="bz-c bz-like">likelihood</span> ÷ <span class="bz-c bz-marg">marginal</span></span></div>
+    <span class="bz-arr">→</span>
+    <div class="bz-t bz-post"><span class="bz-n">posterior</span><span class="bz-v">what I believe after it</span></div>
+  </div>
+  <div class="bz-back" aria-hidden="true"><span>↺ the posterior becomes the next prior</span></div>
+  <div class="bz-loop-m" aria-hidden="true">↺ the posterior becomes the next prior</div>
+  <p>Let's follow it with a story.</p>
+  <div class="callout"><b>Story.</b> A friend has two coins that look exactly the same. One is <b>fair</b>: heads half the time (50%). The other is a <b>trick coin</b>: heads 3 times in 4 (75%). Your friend picks one at random, without telling you which, and starts tossing it. Is it the trick coin?</div>
+  <p>The belief we update is A = "it's the trick coin". Each toss result is a new piece of evidence B.</p>
+  <ul>
+    <li><span class="bz-c bz-prior">Prior</span>, before any toss: P(trick) = 1 in 2 = <b>0.5</b>. So P(fair) = 0.5 too.</li>
+    <li><span class="bz-c bz-like">Likelihood</span>: if it's the trick coin, P(heads | trick) = 0.75 and P(tails | trick) = 0.25.</li>
+    <li><span class="bz-c bz-marg">Marginal</span>: heads can come from either coin, so P(heads) = P(trick) × 0.75 + P(fair) × 0.5 (and for tails, 0.25 and 0.5).</li>
+  </ul>
+  <p><b>Toss 1: heads.</b> Follow the four parts:</p>
+  <ol>
+    <li><span class="bz-c bz-prior">Prior</span>: P(trick) = 0.5</li>
+    <li><span class="bz-c bz-like">Likelihood</span>: P(heads | trick) = 0.75</li>
+    <li><span class="bz-c bz-marg">Marginal</span>: P(heads) = 0.5 × 0.75 + 0.5 × 0.5 = 0.375 + 0.25 = 0.625</li>
+    <li><span class="bz-c bz-post">Posterior</span>: P(trick | heads) = 0.5 × 0.75 ÷ 0.625 = <b>0.6</b></li>
+  </ol>
+  <p>One head makes the trick coin a bit more believable: from 50% to 60%. Now the key step: <b>this posterior, 0.6, is our prior for toss 2.</b></p>
+  <div style="overflow-x:auto"><table class="cx" style="min-width:640px">
+    <thead><tr><th>Toss</th><th><span class="bz-c bz-prior">Prior</span><br>P(trick)</th><th><span class="bz-c bz-like">Likelihood</span><br>P(result | trick)</th><th><span class="bz-c bz-marg">Marginal</span><br>P(result)</th><th><span class="bz-c bz-post">Posterior</span><br>P(trick | result)</th></tr></thead>
+    <tbody>
+      <tr><td><b>1: heads</b></td><td>0.50 (one of two coins)</td><td>0.75</td><td>0.50 × 0.75 + 0.50 × 0.5 = 0.625</td><td>0.50 × 0.75 ÷ 0.625 = <b>0.60</b></td></tr>
+      <tr><td><b>2: heads</b></td><td>0.60 ← posterior of toss 1</td><td>0.75</td><td>0.60 × 0.75 + 0.40 × 0.5 = 0.65</td><td>0.60 × 0.75 ÷ 0.65 ≈ <b>0.69</b></td></tr>
+      <tr><td><b>3: tails</b></td><td>0.69 ← posterior of toss 2</td><td>0.25</td><td>0.69 × 0.25 + 0.31 × 0.5 ≈ 0.33</td><td>0.69 × 0.25 ÷ 0.33 ≈ <b>0.53</b></td></tr>
+    </tbody>
+  </table></div>
+  <div class="bz-chain" role="img" aria-label="P(trick) goes from 50% to 60% after heads, to 69% after heads, to 53% after tails">
+    <div class="bz-node"><small>start: prior</small><b>50%</b></div>
+    <div class="bz-step"><b>H →</b>toss 1</div>
+    <div class="bz-node"><small>posterior = next prior</small><b>60%</b></div>
+    <div class="bz-step"><b>H →</b>toss 2</div>
+    <div class="bz-node"><small>posterior = next prior</small><b>69%</b></div>
+    <div class="bz-step"><b>T →</b>toss 3</div>
+    <div class="bz-node"><small>posterior</small><b>53%</b></div>
+  </div>
+  <p>Each head pushes the belief up, because heads are more likely from the trick coin than overall (<span class="bz-c bz-like">likelihood</span> ÷ <span class="bz-c bz-marg">marginal</span> = 0.75 ÷ 0.625 = 1.2 on toss 1, more than 1). The tail pulls it down, because tails are less likely from the trick coin (0.25 ÷ 0.33 ≈ 0.76, less than 1). Keep tossing: if it really is the trick coin, heads come about 3 times in 4 and the posterior climbs toward 100%.</p>
+  <div class="callout tip"><b>What exactly is the prior?</b> It's tempting to say "the prior is P(heads) = 0.5", but the prior is our belief about the <b>coin</b>: P(trick) = 0.5. The chance of heads enters through the <span class="bz-c bz-like">likelihood</span>: 0.75 if it's the trick coin, 0.5 if it's fair. Before any toss, the chance of heads is the <span class="bz-c bz-marg">marginal</span>, 0.625.</div>
+  <div class="callout"><b>Key idea:</b> <span class="bz-c bz-prior">prior</span> → evidence → <span class="bz-c bz-post">posterior</span>, and the posterior becomes the next prior. The next section uses the same loop with one change: instead of just two possible coins, every chance of heads from 0% to 100% is possible.</div>
 
   <h3>Two ways to read probability: frequentist vs Bayesian</h3>
   <p>Imagine you receive a coin and want to know whether it is fair. You toss it 10 times and get <b>7 heads</b>: an observed frequency of 70%. What is the coin's true probability of landing heads? There are two classic ways to answer, and they use the same data but read the problem differently.</p>
@@ -3241,7 +3361,7 @@ r = st.correlation(ice_cream, drownings)   # strongly positive...
       <tr><td><b>P(X) = Σ<sub>Y</sub> P(X, Y)</b></td><td>sum rule (marginalization)</td><td>P(sunny) = 0.45 + 0.15 = 0.60</td></tr>
       <tr><td><b>P(X, Y) = P(Y | X) × P(X)</b></td><td>product rule</td><td>P(sunny, high) = 0.75 × 0.60 = 0.45</td></tr>
       <tr><td><b>P(B) = Σ P(B | Aᵢ) × P(Aᵢ)</b></td><td>law of total probability</td><td>P(beep) = 0.002 × 1 + 0.10 × 0.30 = 0.032</td></tr>
-      <tr><td><b>P(A | B) = P(B | A) × P(A) ÷ P(B)</b></td><td>Bayes' theorem</td><td>P(sick | positive) ≈ 9 ÷ 98 ≈ 9%</td></tr>
+      <tr><td><b>P(A | B) = P(A) × P(B | A) ÷ P(B)</b></td><td>Bayes' theorem: posterior = prior × likelihood ÷ marginal</td><td>P(sick | positive) ≈ 9 ÷ 98 ≈ 9%</td></tr>
       <tr><td><b>E[X] = Σ x × P(X = x)</b></td><td>expected value: the long-run average</td><td>dice game: 0.33 points</td></tr>
       <tr><td><b>Var(X) = Σ (x − E[X])² × P(X = x)</b>, <b>σ = √Var(X)</b></td><td>spread around the average</td><td>dice game: σ ≈ 1.49 points</td></tr>
       <tr><td><b>Binomial mean n × p</b> · <b>Poisson mean λ</b> · <b>Geometric mean 1 ÷ p</b></td><td>averages of common distributions</td><td>10 tosses: 5 heads on average</td></tr>
@@ -3280,7 +3400,10 @@ r = st.correlation(ice_cream, drownings)   # strongly positive...
     ["Conditional", "#bayes", "Law of total probability", "add up the chance of B over every separate way it can happen"],
     ["Conditional", "#bayes", "Bayes' theorem", "turns P(evidence | cause) into P(cause | evidence)"],
     ["Conditional", "#bayes", "Base rate", "how common something is before any evidence"],
-    ["Conditional", "#bayes", "Prior / posterior", "your belief before the evidence / your updated belief after it (with a uniform prior, a coin's estimate is (heads + 1) ÷ (tosses + 2))"],
+    ["Conditional", "#bayes", "Prior", "P(A): the probability of A before the evidence is considered"],
+    ["Conditional", "#bayes", "Likelihood", "P(B | A): the probability of the evidence, given that A is true"],
+    ["Conditional", "#bayes", "Marginal probability", "P(B): the probability of the evidence under any circumstance (law of total probability)"],
+    ["Conditional", "#bayes", "Posterior", "P(A | B): the updated probability after the evidence is considered; it becomes the prior for the next evidence (with a uniform prior, a coin's estimate is (heads + 1) ÷ (tosses + 2))"],
     ["Conditional", "#bayes", "Frequentist vs Bayesian", "probability as a long-run frequency (an unknown value is fixed) vs as a degree of belief updated by evidence"],
     ["Random variables", "#rv", "Random variable", "a number that depends on a random outcome"],
     ["Random variables", "#rv", "Discrete / continuous", "separate values you can list / any value in a range"],
