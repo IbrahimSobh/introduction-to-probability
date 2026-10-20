@@ -1702,7 +1702,7 @@ len(B) / len(omega) * p_A_given_B     # 3/6 × 2/3 = 2/6`, "conditional.py");
     <div class="code"></div>
   </div>
   </div>
-  <p>Notice that P(spam | free) = 77% and P(free | spam) = 80% are <b>different questions</b> with different answers. Swapping A and B in P(A | B) changes the meaning, a common mistake (lesson 6 shows how to go from one to the other).</p>
+  <p>The demo counts 31 emails with "free", 24 of them spam, and 30 spam emails, 24 of them with "free". Notice that P(spam | free) = 24 ÷ 31 ≈ 77% and P(free | spam) = 24 ÷ 30 = 80% are <b>different questions</b> with different answers. Swapping A and B in P(A | B) changes the meaning, a common mistake (lesson 6 shows how to go from one to the other).</p>
 
   <h3>The formula and the multiplication rule</h3>
   <p>The numbers below come from the demo: of the 100 emails, 30 are spam, 31 contain "free", and 24 are both spam and contain "free". So P(spam) = 0.30, P(free) = 0.31, P(spam and free) = 0.24, and P(free | spam) = 24/30 = 0.80.</p>
@@ -1858,7 +1858,7 @@ p_A * p_B_given_A                     # 15/56: multiply along the path
     <div class="code"></div>
   </div>
   </div>
-  <p><b>Why independence makes "and" so simple.</b> The multiplication rule from the tree says P(A ∩ B) = P(A) × P(B | A). For independent events, P(B | A) is just P(B), as step 4 showed, so we can swap it in: <b>P(A ∩ B) = P(A) × P(B)</b>. For the coin and die: 1/2 × 1/2 = <b>1/4</b>, which is 3 of the 12 cells. Compare the emails above, where knowing "free" raised the chance of spam from 0.30 to 0.77, and the box of balls, where the first draw changed the second unless the ball was put back: those events are <i>not</i> independent, so you must use P(B | A).</p>
+  <p><b>Why independence makes "and" so simple.</b> The multiplication rule from the tree says P(A ∩ B) = P(A) × P(B | A). For independent events, P(B | A) is just P(B), as the grid showed: knowing the coin landed heads leaves 3 even cells out of 6, so P(even | heads) = 3/6 = 1/2 = P(even). So we can swap it in: <b>P(A ∩ B) = P(A) × P(B)</b>. For the coin and die: 1/2 × 1/2 = <b>1/4</b>, which is 3 of the 12 cells. Compare the emails above, where knowing "free" raised the chance of spam from 0.30 to 0.77, and the box of balls, where the first draw changed the second unless the ball was put back: those events are <i>not</i> independent, so you must use P(B | A).</p>
 <script>
 (() => {
   const root = document.querySelector("#conditional .w-indep");
@@ -2052,6 +2052,13 @@ p_both = p_spam * p_free_given_spam       # multiplication rule: 0.24`, "spam.py
   <h2>6. Total probability and Bayes' theorem <small style="color:var(--muted);font-weight:500">(reasoning backwards from evidence)</small></h2>
   <p class="lead">Often we know how likely the evidence is if something is true, but we want the reverse: how likely it is to be true, given the evidence. <b>Bayes' theorem</b> turns P(evidence | cause) into P(cause | evidence). Its partner, the <b>law of total probability</b>, adds up all the ways the evidence can happen.</p>
   <p>Think of a smoke alarm. It almost always beeps when there's a fire, but it also beeps for burnt toast. When it beeps, how likely is a real fire? It depends on how often each cause happens, and burnt toast is far more common than fires.</p>
+  <div class="callout"><b>In this lesson:</b>
+    <ol style="margin:6px 0 0">
+      <li>the law of total probability: add up every way the evidence can happen;</li>
+      <li>Bayes' theorem and its four parts, with the smoke alarm and a medical test;</li>
+      <li>updating again and again: the posterior becomes the next prior (a coin story);</li>
+      <li>two ways to read probability: frequentist and Bayesian.</li>
+    </ol></div>
 
   <h3>The law of total probability</h3>
   <div class="callout"><b>The question:</b> why is <b>P(B) = Σᵢ P(B ∩ Aᵢ) = Σᵢ P(B | Aᵢ) × P(Aᵢ)</b>? Here B is an event, A₁, A₂, … are slices that split the sample space (explained just below), and Σᵢ means "add up over every slice i". Think about it for a moment, then step through the demo below: five small steps on a single die roll answer it.</div>
@@ -2305,6 +2312,7 @@ sum(p(A) * s for A, s in zip(slices, shares)) # 0 + 2/6 + 1/6 = 3/6`, "total_pro
       <tr><td><b>3: tails</b></td><td>0.69 ← posterior of toss 2</td><td>0.25</td><td>0.69 × 0.25 + 0.31 × 0.5 ≈ 0.33</td><td>0.69 × 0.25 ÷ 0.33 ≈ <b>0.53</b></td></tr>
     </tbody>
   </table></div>
+  <p class="small" style="color:var(--text-2)">The table is calculated with unrounded values: after toss 2, P(trick) is exactly 9 ÷ 13 ≈ 0.692. Working row 3 by hand with the rounded numbers gives 0.52 instead of 0.53.</p>
   <div class="bz-chain" role="img" aria-label="P(trick) goes from 50% to 60% after heads, to 69% after heads, to 53% after tails">
     <div class="bz-node"><small>start: prior</small><b>50%</b></div>
     <div class="bz-step"><b>H →</b>toss 1</div>
@@ -2418,7 +2426,7 @@ sum(p(A) * s for A, s in zip(slices, shares)) # 0 + 2/6 + 1/6 = 3/6`, "total_pro
       <tr><td><b>Estimate, bent coin (9 heads in 10)</b></td><td>90% = 9 ÷ 10</td><td>83.3% = (9 + 1) ÷ (10 + 2)</td></tr>
       <tr><td><b>Uses the observed data?</b></td><td>yes</td><td>yes</td></tr>
       <tr><td><b>Uses a prior?</b></td><td>no</td><td>yes: here, no preference (uniform)</td></tr>
-      <tr><td><b>How is uncertainty expressed?</b></td><td>for example, a confidence interval</td><td>the whole posterior distribution, for example a credible interval</td></tr>
+      <tr><td><b>How is uncertainty expressed?</b></td><td>a range of likely values around the estimate, called a confidence interval</td><td>the whole updated belief (the posterior), from which you can read a range of likely values, called a credible interval</td></tr>
     </tbody>
   </table></div>
 
@@ -2430,7 +2438,7 @@ sum(p(A) * s for A, s in zip(slices, shares)) # 0 + 2/6 + 1/6 = 3/6`, "total_pro
     <li>Medical screening: why a positive result is usually followed by a second, more accurate test.</li>
     <li>Spam filters: the chance an email is spam, given the words it contains (a classic use of Bayes).</li>
     <li>Quality control and fraud detection: which machine, account or process is the likely cause of a problem.</li>
-    <li>Science and data: research papers and A/B tests usually report frequentist confidence intervals and tests, while Bayesian updating is used when prior knowledge matters or data is scarce.</li>
+    <li>Science and data: research papers and A/B tests (showing two versions of a web page to different users to see which works better) mostly use frequentist methods such as confidence intervals, while Bayesian updating is used when prior knowledge matters or data is scarce.</li>
   </ul>
   <div class="quizbox"></div>
 </section>
@@ -2749,7 +2757,7 @@ print(sum(games) / len(games))       # average: close to 0.33`, "dice_game.py");
   <div class="callout tip"><b>If I repeated the 100-toss experiment many times, how often would I see each number of heads?</b></div>
   <p>Demo 1 answers this question by actually repeating the experiment. Demo 2 then explains <i>why</i> the answer looks the way it does, by listing every possible result for 1, 2, 3, 4 and 5 tosses, then 10 and finally 100.</p>
 
-  <p><b>Demo 1: repeat the experiment.</b> Press <b>1 experiment (100 tosses)</b>. One press is not one toss: the demo tosses a coin 100 times (drawn as 100 small squares, blue = heads, grey = tails), counts the heads, and drops <b>one block</b> above that number in the chart. So each block is one whole experiment of 100 tosses, not one toss. Press it a few times, then press <b>1,000 experiments</b> and watch the blocks pile up.</p>
+  <p><b>Demo 1: repeat the experiment.</b> Press <b>1 experiment (100 tosses)</b>. One press is not one toss: the demo tosses a coin 100 times (drawn as 100 small squares, blue = heads, grey = tails), counts the heads, and drops <b>one block</b> above that number in the chart. So each block is one whole experiment of 100 tosses, not one toss. Press it a few times, then press <b>1,000 experiments</b> and watch the blocks pile up. The orange curve is a Normal bell for comparison. Its mean is n × p = 100 × ½ = 50 heads, and its standard deviation is √(n × p × (1 − p)) = √(100 × ½ × ½) = 5 heads: the spread of a Binomial count, a formula we take as given here.</p>
   <div class="w-clr">
   <div class="grid2">
     <div class="card">
@@ -2785,7 +2793,7 @@ print(sum(games) / len(games))       # average: close to 0.33`, "dice_game.py");
   <p>This is the <b>Central Limit Theorem</b> (CLT): the sum, or the average, of many independent random values tends to follow a Normal distribution, whatever the shape of each single value. A single toss is just 0 or 1, nothing like a bell, yet the total of many tosses is close to one. Two cautions:</p>
   <ul>
     <li>It is an <b>approximation</b> that gets better as more values are added up: 2 tosses are far from a bell, 100 tosses are very close.</li>
-    <li>It needs <b>more values when each one is lopsided</b>, like the biased coin in the last steps of demo 2. A common rule of thumb: expect at least about 10 heads and 10 tails.</li>
+    <li>It needs <b>more values when each one is lopsided</b>, like a biased coin that lands heads only 1 time in 10 (the last two steps of demo 2): with 10 tosses the results pile up near 0 heads, and only with about 100 tosses does a bell appear, around 10 heads. A common rule of thumb: expect at least about 10 heads and 10 tails.</li>
   </ul>
   <p>So "tossing a coin many times gives a Normal distribution" is true only approximately, and only for the <b>total</b> (or the average) number of heads when the experiment is repeated, never for a single toss. The same idea explains the examples in the question: a person's height is the result of many genes and life factors adding up, a measurement error is the sum of many tiny disturbances, and an exam score is the sum of many questions. That's why the Normal shows up so often.</p>
 <script>
@@ -3330,7 +3338,7 @@ within_2sd = 0.95              # 95% between ${70 - 2 * s} and ${70 + 2 * s}` },
   <p>The totals at the edges give each variable on its own: P(sunny) = 0.60, P(high sales) = 0.55. Are they <b>independent</b>? If they were, P(sunny and high) would equal 0.60 × 0.55 = 0.33. It's 0.45, so no: sunny days make high sales more likely, just like dependent events in lesson 5. Two random variables are independent when every cell equals the product of its two totals.</p>
 
   <h3>The sum rule and the product rule</h3>
-  <p>A joint table makes two rules easy to see. We write <b>P(X, Y)</b> for "X and Y together", one cell of the table. From these two rules you can derive the other rules for combining probabilities in this course, including conditional probability, the law of total probability and Bayes' theorem. They are also the starting point of many AI methods. Σ with a small Y under it means: add up over every value of Y (here, over "sales high" and "sales low").</p>
+  <p>A joint table makes two rules easy to see: the sum rule and the product rule, in the table below. We write <b>P(X, Y)</b> for "X and Y together", one cell of the table. From these two rules you can derive the other rules for combining probabilities in this course, including conditional probability, the law of total probability and Bayes' theorem. They are also the starting point of many AI methods. Σ with a small Y under it means: add up over every value of Y (here, over "sales high" and "sales low").</p>
   <p>P(X, Y) is the joint probability from lesson 5: P(sunny, high) means P(weather = sunny ∩ sales = high) = 0.45. The comma is just a shorter way to write ∩ when we work with variables.</p>
   <div style="overflow-x:auto"><table class="cx">
     <thead><tr><th>Rule</th><th>Formula</th><th>In words</th><th>With the table</th></tr></thead>
@@ -3591,7 +3599,7 @@ r = st.correlation(ice_cream, drownings)   # strongly positive...
       <tr><td><b>68 · 95 · 99.7</b></td><td>share of a Normal within 1, 2, 3 standard deviations of the mean</td><td>scores 70 ± 10: 68% between 60 and 80</td></tr>
       <tr><td><b>Cov(X, Y) = E[(X − E[X]) × (Y − E[Y])]</b></td><td>covariance: do two variables move together? (sign = direction)</td><td>4 students: 100 ÷ 4 = 25</td></tr>
       <tr><td><b>r = Cov(X, Y) ÷ (σ<sub>X</sub> × σ<sub>Y</sub>)</b></td><td>correlation: covariance without units</td><td>4 students: 25 ÷ (2.24 × 11.18) = +1</td></tr>
-      <tr><td><b>−1 ≤ r ≤ +1</b></td><td>correlation: direction and strength of a straight-line relationship</td><td>study hours and grades: r ≈ 0.8</td></tr>
+      <tr><td><b>−1 ≤ r ≤ +1</b></td><td>correlation: direction and strength of a straight-line relationship</td><td>dots exactly on a rising line (the 4 students): r = +1; no straight-line pattern: r = 0</td></tr>
     </tbody>
   </table></div>
 </section>
