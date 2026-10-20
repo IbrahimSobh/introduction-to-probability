@@ -321,7 +321,7 @@ body.notes #notes { display: block; }
   <h2>Add up every way the evidence can happen</h2>
   <div class="cols">
     <div class="txt"><ul>
-      <li><b>Law of total probability:</b> <b class="m">P(B) = Σᵢ P(B | Aᵢ) × P(Aᵢ)</b>, over slices Aᵢ that don't overlap and cover everything</li>
+      <li><b>Law of total probability:</b> <b class="m">P(B) = Σᵢ P(Aᵢ) × P(B | Aᵢ)</b>, over slices Aᵢ that don't overlap and cover everything</li>
       <li>A smoke alarm over 1,000 evenings: a fire on 2 (beeps every time) → 2 beeps; burnt toast on 100 (beeps 30% of the time) → 30 beeps; 898 quiet evenings → 0</li>
       <li>P(beep) = 0.002 × 1 + 0.10 × 0.30 = <b>0.032</b></li>
     </ul></div>
@@ -336,8 +336,8 @@ body.notes #notes { display: block; }
   <h2>Bayes: always ask for the base rate</h2>
   <div class="cols">
     <div class="txt"><ul>
-      <li><b class="m">P(A | B) = P(B | A) × P(A) ÷ P(B)</b>: from P(evidence | cause) to P(cause | evidence)</li>
-      <li>Smoke alarm: P(fire | beep) = 1 × 0.002 ÷ 0.032 ≈ <b>6%</b> (2 of the 32 beeps)</li>
+      <li><b class="m">P(A | B) = P(A) × P(B | A) ÷ P(B)</b>: from P(evidence | cause) to P(cause | evidence)</li>
+      <li>Smoke alarm: P(fire | beep) = 0.002 × 1 ÷ 0.032 ≈ <b>6%</b> (2 of the 32 beeps)</li>
       <li>Medical test on 1,000 people: 1% sick (10), test finds 90% (9), 9% false alarms on the 990 healthy (89) → P(sick | positive) = 9 ÷ 98 ≈ <b>9%</b></li>
       <li>Raise "how common" to 10%: the same positive test means ≈ <b>53%</b></li>
     </ul></div>
