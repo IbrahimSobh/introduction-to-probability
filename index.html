@@ -307,6 +307,13 @@ label.inl { font-size: .85rem; color: var(--text-2); display: inline-flex; align
 :root[data-theme="dark"] { --bz-post: #f06fb4; --bz-prior: #3cc6da; --bz-like: #55c977; --bz-marg: #8aa6ff; }
 .bz-post { --c: var(--bz-post); } .bz-prior { --c: var(--bz-prior); } .bz-like { --c: var(--bz-like); } .bz-marg { --c: var(--bz-marg); }
 .bz-c { color: var(--c); font-weight: 700; }
+.w-belief .bc-eq { font-size: .95rem; line-height: 2; padding: 8px 12px; background: var(--surface-2); border-radius: 8px; margin: 0 0 8px; }
+.w-belief .bc-t { padding: 1px 6px; border-radius: 6px; white-space: nowrap; font-weight: 700; color: var(--c); background: color-mix(in srgb, var(--c) 10%, transparent); }
+.w-belief .bc-t.on { outline: 2px solid var(--c); }
+.w-belief .bc-tos { font: 12.5px var(--mono); color: var(--text-2); min-height: 22px; margin: 0 0 4px; }
+.w-belief .bc-tos b { display: inline-block; width: 17px; text-align: center; border-radius: 4px; margin-right: 2px; }
+.w-belief .bc-ck { font-size: .85rem; color: var(--text-2); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+.w-belief .bc-ck input { flex: 1; min-width: 140px; }
 .bz-eq { display: flex; align-items: center; justify-content: center; gap: 14px; margin: 18px 0 8px; padding: 20px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; }
 .bz-t { border: 3px solid var(--c); border-radius: 8px; padding: 6px 14px 5px; text-align: center; background: color-mix(in srgb, var(--c) 8%, transparent); }
 .bz-f { display: block; font: italic 30px Georgia, "Times New Roman", serif; color: var(--text); white-space: nowrap; }
@@ -2431,6 +2438,187 @@ sum(p(A) * s for A, s in zip(slices, shares)) # 0 + 2/6 + 1/6 = 3/6`, "total_pro
   </table></div>
 
   <p><b>5. What happens with 1,000 tosses?</b> Suppose the first coin lands heads 700 times in 1,000 tosses. Frequentist: 700 ÷ 1,000 = <b>70%</b>. Bayesian, with the same prior: 701 ÷ 1,002 ≈ <b>70.0%</b>. For the bent coin, 900 heads in 1,000: 900 ÷ 1,000 = <b>90%</b> and 901 ÷ 1,002 ≈ <b>89.9%</b>. The two are now almost identical: with lots of evidence, the prior's one imaginary head and tail hardly matter.</p>
+  <p><b>6. Watch the whole belief update, batch by batch.</b></p>
+  <div class="callout"><b>The question:</b> each Bayesian estimate above is a single number, like 66.7%. But a Bayesian holds a belief about <b>every</b> possible chance of heads at once. What does that whole belief look like, and how exactly does "prior × likelihood ÷ marginal" reshape it? Think about it for a moment, then step through the demo below.</div>
+  <p>The demo draws the belief as a <b>curve</b>. Read it like this:</p>
+  <ul>
+    <li><b>X</b> is the coin's unknown chance of heads, any value from 0% to 100%. It runs along the horizontal axis.</li>
+    <li>A belief curve's <b>height</b> shows how strongly each value of X is believed. The <b>area</b> under it is the total belief, 1 (100%), spread over all the values, just as all probabilities add up to 1. A tall, narrow curve means "fairly sure"; a low, wide one means "unsure".</li>
+    <li><b>The <span class="bz-c bz-prior">prior</span></b> (dotted). This time we don't start from "no preference": suppose a friend who has played with the coin says it probably lands heads a bit <i>less</i> than half the time. So our prior is centred near 40%, and wide because it's only a hint. It works like the imaginary tosses above, with 4 imaginary heads and 6 imaginary tails: best guess 4 ÷ (4 + 6) = 40%.</li>
+    <li><b>The evidence.</b> We toss the coin in 4 batches of 10 tosses, called D₁, D₂, D₃ and D₄ (D for data). They give 7, 8, 7 and 8 heads: 30 heads in 40 tosses, or 75%.</li>
+    <li><b>The <span class="bz-c bz-like">likelihood</span></b> (dashed) is P(D | X): for each possible X, the chance of getting exactly this batch. The tosses are independent, so by the multiplication rule we multiply X for each head and (1 − X) for each tail. For D₁ (7 heads, 3 tails) that is P(D₁ | X) = X<sup>7</sup> × (1 − X)<sup>3</sup>. At X = 0.5 it is 0.5<sup>10</sup> ≈ 0.001; at X = 0.7 it is 0.7<sup>7</sup> × 0.3<sup>3</sup> ≈ 0.0022, the highest it gets. These numbers are tiny, so the curve is drawn scaled so that its peak is 1 (read it on the axis on the right). Scaling doesn't change its shape.</li>
+  </ul>
+  <p>Then each batch goes through the same <b>four steps</b>, one press of <b>Next</b> each:</p>
+  <ol>
+    <li><b>Evidence:</b> 10 new tosses arrive, shown as H and T above the chart, and their likelihood curve is drawn.</li>
+    <li><b>Multiply:</b> for every X, likelihood × prior, drawn as a shaded curve. The scaled likelihood is between 0 and 1, so the product always sits <b>under</b> the prior: belief is kept where the tosses agree and squashed where they don't.</li>
+    <li><b>Divide by the <span class="bz-c bz-marg">marginal</span> P(D):</b> the product's area is less than 1. Dividing by it rescales the area back to 1, and the product grows into the <b><span class="bz-c bz-post">posterior</span></b> (solid).</li>
+    <li><b>Hand over:</b> the posterior becomes the prior for the next batch.</li>
+  </ol>
+  <p>The box above the chart always shows the full equation for the current batch, with the term the step is about outlined, and each curve is labelled with its own formula. Move the <b>check one point</b> slider to see the multiplication done with real numbers at any X. Press <b>Next</b> and <b>Back</b>, or <b>Play slowly</b> to let it run on its own.</p>
+  <div class="w-belief">
+  <div class="grid2">
+    <div class="card">
+      <div class="controls">
+        <button class="secondary bc-back">◀ Back</button>
+        <button class="bc-next">Next ▶</button>
+        <button class="secondary bc-play">Play slowly</button>
+        <button class="secondary bc-reset">Reset</button>
+      </div>
+      <div class="viz" style="min-height:420px"><span class="caption bc-cap">Belief about X, the coin's chance of heads</span>
+        <div class="bc-eq"></div>
+        <div class="bc-tos"></div>
+        <div class="bc-plot"></div>
+        <div class="bc-ck"><span>Check one point: X =</span><input type="range" class="bc-x" min="1" max="99" step="1" value="50" aria-label="Value of X to check"><b class="bc-xv">50%</b></div>
+        <div class="bc-ck bc-calc"></div>
+      </div>
+      <div class="status"></div>
+    </div>
+    <div class="code"></div>
+  </div>
+  </div>
+  <p>After the 4 batches the best guess is <b>(4 + 30) ÷ (10 + 40) = 34 ÷ 50 = 68%</b>, the same imaginary-tosses rule as above: (imaginary heads + real heads) ÷ (imaginary tosses + real tosses). The prior said 40% and the data say 75%; with 40 real tosses against 10 imaginary ones, the data dominate. Notice also that every posterior is <b>narrower</b> than both its prior and its likelihood: combining the belief with new evidence always makes it more certain.</p>
+<script>
+(() => {
+  const root = document.querySelector("#bayes .w-belief");
+  const $ = q => root.querySelector(q);
+  const cp = DS.code($(".code"), `import numpy as np
+x = np.linspace(0, 1, 201)              # every possible chance of heads X
+prior = x**3 * (1 - x)**5               # 4 imaginary heads, 6 tails: best guess 40%
+prior = prior / prior.sum()             # rescale: total belief = 1
+for heads in [7, 8, 7, 8]:              # 4 batches of 10 tosses (D1 to D4)
+    likelihood = x**heads * (1 - x)**(10 - heads)   # P(D | X)
+    product = likelihood * prior        # multiply, point by point
+    posterior = product / product.sum() # divide by P(D): total belief = 1 again
+    prior = posterior                   # the posterior is the next prior`, "belief_update.py");
+  const A0 = 4, B0 = 6, SEQ = ["HHTHHHTHTH", "HHHTHHHHTH", "THHHTHHHTH", "HHTHHHHHTH"];
+  const HS = SEQ.map(q => [...q].filter(c => c === "H").length);
+  const lg = z => { const c = [0.99999999999980993, 676.5203681218851, -1259.1392167224028, 771.32342877765313, -176.61502916214059, 12.507343278686905, -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7];
+    if (z < 0.5) return Math.log(Math.PI / Math.sin(Math.PI * z)) - lg(1 - z);
+    z -= 1; let x = c[0]; for (let i = 1; i < 9; i++) x += c[i] / (z + i); const t = z + 7.5;
+    return 0.5 * Math.log(2 * Math.PI) + (z + 0.5) * Math.log(t) - t + Math.log(x); };
+  const beta = (a, b) => { const lB = lg(a) + lg(b) - lg(a + b); return x => x <= 0 || x >= 1 ? 0 : Math.exp((a - 1) * Math.log(x) + (b - 1) * Math.log(1 - x) - lB); };
+  const par = k => { let a = A0, b = B0; for (let i = 0; i < k; i++) { a += HS[i]; b += 10 - HS[i]; } return [a, b]; };
+  const lrel = h => { const m = h / 10, mx = m ** h * (1 - m) ** (10 - h); return x => x ** h * (1 - x) ** (10 - h) / mx; };
+  const D = k => "D" + "₀₁₂₃₄"[k];
+  const given = k => k === 0 ? "" : k === 1 ? " | D₁" : k === 2 ? " | D₁, D₂" : " | D₁…" + D(k);
+  const N = 240, XS = [...Array(N + 1)].map((_, i) => i / N);
+  const X0 = 46, X1 = 600, Y0 = 262, Y1 = 26, YM = 6.6;
+  const SX = x => X0 + x * (X1 - X0), SY = v => Y0 - Math.min(v, YM * 1.05) / YM * (Y0 - Y1), SL = v => Y0 - v * (Y0 - Y1) * 0.92;
+  const COL = { prior: "var(--bz-prior)", lik: "var(--bz-like)", prod: "var(--violet)", post: "var(--bz-post)" };
+  const PH = [{ k: 0, p: "start" }];
+  for (let k = 1; k <= 4; k++) ["evidence", "multiply", "rescale", k < 4 ? "handoff" : "final"].forEach(p => PH.push({ k, p }));
+  const range90 = f => { let c = 0; const cdf = XS.map(x => (c += f(x) / N)); const q = t => XS[cdf.findIndex(v => v >= t * c)]; return [q(0.05), q(0.95)]; };
+  const pct = v => Math.round(v * 100) + "%", f2 = v => v.toFixed(2);
+  let i = 0, shown = {}, anim = 0, timer = null;
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function state() {
+    const { k, p } = PH[i], [a, b] = par(Math.max(k - 1, 0)), prior = beta(a, b), cur = [];
+    if (p === "start") return [{ id: "prior", ys: XS.map(prior), sc: "b", st: "prior", tag: "prior  P(X)" }];
+    const h = HS[k - 1], L = lrel(h), [pa, pb] = par(k), post = beta(pa, pb);
+    if (p === "handoff" || p === "final") return [{ id: "prior", ys: XS.map(post), sc: "b", st: p === "final" ? "post" : "prior", tag: (p === "final" ? "posterior  P(X" : "next prior  P(X") + given(k) + ")" }];
+    cur.push({ id: "prior", ys: XS.map(prior), sc: "b", st: "prior", fade: p === "rescale", tag: "prior  P(X" + given(k - 1) + ")" });
+    cur.push({ id: "lik", ys: XS.map(L), sc: "l", st: "lik", fade: p === "rescale", tag: "likelihood  P(" + D(k) + " | X)" });
+    if (p === "multiply") cur.push({ id: "pp", ys: XS.map(x => prior(x) * L(x)), sc: "b", st: "prod", tag: "P(" + D(k) + " | X) × P(X" + given(k - 1) + ")" });
+    if (p === "rescale") cur.push({ id: "pp", ys: XS.map(post), sc: "b", st: "post", tag: "posterior  P(X" + given(k) + ")" });
+    return cur;
+  }
+  const pathOf = (ys, sc) => ys.map((v, j) => (j ? "L" : "M") + SX(XS[j]).toFixed(1) + "," + (sc === "l" ? SL(v) : SY(v)).toFixed(1)).join("");
+  function frame(cur, t) {
+    const { k, p } = PH[i];
+    let g = `<svg class="plot" viewBox="0 0 640 306" role="img" aria-label="Belief curves over X, the coin's chance of heads: prior, likelihood, product and posterior">`;
+    for (let q = 0; q <= 10; q++) { const x = SX(q / 10); g += `<line x1="${x}" y1="${Y1}" x2="${x}" y2="${Y0}" stroke="var(--border)"/><text class="lbl" x="${x}" y="${Y0 + 16}" text-anchor="middle">${q * 10}%</text>`; }
+    g += `<line x1="${X0}" y1="${Y0}" x2="${X1}" y2="${Y0}" stroke="var(--muted)" stroke-width="1.5"/>`;
+    [0, 2, 4, 6].forEach(v => { g += `<text class="lbl" x="${X0 - 6}" y="${SY(v) + 4}" text-anchor="end">${v}</text>`; });
+    g += `<text class="lbl" x="${(X0 + X1) / 2}" y="${Y0 + 34}" text-anchor="middle">X = the coin's chance of heads (true value 75%, unknown to us)</text>`;
+    g += `<text class="lbl" x="10" y="${(Y0 + Y1) / 2}" text-anchor="middle" transform="rotate(-90 10 ${(Y0 + Y1) / 2})">strength of belief</text>`;
+    if (cur.some(c => c.id === "lik")) {
+      [0, 0.5, 1].forEach(v => { g += `<text class="lbl" x="${X1 + 8}" y="${SL(v) + 4}" style="fill:var(--bz-like)">${v}</text>`; });
+      g += `<text class="lbl" x="630" y="${(Y0 + Y1) / 2}" text-anchor="middle" transform="rotate(90 630 ${(Y0 + Y1) / 2})" style="fill:var(--bz-like)">likelihood (peak = 1)</text>`;
+    }
+    for (let q = 1; q < k && p !== "start"; q++) { const [a, b] = par(q); g += `<path d="${pathOf(XS.map(beta(a, b)), "b")}" fill="none" stroke="var(--bz-post)" stroke-width="1.2" stroke-opacity=".25"/>`; }
+    const tags = [];
+    cur.forEach(c => {
+      const from = shown[c.id] || { ys: c.ys.map(() => 0) }, ys = c.ys.map((v, j) => from.ys[j] + (v - from.ys[j]) * t);
+      c.now = ys;
+      const col = COL[c.st], op = c.fade ? 0.35 : 1, dash = c.st === "prior" ? "2 4" : c.st === "lik" ? "7 4" : "none";
+      if (c.st === "prod") g += `<path d="${pathOf(ys, "b")}L${X1},${Y0}L${X0},${Y0}Z" fill="${col}" fill-opacity=".14"/>`;
+      g += `<path d="${pathOf(ys, c.sc)}" fill="none" stroke="${col}" stroke-width="2.6" stroke-opacity="${op}" stroke-dasharray="${dash}" stroke-linecap="round"/>`;
+      let m = 0; ys.forEach((v, j) => { if (v > ys[m]) m = j; });
+      tags.push({ x: SX(XS[m]), y: (c.sc === "l" ? SL(ys[m]) : SY(ys[m])) - 9, txt: c.tag, col, op });
+    });
+    tags.sort((a, b) => b.y - a.y);
+    tags.forEach((tg, j) => {
+      for (let q = 0; q < j; q++) { const o = tags[q]; if (Math.abs(o.x - tg.x) < 200 && Math.abs(o.y - tg.y) < 17) tg.y = o.y - 17; }
+      tg.y = Math.max(tg.y, Y1 - 10);
+      const anc = tg.x > X1 - 130 ? "end" : tg.x < X0 + 130 ? "start" : "middle";
+      g += `<text class="lbl" x="${tg.x}" y="${tg.y}" text-anchor="${anc}" style="font-weight:700;font-size:13px;fill:${tg.col};fill-opacity:${Math.max(tg.op, 0.6)}">${tg.txt}</text>`;
+    });
+    const xc = +$(".bc-x").value / 100, jx = Math.round(xc * N), px = SX(xc);
+    g += `<line x1="${px}" y1="${Y1}" x2="${px}" y2="${Y0}" stroke="var(--muted)" stroke-dasharray="2 3"/>`;
+    cur.forEach(c => { const v = c.now[jx]; g += `<circle cx="${px}" cy="${c.sc === "l" ? SL(v) : SY(v)}" r="4.5" fill="${COL[c.st]}" stroke="var(--surface)" stroke-width="1.5"/>`; });
+    $(".bc-plot").innerHTML = g + "</svg>";
+  }
+  const keep = cur => { shown = {}; cur.forEach(c => (shown[c.id] = { ys: c.ys })); };
+  function render(animate) {
+    const cur = state(); cancelAnimationFrame(anim);
+    if (animate && !still) {
+      const t0 = performance.now(), dur = 1400;
+      const run = now => { const t = Math.min(1, (now - t0) / dur), e = t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2; frame(cur, e); if (t < 1) anim = requestAnimationFrame(run); else keep(cur); };
+      anim = requestAnimationFrame(run);
+    } else { frame(cur, 1); keep(cur); }
+    texts(cur);
+  }
+  function texts(cur) {
+    const { k, p } = PH[i];
+    const t = (cls, txt, on) => `<span class="bc-t ${cls}${on ? " on" : ""}">${txt}</span>`;
+    if (p === "start") {
+      $(".bc-eq").innerHTML = t("bz-prior", "prior P(X)", true) + " = our belief about X before any toss";
+      $(".bc-tos").textContent = "No tosses yet.";
+    } else {
+      $(".bc-eq").innerHTML = t("bz-post", `P(X${given(k)})`, ["rescale", "handoff", "final"].includes(p)) + " = " + t("bz-like", `P(${D(k)} | X)`, p === "evidence" || p === "multiply") + " × " + t("bz-prior", `P(X${given(k - 1)})`, p === "multiply") + " ÷ " + t("bz-marg", `P(${D(k)})`, p === "rescale")
+        + `<br><span style="font-size:.85rem;color:var(--text-2)">posterior = likelihood × prior ÷ marginal · ${D(k)} = batch ${k}: ${HS[k - 1]} heads, ${10 - HS[k - 1]} tails</span>`;
+      $(".bc-tos").innerHTML = SEQ.slice(0, k - 1).map((q, n) => `<span style="margin-right:12px;opacity:.6">${D(n + 1)}: ${HS[n]} H, ${10 - HS[n]} T</span>`).join("")
+        + `<span>${D(k)}: ` + [...SEQ[k - 1]].map(c => `<b style="background:color-mix(in srgb, ${c === "H" ? "var(--s1)" : "var(--muted)"} 18%, transparent)">${c}</b>`).join("") + "</span>";
+    }
+    const xc = +$(".bc-x").value / 100, jx = Math.round(xc * N), at = `At X = ${pct(xc)}:`;
+    const val = id => cur.find(c => c.id === id).ys[jx];
+    const [a, b] = par(Math.max(k - 1, 0)), prior = beta(a, b);
+    let area = 0;
+    if (k) { const L = lrel(HS[k - 1]); XS.forEach(x => (area += prior(x) * L(x) / N)); }
+    const sp = (c, txt) => `<b style="color:${c}">${txt}</b>`;
+    $(".bc-calc").innerHTML = p === "multiply" ? `${at} ${sp(COL.lik, "likelihood " + f2(val("lik")))} × ${sp(COL.prior, "prior " + f2(val("prior")))} = ${sp(COL.prod, f2(val("pp")))}`
+      : p === "rescale" ? `${at} product ${f2(prior(xc) * lrel(HS[k - 1])(xc))} ÷ area ${f2(area)} = ${sp(COL.post, "posterior " + f2(val("pp")))}`
+      : `${at} ` + cur.map(c => sp(COL[c.st], (c.st === "lik" ? "likelihood " : c.st === "post" ? "posterior " : "prior ") + f2(c.ys[jx]))).join(" · ");
+    const [pa, pb] = par(k), [lo, hi] = range90(beta(pa, pb)), h = HS[k - 1], heads = HS.slice(0, k).reduce((s, v) => s + v, 0);
+    const rule = `(${A0} + ${heads}) ÷ (${A0 + B0} + ${10 * k}) = ${pct(pa / (pa + pb))}`;
+    const T = {
+      start: `X is the coin's unknown chance of heads. The dotted curve is the prior P(X), our belief before any toss: best guess ${A0} ÷ (${A0} + ${B0}) = 40%, and wide, because 90% of the belief is spread between ${pct(range90(beta(A0, B0))[0])} and ${pct(range90(beta(A0, B0))[1])}.`,
+      evidence: `We toss the coin 10 more times: ${h} heads and ${10 - h} tails. Call this ${D(k)}. The dashed curve is the likelihood P(${D(k)} | X) = X<sup>${h}</sup> × (1 − X)<sup>${10 - h}</sup>: for each X, the chance of getting exactly these tosses. It peaks at ${h} ÷ 10 = ${h * 10}%.`,
+      multiply: `For every X, likelihood × prior gives the shaded curve. Where the tosses fit badly (the likelihood is near 0) the prior is squashed; where they fit well (near 1) it is kept. Move the slider to check the multiplication at any X.`,
+      rescale: `The shaded product has area ${f2(area)}, not 1. Dividing by it, the ÷ P(${D(k)}) step, rescales the total belief back to 1 and gives the posterior P(X${given(k)}). Best guess ${rule}; 90% of the belief now lies between ${pct(lo)} and ${pct(hi)}, narrower than before.`,
+      handoff: `The posterior becomes the prior for batch ${k + 1}: the solid curve turns into the dotted one. The faint lines are the earlier posteriors.`,
+      final: `After 40 tosses: best guess ${rule}, with 90% of the belief between ${pct(lo)} and ${pct(hi)}. Four rounds of prior → evidence (× likelihood ÷ marginal) → posterior moved the belief from 40% toward the true 75% and made it narrower each time.`,
+    };
+    const head = { start: "Start.", evidence: `Batch ${k}: new evidence.`, multiply: `Batch ${k}: multiply.`, rescale: `Batch ${k}: divide by the marginal.`, handoff: `Batch ${k}: hand over.`, final: "The end." }[p];
+    $(".status").innerHTML = `<b>Step ${i + 1} of ${PH.length} · ${head}</b> ${T[p]}`;
+    cp.hl(...{ start: [2, 3, 4], evidence: [5, 6], multiply: [7], rescale: [8], handoff: [9], final: [9] }[p]);
+    $(".bc-back").disabled = i === 0; $(".bc-next").disabled = i === PH.length - 1;
+  }
+  const stop = () => { clearInterval(timer); timer = null; $(".bc-play").textContent = "Play slowly"; };
+  $(".bc-next").onclick = () => { stop(); if (i < PH.length - 1) { i++; render(true); } };
+  $(".bc-back").onclick = () => { stop(); if (i > 0) { i--; render(true); } };
+  $(".bc-reset").onclick = () => { stop(); i = 0; shown = {}; render(true); };
+  $(".bc-play").onclick = () => {
+    if (timer) return stop();
+    if (i === PH.length - 1) { i = 0; shown = {}; }
+    $(".bc-play").textContent = "Pause"; render(true);
+    timer = setInterval(() => { if (i < PH.length - 1) { i++; render(true); } else stop(); }, 6000);
+  };
+  $(".bc-x").oninput = () => { $(".bc-xv").textContent = $(".bc-x").value + "%"; cancelAnimationFrame(anim); const cur = state(); frame(cur, 1); keep(cur); texts(cur); };
+  render(false);
+})();
+</script>
   <div class="callout tip"><b>The key idea.</b> Frequentist: estimate the unknown probability from the observed data. Bayesian: start from a prior belief and update it with every piece of evidence; with little data the prior matters, with lots of data the evidence decides. The smoke alarm and the medical test above worked the same way: the base rate was the prior.</div>
 
   <h3>Where it shows up</h3>

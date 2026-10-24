@@ -51,7 +51,7 @@ It isn't aimed at readers looking for proofs, measure theory, calculus-based der
 **Part B · Updating with information**
 
 5. **Conditional probability and independence**: P(A | B) as "zooming in", why the formula works (a step-by-step die demo), the multiplication (product) rule as a tree diagram (two draws with and without replacement), independent events (a coin and die grid), and the gambler's fallacy
-6. **Total probability and Bayes' theorem**: slicing the sample space into pieces (a step-by-step die demo), reasoning backwards from evidence, a medical test on 1,000 people, why base rates matter, and two ways to read probability: frequentist vs Bayesian, with 7 heads in 10 tosses estimated both ways and the Bayesian estimate updated toss by toss
+6. **Total probability and Bayes' theorem**: slicing the sample space into pieces (a step-by-step die demo), reasoning backwards from evidence, a medical test on 1,000 people, why base rates matter, and two ways to read probability: frequentist vs Bayesian, with 7 heads in 10 tosses estimated both ways, the Bayesian estimate updated toss by toss, and a step-by-step demo of a whole belief curve updated batch by batch (prior × likelihood ÷ marginal → posterior → next prior)
 
 **Part C · Random variables**
 
@@ -72,16 +72,16 @@ It isn't aimed at readers looking for proofs, measure theory, calculus-based der
 
 ## How long it takes
 
-About 3½ hours if you're new to the topic, or about 2 hours if you already know some maths or statistics.
+About 3¾ hours if you're new to the topic, or about 2 hours if you already know some maths or statistics.
 
 | Part | New to the topic | Already know some maths |
 |---|---|---|
 | Part A: 4 lessons | 3 × 15 + 20 min = 65 min | 3 × 8 + 11 min = 35 min |
-| Part B: 2 lessons | 33 + 25 min = 58 min | 17 + 13 min = 30 min |
+| Part B: 2 lessons | 33 + 32 min = 65 min | 17 + 17 min = 34 min |
 | Part C: 3 lessons | 2 × 20 + 30 min = 70 min | 2 × 10 + 15 min = 35 min |
 | Glossary and formulas review | 10 min | 5 min |
 | Final quiz and certificate | 15 min | 10 min |
-| **Total** | **218 min ≈ 3½ hours** | **115 min ≈ 2 hours** |
+| **Total** | **225 min ≈ 3¾ hours** | **119 min ≈ 2 hours** |
 
 ## Final quiz and certificate
 
