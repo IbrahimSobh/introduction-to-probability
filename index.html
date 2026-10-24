@@ -2442,9 +2442,25 @@ sum(p(A) * s for A, s in zip(slices, shares)) # 0 + 2/6 + 1/6 = 3/6`, "total_pro
   <div class="callout"><b>The question:</b> each Bayesian estimate above is a single number, like 66.7%. But a Bayesian holds a belief about <b>every</b> possible chance of heads at once. What does that whole belief look like, and how exactly does "prior × likelihood ÷ marginal" reshape it? Think about it for a moment, then step through the demo below.</div>
   <p>The demo draws the belief as a <b>curve</b>. Read it like this:</p>
   <ul>
-    <li><b>X</b> is the coin's unknown chance of heads, any value from 0% to 100%. It runs along the horizontal axis.</li>
+    <li><b>X</b> is the coin's unknown chance of heads: how many times in every 100 tosses it lands heads, written as a decimal. For example, X = 0.4 means "heads about 40 times in every 100 tosses". It could be any value from 0 (never heads) to 1 (always heads), and we don't know it: finding it is the puzzle. X runs along the horizontal axis.
     <li>A belief curve's <b>height</b> shows how strongly each value of X is believed. The <b>area</b> under it is the total belief, 1 (100%), spread over all the values, just as all probabilities add up to 1. A tall, narrow curve means "fairly sure"; a low, wide one means "unsure".</li>
-    <li><b>The <span class="bz-c bz-prior">prior</span></b> (dotted). This time we don't start from "no preference": suppose a friend who has played with the coin says it probably lands heads a bit <i>less</i> than half the time. So our prior is centred near 40%, and wide because it's only a hint. It works like the imaginary tosses above, with 4 imaginary heads and 6 imaginary tails: best guess 4 ÷ (4 + 6) = 40%.</li>
+    <li><b>The <span class="bz-c bz-prior">prior</span></b> (dotted). This time we don't start from "no preference". A friend who has played with the coin says: "I think it lands heads <i>a bit less than half</i> the time." The box below shows how we turn that hint into a curve.</li>
+  </ul>
+  <div class="callout"><b>From a hint to a prior curve (line 3 of the code).</b>
+    <p style="margin:6px 0">The trick is to <b>pretend we already tossed the coin 8 times</b> and got <b>H H H T T T T T</b>: 3 heads and 5 tails. Fewer heads than tails matches "a bit less than half". Then, for different kinds of coin, we ask: <b>"how easily could this coin give these 8 pretend tosses?"</b> A coin that lands heads with chance X lands tails with chance 1 − X, and the tosses are independent, so we multiply (the rule for independent events from lesson 5):</p>
+    <div style="overflow-x:auto"><table class="cx">
+      <thead><tr><th>Kind of coin</th><th>Heads 3 times</th><th>Tails 5 times</th><th>Both together</th><th>In 10,000 tries</th></tr></thead>
+      <tbody>
+        <tr><td>20% coin (X = 0.2)</td><td>0.2 × 0.2 × 0.2 = 0.008</td><td>0.8 × 0.8 × 0.8 × 0.8 × 0.8 ≈ 0.328</td><td>0.008 × 0.328 ≈ 0.0026</td><td>about 26 times</td></tr>
+        <tr><td><b>40% coin (X = 0.4)</b></td><td>0.4 × 0.4 × 0.4 = 0.064</td><td>0.6 × 0.6 × 0.6 × 0.6 × 0.6 ≈ 0.078</td><td>0.064 × 0.078 ≈ 0.0050</td><td><b>about 50 times</b></td></tr>
+        <tr><td>80% coin (X = 0.8)</td><td>0.8 × 0.8 × 0.8 = 0.512</td><td>0.2 × 0.2 × 0.2 × 0.2 × 0.2 = 0.00032</td><td>0.512 × 0.00032 ≈ 0.00016</td><td>about 2 times</td></tr>
+      </tbody>
+    </table></div>
+    <p style="margin:6px 0">The 40% coin fits the pretend tosses best, so we believe in it the most. The 20% coin fits less well. The 80% coin almost never gives 5 tails, so we hardly believe in it. Line 3 of the code, <code>prior = x**3 * (1 - x)**5</code>, does this for all 201 kinds of coin at once: <code>x**3</code> is X × X × X (heads 3 times), <code>(1 - x)**5</code> is (1 − X) five times (tails 5 times), and <code>*</code> multiplies them. The results form the dotted hill: high near 0.4, low near 0 and near 1.</p>
+    <p style="margin:6px 0"><b>In one sentence:</b> pretend we already saw 3 heads and 5 tails, and for every possible coin, work out how easily it could have given that. The coins that fit best get the most belief.</p>
+    <p style="margin:6px 0 0"><b>Why 3 and 5?</b> We chose them to match the hint. More tails than heads puts the top of the hill below half, at 3 ÷ (3 + 5) = 37.5%. And only 8 pretend tosses makes the hint <b>weak</b>, so the real tosses can change our mind; 30 heads and 50 tails would put the top in the same place but be much harder to move. Like the (heads + 1) ÷ (tosses + 2) rule above, we also add 1 head and 1 tail as a fair starting point, so the pretend tosses count as 4 heads and 6 tails: best guess 4 ÷ (4 + 6) = 40%.</p>
+  </div>
+  <ul>
     <li><b>The evidence.</b> We toss the coin in 4 batches of 10 tosses, called D₁, D₂, D₃ and D₄ (D for data). They give 7, 8, 7 and 8 heads: 30 heads in 40 tosses, or 75%.</li>
     <li><b>The <span class="bz-c bz-like">likelihood</span></b> (dashed) is P(D | X): for each possible X, the chance of getting exactly this batch. The tosses are independent, so by the multiplication rule we multiply X for each head and (1 − X) for each tail. For D₁ (7 heads, 3 tails) that is P(D₁ | X) = X<sup>7</sup> × (1 − X)<sup>3</sup>. At X = 0.5 it is 0.5<sup>10</sup> ≈ 0.001; at X = 0.7 it is 0.7<sup>7</sup> × 0.3<sup>3</sup> ≈ 0.0022, the highest it gets. These numbers are tiny, so the curve is drawn scaled so that its peak is 1 (read it on the axis on the right). Scaling doesn't change its shape.</li>
   </ul>
@@ -2484,7 +2500,7 @@ sum(p(A) * s for A, s in zip(slices, shares)) # 0 + 2/6 + 1/6 = 3/6`, "total_pro
   const $ = q => root.querySelector(q);
   const cp = DS.code($(".code"), `import numpy as np
 x = np.linspace(0, 1, 201)              # every possible chance of heads X
-prior = x**3 * (1 - x)**5               # 4 imaginary heads, 6 tails: best guess 40%
+prior = x**3 * (1 - x)**5               # pretend 3 heads, 5 tails (+1 each): best guess 40%
 prior = prior / prior.sum()             # rescale: total belief = 1
 for heads in [7, 8, 7, 8]:              # 4 batches of 10 tosses (D1 to D4)
     likelihood = x**heads * (1 - x)**(10 - heads)   # P(D | X)
