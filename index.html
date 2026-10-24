@@ -2471,6 +2471,7 @@ sum(p(A) * s for A, s in zip(slices, shares)) # 0 + 2/6 + 1/6 = 3/6`, "total_pro
     <li><b>Divide by the <span class="bz-c bz-marg">marginal</span> P(D):</b> the product's area is less than 1. Dividing by it rescales the area back to 1, and the product grows into the <b><span class="bz-c bz-post">posterior</span></b> (solid).</li>
     <li><b>Hand over:</b> the posterior becomes the prior for the next batch.</li>
   </ol>
+  <p>Multiplying the <span class="bz-c bz-prior">prior</span> by the <span class="bz-c bz-like">likelihood</span>, point by point, and then rescaling gives the <span class="bz-c bz-post">posterior</span>. Its centre usually lands between the two centres, closer to the narrower (more certain) of the two, and it is usually narrower than both: combining two sources of information usually makes us more certain.</p>
   <p>The box above the chart always shows the full equation for the current batch, with the term the step is about outlined, and each curve is labelled with its own formula. Move the <b>check one point</b> slider to see the multiplication done with real numbers at any X. Press <b>Next</b> and <b>Back</b>, or <b>Play slowly</b> to let it run on its own.</p>
   <div class="w-belief">
   <div class="grid2">
@@ -2493,7 +2494,7 @@ sum(p(A) * s for A, s in zip(slices, shares)) # 0 + 2/6 + 1/6 = 3/6`, "total_pro
     <div class="code"></div>
   </div>
   </div>
-  <p>After the 4 batches the best guess is <b>(4 + 30) ÷ (10 + 40) = 34 ÷ 50 = 68%</b>, the same imaginary-tosses rule as above: (imaginary heads + real heads) ÷ (imaginary tosses + real tosses). The prior said 40% and the data say 75%; with 40 real tosses against 10 imaginary ones, the data dominate. Notice also that every posterior is <b>narrower</b> than both its prior and its likelihood: combining the belief with new evidence always makes it more certain.</p>
+  <p>After the 4 batches the best guess is <b>(4 + 30) ÷ (10 + 40) = 34 ÷ 50 = 68%</b>, the same imaginary-tosses rule as above: (imaginary heads + real heads) ÷ (imaginary tosses + real tosses). The prior said 40% and the data say 75%; with 40 real tosses against 10 imaginary ones, the data dominate. Notice also that every posterior is <b>narrower</b> than both its prior and its likelihood: combining the belief with new evidence usually makes it more certain.</p>
 <script>
 (() => {
   const root = document.querySelector("#bayes .w-belief");
