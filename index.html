@@ -2229,11 +2229,11 @@ sum(p(A) * s for A, s in zip(slices, shares)) # 0 + 2/6 + 1/6 = 3/6`, "total_pro
     </tbody>
   </table></div>
   <p>You get the marginal from the law of total probability above: add up every way the evidence can happen. (It's called "marginal" because in a table of all the cases it's a total written in the margin; you'll see this in lesson 9.)</p>
-  <div class="callout"><b>How to read it.</b> The fraction <span class="bz-c bz-like">likelihood</span> ÷ <span class="bz-c bz-marg">marginal</span> compares "how likely is the evidence if A is true?" with "how likely is the evidence anyway?".
+  <div class="callout"><b>What moves the belief: the ratio <span class="bz-c bz-like">likelihood</span> ÷ <span class="bz-c bz-marg">marginal</span>.</b> This ratio decides whether the evidence pushes the belief up or down. It compares "how likely is the evidence if A is true?" with "how likely is the evidence anyway?".
     <ul style="margin:6px 0 0">
-      <li>More than 1: the evidence is more likely when A is true, so the posterior is <b>bigger</b> than the prior. The evidence supports A.</li>
-      <li>Less than 1: the evidence is less likely when A is true, so the posterior is <b>smaller</b> than the prior.</li>
-      <li>Exactly 1: the evidence tells you nothing about A, and the posterior equals the prior.</li>
+      <li><b>More than 1:</b> the evidence fits A better than usual (it is more likely when A is true than overall), so the belief goes <b>up</b>: the posterior is bigger than the prior. The evidence supports A.</li>
+      <li><b>Less than 1:</b> the evidence is less likely when A is true than overall, so the belief goes <b>down</b>: the posterior is smaller than the prior.</li>
+      <li><b>Exactly 1:</b> the evidence is just as likely either way, so it says nothing about A and the belief <b>stays the same</b>: the posterior equals the prior.</li>
     </ul>
   </div>
   <p>For the smoke alarm: the alarm beeps; how likely is a real fire? Here A = "there is a fire" and B = "the alarm beeps". The numbers come from the total probability example above:</p>
@@ -2289,7 +2289,7 @@ sum(p(A) * s for A, s in zip(slices, shares)) # 0 + 2/6 + 1/6 = 3/6`, "total_pro
   <div class="bz-back" aria-hidden="true"><span>↺ the posterior becomes the next prior</span></div>
   <div class="bz-loop-m" aria-hidden="true">↺ the posterior becomes the next prior</div>
   <p>Let's follow it with a story.</p>
-  <div class="callout"><b>Story.</b> A friend has two coins that look exactly the same. One is <b>fair</b>: heads half the time (50%). The other is a <b>trick coin</b>: heads 3 times in 4 (75%). Your friend picks one at random, without telling you which, and starts tossing it. Is it the trick coin?</div>
+  <div class="callout"><b>Story.</b> A friend has two coins that look exactly the same. One is <b>fair</b>: heads half the time (50%). The other is a <b>trick coin</b>, an unfair (biased) coin made to land heads more often: heads 3 times in 4 (75%). Your friend picks one at random, without telling you which, and starts tossing it. Is it the trick coin?</div>
   <p>The belief we update is A = "it's the trick coin". Each toss result is a new piece of evidence B.</p>
   <ul>
     <li><span class="bz-c bz-prior">Prior</span>, before any toss: P(trick) = 1 in 2 = <b>0.5</b>. So P(fair) = 0.5 too.</li>
@@ -2323,8 +2323,8 @@ sum(p(A) * s for A, s in zip(slices, shares)) # 0 + 2/6 + 1/6 = 3/6`, "total_pro
     <div class="bz-node"><small>posterior</small><b>53%</b></div>
   </div>
   <p>Each head pushes the belief up, because heads are more likely from the trick coin than overall (<span class="bz-c bz-like">likelihood</span> ÷ <span class="bz-c bz-marg">marginal</span> = 0.75 ÷ 0.625 = 1.2 on toss 1, more than 1). The tail pulls it down, because tails are less likely from the trick coin (0.25 ÷ 0.33 ≈ 0.76, less than 1). Keep tossing: if it really is the trick coin, heads come about 3 times in 4 and the posterior climbs toward 100%.</p>
-  <div class="callout tip"><b>What exactly is the prior?</b> It's tempting to say "the prior is P(heads) = 0.5", but the prior is our belief about the <b>coin</b>: P(trick) = 0.5. The chance of heads enters through the <span class="bz-c bz-like">likelihood</span>: 0.75 if it's the trick coin, 0.5 if it's fair. Before any toss, the chance of heads is the <span class="bz-c bz-marg">marginal</span>, 0.625.</div>
-  <div class="callout"><b>Key idea:</b> <span class="bz-c bz-prior">prior</span> → evidence → <span class="bz-c bz-post">posterior</span>, and the posterior becomes the next prior. The next section uses the same loop with one change: instead of just two possible coins, every chance of heads from 0% to 100% is possible.</div>
+  <div class="callout tip"><b>What exactly is the prior? A belief about the cause, not about the result.</b> The cause is which coin is being tossed; the result is heads or tails. It's tempting to say "the prior is P(heads) = 0.5", but the prior is our belief about the <b>coin</b>: P(trick) = 0.5. The chance of heads enters through the <span class="bz-c bz-like">likelihood</span>: 0.75 if it's the trick coin, 0.5 if it's fair. Before any toss, the chance of heads is the <span class="bz-c bz-marg">marginal</span>, 0.625.</div>
+  <div class="callout"><b>Key idea, in one line:</b> <span class="bz-c bz-prior">prior</span> → new evidence (× <span class="bz-c bz-like">likelihood</span> ÷ <span class="bz-c bz-marg">marginal</span>) → <span class="bz-c bz-post">posterior</span>, which becomes the next prior, so the belief is refined step by step. In the coin story above, the belief that it's the trick coin, P(trick), went 50% → 60% (heads) → 69% (heads) → 53% (tails), as in the table and the chain just above. The next section uses the same loop with one change: instead of just two possible coins, every chance of heads from 0% to 100% is possible.</div>
 
   <h3>Two ways to read probability: frequentist vs Bayesian</h3>
   <p>Imagine you receive a coin and want to know whether it is fair. You toss it 10 times and get <b>7 heads</b>: an observed frequency of 70%. What is the coin's true probability of landing heads? There are two classic ways to answer, and they use the same data but read the problem differently.</p>
