@@ -2455,7 +2455,7 @@ sum(p(A) * s for A, s in zip(slices, shares)) # 0 + 2/6 + 1/6 = 3/6`, "total_pro
     <li><b>Divide by the <span class="bz-c bz-marg">marginal</span> P(D):</b> the product's area is less than 1. Dividing by it rescales the area back to 1, and the product grows into the <b><span class="bz-c bz-post">posterior</span></b> (solid).</li>
     <li><b>Hand over:</b> the posterior becomes the prior for the next batch.</li>
   </ol>
-  <p>The box above the chart always shows the full equation for the current batch, with the term the step is about outlined, and each curve is labelled with its own formula. Move the <b>check one point</b> slider to see the multiplication done with real numbers at any X. Press <b>Next</b> and <b>Back</b>, or <b>Play slowly</b> to let it run on its own.</p>
+  <p>The box above the chart always shows the full equation for the current batch, with the term the step is about outlined, and each curve is labelled with its own formula. Move the <b>check one point</b> slider to see the multiplication done with real numbers at any X. The code panel does the same steps in Python, and the output box under it shows what the code prints after each batch: the best guess. Press <b>Next</b> and <b>Back</b>, or <b>Play slowly</b> to let it run on its own.</p>
   <div class="w-belief">
   <div class="grid2">
     <div class="card">
@@ -2474,7 +2474,10 @@ sum(p(A) * s for A, s in zip(slices, shares)) # 0 + 2/6 + 1/6 = 3/6`, "total_pro
       </div>
       <div class="status"></div>
     </div>
-    <div class="code"></div>
+    <div>
+      <div class="code"></div>
+      <div class="console bc-out" style="margin-top:10px" aria-live="polite"></div>
+    </div>
   </div>
   </div>
   <p>After the 4 batches the best guess is <b>(4 + 30) ÷ (10 + 40) = 34 ÷ 50 = 68%</b>, the same imaginary-tosses rule as above: (imaginary heads + real heads) ÷ (imaginary tosses + real tosses). The prior said 40% and the data say 75%; with 40 real tosses against 10 imaginary ones, the data dominate. Notice also that every posterior is <b>narrower</b> than both its prior and its likelihood: combining the belief with new evidence always makes it more certain.</p>
@@ -2490,7 +2493,8 @@ for heads in [7, 8, 7, 8]:              # 4 batches of 10 tosses (D1 to D4)
     likelihood = x**heads * (1 - x)**(10 - heads)   # P(D | X)
     product = likelihood * prior        # multiply, point by point
     posterior = product / product.sum() # divide by P(D): total belief = 1 again
-    prior = posterior                   # the posterior is the next prior`, "belief_update.py");
+    prior = posterior                   # the posterior is the next prior
+    print(f"best guess: {(x * posterior).sum():.0%}")   # 55%, 63%, 65%, 68%`, "belief_update.py");
   const A0 = 4, B0 = 6, SEQ = ["HHTHHHTHTH", "HHHTHHHHTH", "THHHTHHHTH", "HHTHHHHHTH"];
   const HS = SEQ.map(q => [...q].filter(c => c === "H").length);
   const lg = z => { const c = [0.99999999999980993, 676.5203681218851, -1259.1392167224028, 771.32342877765313, -176.61502916214059, 12.507343278686905, -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7];
@@ -2596,13 +2600,16 @@ for heads in [7, 8, 7, 8]:              # 4 batches of 10 tosses (D1 to D4)
       start: `X is the coin's unknown chance of heads. The dotted curve is the prior P(X), our belief before any toss: best guess ${A0} ÷ (${A0} + ${B0}) = 40%, and wide, because 90% of the belief is spread between ${pct(range90(beta(A0, B0))[0])} and ${pct(range90(beta(A0, B0))[1])}.`,
       evidence: `We toss the coin 10 more times: ${h} heads and ${10 - h} tails. Call this ${D(k)}. The dashed curve is the likelihood P(${D(k)} | X) = X<sup>${h}</sup> × (1 − X)<sup>${10 - h}</sup>: for each X, the chance of getting exactly these tosses. It peaks at ${h} ÷ 10 = ${h * 10}%.`,
       multiply: `For every X, likelihood × prior gives the shaded curve. Where the tosses fit badly (the likelihood is near 0) the prior is squashed; where they fit well (near 1) it is kept. Move the slider to check the multiplication at any X.`,
-      rescale: `The shaded product has area ${f2(area)}, not 1. Dividing by it, the ÷ P(${D(k)}) step, rescales the total belief back to 1 and gives the posterior P(X${given(k)}). Best guess ${rule}; 90% of the belief now lies between ${pct(lo)} and ${pct(hi)}, narrower than before.`,
+      rescale: `The shaded product has area ${f2(area)}, not 1. Dividing by it, the ÷ P(${D(k)}) step, rescales the total belief back to 1 and gives the posterior P(X${given(k)}). Best guess ${rule} (line 10 of the code prints <code>best guess: ${pct(pa / (pa + pb))}</code>, shown in the output box under the code); 90% of the belief now lies between ${pct(lo)} and ${pct(hi)}, narrower than before.`,
       handoff: `The posterior becomes the prior for batch ${k + 1}: the solid curve turns into the dotted one. The faint lines are the earlier posteriors.`,
       final: `After 40 tosses: best guess ${rule}, with 90% of the belief between ${pct(lo)} and ${pct(hi)}. Four rounds of prior → evidence (× likelihood ÷ marginal) → posterior moved the belief from 40% toward the true 75% and made it narrower each time.`,
     };
     const head = { start: "Start.", evidence: `Batch ${k}: new evidence.`, multiply: `Batch ${k}: multiply.`, rescale: `Batch ${k}: divide by the marginal.`, handoff: `Batch ${k}: hand over.`, final: "The end." }[p];
     $(".status").innerHTML = `<b>Step ${i + 1} of ${PH.length} · ${head}</b> ${T[p]}`;
-    cp.hl(...{ start: [2, 3, 4], evidence: [5, 6], multiply: [7], rescale: [8], handoff: [9], final: [9] }[p]);
+    cp.hl(...{ start: [2, 3, 4], evidence: [5, 6], multiply: [7], rescale: [8, 10], handoff: [9], final: [9, 10] }[p]);
+    const done = ["rescale", "handoff", "final"].includes(p) ? k : Math.max(k - 1, 0);
+    $(".bc-out").innerHTML = `<div class="dim">output of belief_update.py</div>` + (done ? "" : `<div class="dim">(nothing printed yet: line 10 runs after each batch's posterior)</div>`)
+      + HS.slice(0, done).map((_, n) => { const [qa, qb] = par(n + 1); return `<div${n === done - 1 && p === "rescale" ? ' class="in"' : ""}>best guess: ${pct(qa / (qa + qb))}</div>`; }).join("");
     $(".bc-back").disabled = i === 0; $(".bc-next").disabled = i === PH.length - 1;
   }
   const stop = () => { clearInterval(timer); timer = null; $(".bc-play").textContent = "Play slowly"; };
