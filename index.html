@@ -25,11 +25,12 @@
   --text: #0b0b0b;
   --text-2: #52514e;
   --muted: #6b6a65;
-  --accent: #2a78d6;   /* default node / primary */
+  --accent: #246abd;   /* default node / primary; >= 4.5:1 on --surface, --bg, --surface-2 and the lesson band */
   --accent-strong: #2b6bc9; /* primary button background (white text >= 4.5:1) */
   --hot: #eb6834;      /* currently active / being compared */
   --ok: #1baf7a;       /* found / success */
-  --bad: #e34948;      /* removed / error */
+  --bad: #e34948;
+  --bad-text: #c8302f; /* red text on light surfaces (>= 4.5:1) */      /* removed / error */
   --violet: #6250d6;   /* secondary highlight (visited, pointer) */
   --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100; --s5: #e87ba4;
   --code-bg: #1e1f22; --code-text: #e6e4dc; --code-hl: rgba(235,104,52,.28);
@@ -46,11 +47,12 @@
   --text: #f0efec;
   --text-2: #c3c2b7;
   --muted: #8e8d86;
-  --accent: #3987e5;
+  --accent: #4a93ea;   /* >= 4.5:1 on --surface, --bg and the lesson band */
   --accent-strong: #2f6fcc;
   --hot: #d95926;
   --ok: #199e70;
   --bad: #e66767;
+  --bad-text: #e66767;
   --violet: #9085e9;
   --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181;
   --code-bg: #0e0e0d; --code-hl: rgba(217,89,38,.32);
@@ -59,10 +61,13 @@
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 72px; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+.skip { position: fixed; left: 8px; top: -60px; z-index: 100; padding: 8px 14px; border-radius: 8px; background: var(--accent-strong); color: #fff; font-weight: 600; text-decoration: none; }
+.skip:focus { top: 8px; }
+main:focus { outline: none; }
 body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.6 var(--sans); }
 a { color: var(--accent); }
 code { font-family: var(--mono); font-size: .9em; background: var(--surface-2); padding: 1px 5px; border-radius: 4px; }
-h1, h2, h3 { line-height: 1.25; }
+h1, h2, h3 { line-height: 1.25; overflow-wrap: break-word; }
 h2 { font-size: 1.75rem; margin: 0 0 .25rem; }
 h3 { font-size: 1.15rem; margin: 1.6rem 0 .5rem; }
 
@@ -75,6 +80,14 @@ header.top {
 }
 header.top .brand { font-weight: 700; font-size: 1.05rem; margin-right: auto; }
 header.top label { font-size: .85rem; color: var(--text-2); display: flex; align-items: center; gap: 8px; }
+@media (max-width: 560px) {
+  header.top { gap: 8px; padding: 0 16px; }
+  header.top .brand { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .95rem; }
+  header.top label { font-size: 0; gap: 6px; }
+  header.top label #speedVal { font-size: .85rem; }
+  header.top #speed { width: 72px !important; }
+  header.top #themeBtn { flex: none; white-space: nowrap; }
+}
 @media (max-width: 560px) {
   header.top { gap: 8px; padding: 0 16px; }
   header.top .brand { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .95rem; }
@@ -120,7 +133,9 @@ main { background: color-mix(in srgb, var(--bg) 92%, #000 8%); }
   border-radius: 10px 10px 0 0; }
 .band-n { flex: none; font: 600 46px/1 var(--sans); color: var(--accent); min-width: 1ch; text-align: center; }
 .band-k { font-size: .8rem; font-weight: 600; letter-spacing: .03em; color: var(--accent); margin-bottom: 2px; }
-.band h2 { margin: 0; }
+.band h2 { margin: 0; overflow-wrap: anywhere; }
+.band > :last-child { min-width: 0; }
+select { max-width: 100%; }
 .endline { margin-top: 26px; padding-top: 8px; border-top: 1px solid var(--border); color: var(--muted); font-size: .85rem; text-align: center; }
 @media (max-width: 560px) {
   main { padding-left: 8px !important; padding-right: 8px !important; }
@@ -133,6 +148,13 @@ main { background: color-mix(in srgb, var(--bg) 92%, #000 8%); }
 .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; box-shadow: var(--shadow); min-width: 0; }
 .grid2 { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 16px; margin: 20px 0; align-items: start; }
 @media (max-width: 1050px) { .grid2 { grid-template-columns: 1fr; } }
+/* Narrow screens: the code panel goes above its demo card and stays pinned under the header while the
+   demo scrolls past, so the highlighted line and the demo are on screen together. */
+@media (max-width: 1050px) {
+  .grid2 > .code { order: -1; position: sticky; top: 64px; z-index: 5; max-height: 30vh;
+    box-shadow: 0 8px 18px -10px rgb(0 0 0 / .55); }
+}
+@media (max-width: 860px) { .grid2 > .code { top: 113px; } }
 .callout { border-left: 4px solid var(--accent); background: var(--surface); padding: 10px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; }
 .callout.tip { border-color: var(--ok); }
 .callout.warn { border-color: var(--hot); }
@@ -154,6 +176,7 @@ input[type="text"], input[type="number"], select {
   font: .9rem var(--mono); padding: 7px 9px; border-radius: 8px; width: 84px;
   border: 1px solid var(--border); background: var(--surface); color: var(--text);
 }
+::placeholder { color: var(--muted); opacity: 1; }
 input:focus-visible, button:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 /* ---------- visual area ---------- */
@@ -209,9 +232,11 @@ input:focus-visible, button:focus-visible, select:focus-visible { outline: 2px s
 }
 .code .title { color: #8e8d86; font-size: 11px; padding: 0 14px 6px; text-transform: uppercase; letter-spacing: .08em; }
 .code .ln { display: flex; white-space: pre; padding: 0 14px 0 0; transition: background .2s; }
-.code .ln .no { width: 36px; flex: none; text-align: right; padding-right: 12px; color: #5f5e59; user-select: none; }
+.code .ln .no { width: 36px; flex: none; text-align: right; padding-right: 12px; color: #94938c; user-select: none; }
 .code .ln.hl { background: var(--code-hl); box-shadow: inset 3px 0 0 var(--hot); }
-.t-k { color: #c792ea; } .t-sf { color: #f78c6c; } .t-s { color: #c3e88d; } .t-c { color: #7f7e78; font-style: italic; } .t-n { color: #f9c859; } .t-d { color: #82aaff; }
+.code .ln.hl .no { color: var(--code-text); }
+.code:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.t-k { color: #c792ea; } .t-sf { color: #f78c6c; } .t-s { color: #c3e88d; } .t-c { color: #8e8d86; font-style: italic; } .t-n { color: #f9c859; } .t-d { color: #82aaff; }
 
 /* ---------- tables ---------- */
 table.cx { border-collapse: collapse; width: 100%; font-size: .92rem; margin: 10px 0; }
@@ -260,7 +285,8 @@ table.cx tbody tr:hover { background: var(--surface-2); }
 .scenario .answer.show { display: block; }
 .scenario select { width: 100%; font-family: var(--sans); }
 ol.ex li { margin-bottom: 6px; }
-footer { color: var(--muted); font-size: .85rem; padding: 32px 0; }
+footer { color: var(--text-2); font-size: .85rem; padding: 32px 0; }
+footer a { color: var(--text-2); } /* footer sits on the darker page, where --accent is below 4.5:1 */
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 
 /* ---------- Python course: memory frames, console, tokens ---------- */
@@ -277,7 +303,7 @@ footer { color: var(--muted); font-size: .85rem; padding: 32px 0; }
 .console { background: var(--code-bg); color: var(--code-text); border-radius: 8px; font: 13px/1.55 var(--mono); padding: 10px 12px; min-height: 64px; max-height: 240px; overflow: auto; margin-top: 6px; white-space: pre-wrap; word-break: break-word; }
 .console .in { color: #82aaff; }
 .console .err { color: #ff8a80; }
-.console .dim { color: #7f7e78; }
+.console .dim { color: #8e8d86; }
 .console .new { animation: fadein .35s ease; }
 @keyframes fadein { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
 .tok-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 34px 0 12px; min-height: 96px; }
@@ -295,7 +321,8 @@ footer { color: var(--muted); font-size: .85rem; padding: 32px 0; }
 .py-ask input { flex: 1; width: auto; min-width: 0; }
 input.wide { width: 170px; }
 input.num { width: 64px; }
-label.inl { font-size: .85rem; color: var(--text-2); display: inline-flex; align-items: center; gap: 6px; }
+label.inl { font-size: .85rem; color: var(--text-2); display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; max-width: 100%; }
+input[type="range"] { max-width: 100%; }
 .tb-line { display: block; width: 100%; text-align: left; background: transparent; color: var(--code-text); border: 0; border-radius: 4px;
   font: 13px/1.55 var(--mono); padding: 2px 8px; white-space: pre-wrap; cursor: pointer; }
 .tb-line:hover { background: rgba(255,255,255,.06); filter: none; }
@@ -303,7 +330,7 @@ label.inl { font-size: .85rem; color: var(--text-2); display: inline-flex; align
 .tb-line:active { transform: none; }
 @media (max-width: 560px) { .viz { min-height: 0 !important; } }
 /* Bayes' theorem: the four named parts */
-:root { --bz-post: #c2187a; --bz-prior: #0b8599; --bz-like: #1e8a3c; --bz-marg: #2b4fc9; }
+:root { --bz-post: #c2187a; --bz-prior: #087284; --bz-like: #1a7a35; --bz-marg: #2b4fc9; }
 :root[data-theme="dark"] { --bz-post: #f06fb4; --bz-prior: #3cc6da; --bz-like: #55c977; --bz-marg: #8aa6ff; }
 .bz-post { --c: var(--bz-post); } .bz-prior { --c: var(--bz-prior); } .bz-like { --c: var(--bz-like); } .bz-marg { --c: var(--bz-marg); }
 .bz-c { color: var(--c); font-weight: 700; }
@@ -351,6 +378,7 @@ label.inl { font-size: .85rem; color: var(--text-2); display: inline-flex; align
 </style>
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
 <header class="top">
   <div class="brand">🎲 Intro to Probability</div>
   <label>Animation speed
@@ -362,7 +390,7 @@ label.inl { font-size: .85rem; color: var(--text-2); display: inline-flex; align
 
 <div class="layout">
 <nav class="side" id="nav" aria-label="Sections"></nav>
-<main>
+<main id="main" tabindex="-1">
 
 <script>
 /* ======================================================================
@@ -396,24 +424,37 @@ const DS = (() => {
 
   const reducedMotion = () => !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
 
-  let speed = 1;
+  let speed = 1, paused = false;
   const sleep = ms => new Promise(r => setTimeout(r, ms));
-  // Pause between animation steps; scaled by the global speed slider.
-  const wait = (mult = 1) => sleep(650 * mult / speed);
+  // Pause between animation steps; scaled by the global speed slider. Holds while a demo is paused.
+  const wait = async (mult = 1) => { await sleep(650 * mult / speed); while (paused) await sleep(120); };
 
   // Run an async animation, disabling the section's buttons until it finishes.
+  // A ▶ button that starts a run turns into Pause / Resume until the run ends
+  // (add class "no-pause" to a ▶ button that starts something interactive, such as a game).
   async function run(root, fn) {
-    if (root.dataset.busy) return;
+    const trigger = window.event && window.event.currentTarget;
+    if (root.dataset.busy) {
+      if (trigger && trigger === root.pauseBtn) {
+        paused = !paused;
+        trigger.textContent = paused ? "▶ Resume" : "⏸ Pause";
+      }
+      return;
+    }
     root.dataset.busy = "1";
     // Only touch buttons that are currently enabled, so ones disabled for other
     // reasons stay disabled afterwards.
     const btns = [...root.querySelectorAll("button:not(.always)")].filter(b => !b.disabled);
     const focused = document.activeElement;
-    btns.forEach(b => (b.disabled = true));
+    const play = btns.includes(trigger) && trigger.textContent.trim().startsWith("▶") && !trigger.matches(".no-pause") ? trigger : null;
+    const playLabel = play && play.textContent;
+    if (play) { root.pauseBtn = play; play.textContent = "⏸ Pause"; }
+    btns.forEach(b => (b.disabled = b !== play));
     try { await fn(); }
     catch (e) { console.error(e); }
     finally {
       delete root.dataset.busy;
+      if (play) { play.textContent = playLabel; root.pauseBtn = null; paused = false; }
       btns.forEach(b => (b.disabled = false));
       // Disabling a focused button drops focus to <body>; give it back.
       const lost = !document.activeElement || document.activeElement === document.body;
@@ -443,6 +484,10 @@ const DS = (() => {
   function code(container, src, title) {
     const lines = src.replace(/^\n+|\s+$/g, "").split("\n");
     container.innerHTML = "";
+    // Focusable so keyboard users can scroll long or wide code
+    container.tabIndex = 0;
+    container.setAttribute("role", "region");
+    container.setAttribute("aria-label", title ? title + " code" : "Code");
     if (title) container.append(el("div", { class: "title" }, title));
     const rows = lines.map((t, i) => {
       const r = el("div", { class: "ln" }, el("span", { class: "no" }, String(i + 1)), el("span", { html: hlPy(t) || " " }));
@@ -675,7 +720,8 @@ const KIT = (() => {
     #intro .pillars { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 18px 0 0; }
     #intro .pillar { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
     #intro .pillar .p-ico { font-size: 1.4rem; line-height: 1; }
-    #intro .pillar h3 { margin: 8px 0 4px; font-size: 1rem; }
+    #intro h2 { font-size: 1.15rem; margin: 1.6rem 0 .5rem; }
+    #intro .pillar h2 { margin: 8px 0 4px; font-size: 1rem; }
     #intro .pillar p { margin: 0; color: var(--text-2); font-size: .9rem; line-height: 1.45; }
     #intro .path { list-style: none; counter-reset: step; margin: 10px 0 0; padding: 0; display: grid; gap: 8px; }
     #intro .path li { counter-increment: step; display: grid; grid-template-columns: 26px minmax(0, 1fr); column-gap: 12px; align-items: start; }
@@ -687,22 +733,22 @@ const KIT = (() => {
     #intro .facts b { color: var(--text); }
     @media (max-width: 700px) { #intro .pillars { grid-template-columns: minmax(0, 1fr); } }
     #intro .map { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 4fr); gap: 12px; }
-    #intro .map h4 { margin: 0 0 6px; font-size: .9rem; color: var(--text-2); }
+    #intro .map h3 { margin: 0 0 6px; font-size: .9rem; color: var(--text-2); }
     @media (max-width: 700px) { #intro .map { grid-template-columns: minmax(0, 1fr); } }
     #intro .learn { list-style: none; margin: 8px 0 18px; padding: 0; display: grid; gap: 8px; }
     #intro .learn li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px; align-items: start; }
     #intro .learn li span { font-size: 1.15rem; line-height: 1.5; }
   </style>
-  <h3>What you'll learn</h3>
+  <h2>What you'll learn</h2>
   <ul class="learn">
     <li><span aria-hidden="true">🎲</span><div>What probability means, and how to count outcomes and apply the basic rules.</div></li>
     <li><span aria-hidden="true">🔍</span><div>How new information changes chances: conditional probability, independence and Bayes' theorem.</div></li>
     <li><span aria-hidden="true">📊</span><div>How random variables, expected values and common distributions describe real-world uncertainty.</div></li>
   </ul>
   <div class="pillars">
-    <div class="pillar"><div class="p-ico" aria-hidden="true">📘</div><h3>Theory</h3><p>The main ideas of probability in plain words, with everyday cases: coins, dice, cards, buses, medical tests and spam filters.</p></div>
-    <div class="pillar"><div class="p-ico" aria-hidden="true">🛠️</div><h3>Practice</h3><p>Interactive demos: flip 1,000 coins, light up a Venn diagram (events drawn as circles), grow a counting tree, test 1,000 people for a disease, and explore distributions. A quiz in every lesson.</p></div>
-    <div class="pillar"><div class="p-ico" aria-hidden="true">🎓</div><h3>Certificate</h3><p>Score 80% or more on the final quiz to get a certificate with your name, ready to print, save as PDF or download as an image.</p></div>
+    <div class="pillar"><div class="p-ico" aria-hidden="true">📘</div><h2>Theory</h2><p>The main ideas of probability in plain words, with everyday cases: coins, dice, cards, buses, medical tests and spam filters.</p></div>
+    <div class="pillar"><div class="p-ico" aria-hidden="true">🛠️</div><h2>Practice</h2><p>Interactive demos: flip 1,000 coins, light up a Venn diagram (events drawn as circles), grow a counting tree, test 1,000 people for a disease, and explore distributions. A quiz in every lesson.</p></div>
+    <div class="pillar"><div class="p-ico" aria-hidden="true">🎓</div><h2>Certificate</h2><p>Score 80% or more on the final quiz to get a certificate with your name, ready to print, save as PDF or download as an image.</p></div>
   </div>
   <ul class="facts" aria-label="Course facts">
     <li><b>9</b> lessons in 3 parts</li>
@@ -712,7 +758,7 @@ const KIT = (() => {
     <li>Self-paced · works offline</li>
   </ul>
 
-  <h3>How the course works</h3>
+  <h2>How the course works</h2>
   <ol class="path">
     <li><b>Part A: Chance and counting</b><span>what probability means, the language of events, counting possibilities, and the basic rules.</span></li>
     <li><b>Part B: Updating with information</b><span>how knowing something changes the chances: conditional probability, independence and Bayes' theorem.</span></li>
@@ -722,20 +768,20 @@ const KIT = (() => {
   </ol>
   <div class="callout tip"><b>Tip:</b> every formula appears with a worked example in real numbers. The code panels are short, readable Python sketches of the same calculation; you don't need to run them or know Python to follow along. Use the <b>Animation speed</b> slider at the top to slow down any demo, and retake any quiz as often as you like.</div>
 
-  <h3>Course map</h3>
-  <h4 style="margin:10px 0 6px;color:var(--text-2)">Part A · Chance and counting</h4>
+  <h2>Course map</h2>
+  <h3 style="margin:10px 0 6px;font-size:1rem;color:var(--text-2)">Part A · Chance and counting</h3>
   <div class="order" style="margin:0">
     <a href="#why">Why probability?<small>chance, outcomes, events</small></a>
     <a href="#sets">Sets and sample spaces<small>union, intersection, Venn</small></a>
     <a href="#counting">Counting<small>permutations and combinations</small></a>
     <a href="#rules">Basic probability rules<small>addition and complement</small></a>
   </div>
-  <h4 style="margin:14px 0 6px;color:var(--text-2)">Part B · Updating with information</h4>
+  <h3 style="margin:14px 0 6px;font-size:1rem;color:var(--text-2)">Part B · Updating with information</h3>
   <div class="order" style="margin:0;counter-reset:step 4">
     <a href="#conditional">Conditional probability<small>P(A|B), independence</small></a>
     <a href="#bayes">Bayes' theorem<small>total probability, base rates</small></a>
   </div>
-  <h4 style="margin:14px 0 6px;color:var(--text-2)">Part C · Random variables</h4>
+  <h3 style="margin:14px 0 6px;font-size:1rem;color:var(--text-2)">Part C · Random variables</h3>
   <div class="order" style="margin:0;counter-reset:step 6">
     <a href="#rv">Random variables<small>PMF, expected value, spread</small></a>
     <a href="#dist">Common distributions<small>Binomial, Poisson, Normal…</small></a>
@@ -791,7 +837,7 @@ const KIT = (() => {
         <div class="ln-bars" style="padding-top:22px"></div>
         <div class="ln-line"></div>
       </div>
-      <div class="status"></div>
+      <div class="status" role="status"></div>
       <div class="log"></div>
     </div>
     <div class="code"></div>
@@ -962,7 +1008,7 @@ print(share)                            # close to 1/6 = 0.167`,
         <button class="vn-op" data-o="comp">Aᶜ</button>
       </div>
       <div class="viz" style="min-height:300px"><span class="caption vn-cap"></span><div class="fstrip vn-fs"></div><div class="vn-plot" style="padding-top:18px"></div></div>
-      <div class="status"></div>
+      <div class="status" role="status"></div>
     </div>
     <div class="code"></div>
   </div>
@@ -1166,7 +1212,7 @@ omega - A                    # complement: {1, 3, 5}`, lines: { A: 2, B: 3, unio
         <button class="secondary ct-reset">Reset</button>
       </div>
       <div class="viz" style="min-height:300px"><span class="caption ct-cap"></span><div class="fstrip ct-fs"></div><div class="ct-plot" style="padding-top:22px"></div></div>
-      <div class="status"></div>
+      <div class="status" role="status"></div>
     </div>
     <div class="code"></div>
   </div>
@@ -1335,7 +1381,7 @@ comb(5, 3)             # order doesn't: 60 / 3! = 10 teams`, "counting.py");
         <button class="secondary sp-reset">Reset</button>
       </div>
       <div class="viz" style="min-height:320px"><span class="caption">A spinner with 4 equal sections</span><div class="fstrip sp-fs"></div><div class="sp-plot" style="padding-top:22px"></div></div>
-      <div class="status"></div>
+      <div class="status" role="status"></div>
     </div>
     <div class="code"></div>
   </div>
@@ -1466,7 +1512,7 @@ p({1}) + p({3})                         # 1/4 + 1/4 = 1/2 = p({1, 3})`, "spinner
         <button class="cd-ev" data-e="not">Not a heart</button>
       </div>
       <div class="viz" style="min-height:190px"><span class="caption">A standard deck · 52 equally likely cards</span><div class="fstrip cd-fs"></div><div class="cd-deck" style="padding-top:26px"></div></div>
-      <div class="status"></div>
+      <div class="status" role="status"></div>
     </div>
     <div class="code"></div>
   </div>
@@ -1542,7 +1588,7 @@ p_not = 1 - len(hearts) / 52                     # 39/52`, "cards.py");
     const grid = DS.el("div", { style: { display: "grid", gridTemplateColumns: "repeat(13, minmax(0, 1fr))", gap: "4px" } });
     deck.forEach(c => {
       c.el = DS.el("span", { style: { font: "700 13px var(--mono)", textAlign: "center", padding: "6px 0", borderRadius: "5px", border: "1px solid var(--border)",
-        background: "var(--surface)", color: "♥♦".includes(c.s) ? "var(--bad)" : "var(--text)", transition: "all .3s" } }, c.r + c.s);
+        background: "var(--surface)", color: "♥♦".includes(c.s) ? "var(--bad-text, var(--bad))" : "var(--text)", transition: "all .3s" } }, c.r + c.s);
       grid.append(c.el);
     });
     box.append(grid);
@@ -1615,7 +1661,7 @@ p_not = 1 - len(hearts) / 52                     # 39/52`, "cards.py");
         <button class="secondary gv-reset">Reset</button>
       </div>
       <div class="viz" style="min-height:290px"><span class="caption">One die roll · Ω = {1, 2, 3, 4, 5, 6}</span><div class="fstrip gv-fs"></div><div class="gv-plot" style="padding-top:22px"></div></div>
-      <div class="status"></div>
+      <div class="status" role="status"></div>
     </div>
     <div class="code"></div>
   </div>
@@ -1704,7 +1750,7 @@ len(B) / len(omega) * p_A_given_B     # 3/6 × 2/3 = 2/6`, "conditional.py");
         <button class="cn-v" data-v="ind">Independent?</button>
       </div>
       <div class="viz" style="min-height:300px"><span class="caption">100 emails · orange = spam · ★ = contains "free"</span><div class="fstrip cn-fs"></div><div class="cn-grid" style="padding-top:26px"></div></div>
-      <div class="status"></div>
+      <div class="status" role="status"></div>
     </div>
     <div class="code"></div>
   </div>
@@ -1735,7 +1781,7 @@ len(B) / len(omega) * p_A_given_B     # 3/6 × 2/3 = 2/6`, "conditional.py");
         <button class="secondary tr-reset">Reset</button>
       </div>
       <div class="viz" style="min-height:380px"><span class="caption">A box of 3 red and 5 blue balls · two draws</span><div class="fstrip tr-fs"></div><div class="tr-plot" style="padding-top:22px"></div></div>
-      <div class="status"></div>
+      <div class="status" role="status"></div>
     </div>
     <div class="code"></div>
   </div>
@@ -1860,7 +1906,7 @@ p_A * p_B_given_A                     # 15/56: multiply along the path
         <button class="secondary ip-reset">Reset</button>
       </div>
       <div class="viz" style="min-height:400px"><span class="caption">A coin toss and a die roll</span><div class="fstrip ip-fs"></div><div class="ip-plot" style="padding-top:22px"></div></div>
-      <div class="status"></div>
+      <div class="status" role="status"></div>
     </div>
     <div class="code"></div>
   </div>
@@ -1989,6 +2035,7 @@ p_both = p_spam * p_free_given_spam       # multiplication rule: 0.24`, "spam.py
   mails.forEach(m => {
     m.el = DS.el("span", { style: { aspectRatio: "1", borderRadius: "4px", display: "grid", placeItems: "center", font: "700 13px var(--sans)", color: "#fff",
       background: m.spam ? "var(--hot)" : "var(--s1)", transition: "opacity .35s, transform .35s" } }, m.free ? "★" : "");
+    if (m.free) { m.el.setAttribute("role", "img"); m.el.setAttribute("aria-label", "contains free"); }
     grid.append(m.el);
   });
   $(".cn-grid").append(grid);
@@ -2080,7 +2127,7 @@ p_both = p_spam * p_free_given_spam       # multiplication rule: 0.24`, "spam.py
         <button class="secondary sl-reset">Reset</button>
       </div>
       <div class="viz" style="min-height:420px"><span class="caption">One die roll · B = even · slices A₁, A₂, A₃</span><div class="fstrip sl-fs"></div><div class="sl-plot" style="padding-top:22px"></div></div>
-      <div class="status"></div>
+      <div class="status" role="status"></div>
     </div>
     <div class="code"></div>
   </div>
@@ -2277,7 +2324,7 @@ sum(p(A) * s for A, s in zip(slices, shares)) # 0 + 2/6 + 1/6 = 3/6`, "total_pro
         <button class="secondary by-reset">Reset</button>
       </div>
       <div class="viz" style="min-height:250px"><span class="caption">1,000 people · ● sick · ■ tested positive</span><div class="fstrip by-fs"></div><div class="by-grid" style="padding-top:26px"></div></div>
-      <div class="status"></div>
+      <div class="status" role="status"></div>
     </div>
     <div class="code"></div>
   </div>
@@ -2489,7 +2536,7 @@ sum(p(A) * s for A, s in zip(slices, shares)) # 0 + 2/6 + 1/6 = 3/6`, "total_pro
         <div class="bc-ck"><span>Check one point: X =</span><input type="range" class="bc-x" min="1" max="99" step="1" value="50" aria-label="Value of X to check"><b class="bc-xv">50%</b></div>
         <div class="bc-ck bc-calc"></div>
       </div>
-      <div class="status"></div>
+      <div class="status" role="status"></div>
     </div>
     <div class="code"></div>
   </div>
@@ -2854,7 +2901,7 @@ p_sick_given_pos = true_pos / positives   # Bayes: 9 / 98 = 9%`, "medical_test.p
         <div class="gm-bars" style="padding-top:20px"></div>
         <div class="gm-line"></div>
       </div>
-      <div class="status"></div>
+      <div class="status" role="status"></div>
     </div>
     <div class="code"></div>
   </div>
@@ -3000,7 +3047,7 @@ print(sum(games) / len(games))       # average: close to 0.33`, "dice_game.py");
       <div class="controls ds-scen"></div>
       <div class="controls"><label class="inl ds-lab"><span class="ds-pname"></span> <input type="range" class="ds-p" style="width:170px;vertical-align:middle"> <b class="ds-pv" style="font-family:var(--mono)"></b></label></div>
       <div class="viz" style="min-height:260px"><span class="caption ds-cap"></span><div class="fstrip ds-fs"></div><div class="ds-plot" style="padding-top:22px"></div></div>
-      <div class="status"></div>
+      <div class="status" role="status"></div>
     </div>
     <div class="code"></div>
   </div>
@@ -3052,7 +3099,7 @@ print(sum(games) / len(games))       # average: close to 0.33`, "dice_game.py");
         <button class="secondary cr-reset">Reset</button>
       </div>
       <div class="viz" style="min-height:340px"><span class="caption cr-cap">Repeat the experiment · each block = one experiment of 100 tosses</span><div class="fstrip cr-fs"></div><div class="cr-plot"></div></div>
-      <div class="status"></div>
+      <div class="status" role="status"></div>
     </div>
     <div class="code"></div>
   </div>
@@ -3068,7 +3115,7 @@ print(sum(games) / len(games))       # average: close to 0.33`, "dice_game.py");
         <button class="secondary cl-reset">Reset</button>
       </div>
       <div class="viz" style="min-height:320px"><span class="caption cl-cap"></span><div class="fstrip cl-fs"></div><div class="cl-plot"></div></div>
-      <div class="status"></div>
+      <div class="status" role="status"></div>
     </div>
     <div class="code"></div>
   </div>
@@ -3739,7 +3786,7 @@ within_2sd = 0.95              # 95% between ${70 - 2 * s} and ${70 + 2 * s}` },
       <div class="viz" style="min-height:290px"><span class="caption cr-cap"></span><div class="fstrip cr-fs"></div><div class="cr-plot" style="padding-top:20px"></div>
         <div class="meter"><span style="width:110px">correlation r</span><div class="bar" style="position:relative"><i class="cr-bar"></i></div><b class="cr-r">—</b></div>
       </div>
-      <div class="status"></div>
+      <div class="status" role="status"></div>
     </div>
     <div class="code"></div>
   </div>
@@ -3857,6 +3904,15 @@ r = st.correlation(ice_cream, drownings)   # strongly positive...
   <style>#glossary [data-col][aria-pressed="true"] { background: var(--surface-2); color: var(--text); border-color: var(--accent); box-shadow: inset 0 -2px 0 var(--accent); }</style>
   <h3>Glossary</h3>
   <div class="controls gl-filters" role="group" aria-label="Filter by topic"></div>
+  <style>
+    /* Phones: each row becomes a small block (topic, term, meaning) instead of three squeezed columns */
+    @media (max-width: 560px) {
+      #glTable thead { display: none; }
+      #glTable tr { display: block; padding: 10px 0; border-bottom: 1px solid var(--border); }
+      #glTable td { display: block; padding: 2px 0; border: 0; }
+      #glTable td:first-child { font-size: .8rem; }
+    }
+  </style>
   <div style="overflow-x:auto"><table class="cx" id="glTable"></table></div>
 
   <h3>Formula sheet</h3>
